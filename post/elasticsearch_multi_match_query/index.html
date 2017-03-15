@@ -1,0 +1,1267 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Elasticsearch,Multi Match Query,best_fields,cross_fields,most_fields," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在Elasticsearch全文检索中，我们用的比较多的就是Multi Match Query，其支持对多个字段进行匹配。Elasticsearch支持5种类型的Multi Match，我们一起来深入学习下它们的区别。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动手学习Elasticsearch中的Multi Match Query">
+<meta property="og:url" content="http://ginobefunny.com/post/elasticsearch_multi_match_query/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="在Elasticsearch全文检索中，我们用的比较多的就是Multi Match Query，其支持对多个字段进行匹配。Elasticsearch支持5种类型的Multi Match，我们一起来深入学习下它们的区别。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/7_es_multimatch/test_data.png">
+<meta property="og:updated_time" content="2017-01-16T07:43:59.486Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="动手学习Elasticsearch中的Multi Match Query">
+<meta name="twitter:description" content="在Elasticsearch全文检索中，我们用的比较多的就是Multi Match Query，其支持对多个字段进行匹配。Elasticsearch支持5种类型的Multi Match，我们一起来深入学习下它们的区别。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/7_es_multimatch/test_data.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/elasticsearch_multi_match_query/"/>
+
+
+
+
+
+  <title> 动手学习Elasticsearch中的Multi Match Query | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/elasticsearch_multi_match_query/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                动手学习Elasticsearch中的Multi Match Query
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-23T16:29:04+08:00">
+                2016-12-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在Elasticsearch全文检索中，我们用的比较多的就是Multi Match Query，其支持对多个字段进行匹配。Elasticsearch支持5种类型的Multi Match，我们一起来深入学习下它们的区别。</p>
+<a id="more"></a>
+<h2 id="5种类型的Multi-Match-Query"><a href="#5种类型的Multi-Match-Query" class="headerlink" title="5种类型的Multi Match Query"></a>5种类型的Multi Match Query</h2><p>直接从官网的文档上摘抄一段来：</p>
+<ul>
+<li>best_fields: (default) Finds documents which match any field, but uses the _score from the best field.</li>
+<li>most_fields: Finds documents which match any field and combines the _score from each field.</li>
+<li>cross_fields: Treats fields with the same analyzer as though they were one big field. Looks for each word in any field.</li>
+<li>phrase: Runs a match_phrase query on each field and combines the _score from each field.</li>
+<li>phrase_prefix: Runs a match_phrase_prefix query on each field and combines the _score from each field.</li>
+</ul>
+<p>这里我们只考虑前面三种，后两种可以另外单独研究，就先忽略了。</p>
+<h2 id="创建测试索引，预置测试数据"><a href="#创建测试索引，预置测试数据" class="headerlink" title="创建测试索引，预置测试数据"></a>创建测试索引，预置测试数据</h2><h3 id="创建gino-product索引"><a href="#创建gino-product索引" class="headerlink" title="创建gino_product索引"></a>创建gino_product索引</h3><pre><code>PUT /gino_product
+{
+  &quot;mappings&quot;: {
+    &quot;product&quot;: {
+      &quot;properties&quot;: {
+        &quot;productName&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;fulltext_analyzer&quot;,
+          &quot;copy_to&quot;: [
+            &quot;bigSearchField&quot;
+          ]
+        },
+        &quot;brandName&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;fulltext_analyzer&quot;,
+          &quot;copy_to&quot;: [
+            &quot;bigSearchField&quot;
+          ],
+          &quot;fields&quot;: {
+            &quot;brandName_pinyin&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;analyzer&quot;: &quot;pinyin_analyzer&quot;,
+              &quot;search_analyzer&quot;: &quot;standard&quot;
+            },
+            &quot;brandName_keyword&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;analyzer&quot;: &quot;keyword&quot;,
+              &quot;search_analyzer&quot;: &quot;standard&quot;
+            }
+          }
+        },
+        &quot;sortName&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;fulltext_analyzer&quot;,
+          &quot;copy_to&quot;: [
+            &quot;bigSearchField&quot;
+          ],
+          &quot;fields&quot;: {
+            &quot;sortName_pinyin&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;analyzer&quot;: &quot;pinyin_analyzer&quot;,
+              &quot;search_analyzer&quot;: &quot;standard&quot;
+            }
+          }
+        },
+        &quot;productKeyword&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;fulltext_analyzer&quot;,
+          &quot;copy_to&quot;: [
+            &quot;bigSearchField&quot;
+          ]
+        },
+        &quot;bigSearchField&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;fulltext_analyzer&quot;
+        }
+      }
+    }
+  },
+  &quot;settings&quot;: {
+    &quot;index&quot;: {
+      &quot;number_of_shards&quot;: 1,
+      &quot;number_of_replicas&quot;: 0
+    },
+    &quot;analysis&quot;: {
+      &quot;tokenizer&quot;: {
+        &quot;simple_pinyin&quot;: {
+          &quot;type&quot;: &quot;pinyin&quot;,
+          &quot;first_letter&quot;: &quot;none&quot;
+        }
+      },
+      &quot;analyzer&quot;: {
+        &quot;fulltext_analyzer&quot;: {
+          &quot;type&quot;: &quot;ik&quot;,
+          &quot;use_smart&quot;: true
+        },
+        &quot;pinyin_analyzer&quot;: {
+          &quot;type&quot;: &quot;custom&quot;,
+          &quot;tokenizer&quot;: &quot;simple_pinyin&quot;,
+          &quot;filter&quot;: [
+            &quot;word_delimiter&quot;,
+            &quot;lowercase&quot;
+          ]
+        }
+      }
+    }
+  }
+}
+</code></pre><h3 id="插入一些测试数据"><a href="#插入一些测试数据" class="headerlink" title="插入一些测试数据"></a>插入一些测试数据</h3><pre><code>POST /gino_product/product/1
+{
+  &quot;productName&quot;: &quot;耐克女生运动轻跑鞋&quot;,
+  &quot;brandName&quot;: &quot;耐克&quot;,
+  &quot;sortName&quot;: &quot;鞋子&quot;,
+  &quot;productKeyword&quot;: &quot;耐克，潮流，运动，轻跑鞋&quot;
+}
+
+POST /gino_product/product/2
+{
+  &quot;productName&quot;: &quot;耐克女生休闲运动服&quot;,
+  &quot;brandName&quot;: &quot;耐克&quot;,
+  &quot;sortName&quot;: &quot;上衣&quot;,
+  &quot;productKeyword&quot;: &quot;耐克，休闲，运动&quot;
+}
+
+POST /gino_product/product/3
+{
+  &quot;productName&quot;: &quot;阿迪达斯女生冬季运动板鞋&quot;,
+  &quot;brandName&quot;: &quot;阿迪达斯&quot;,
+  &quot;sortName&quot;: &quot;鞋子&quot;,
+  &quot;productKeyword&quot;: &quot;阿迪达斯，冬季，运动，板鞋&quot;
+}
+
+POST /gino_product/product/4
+{
+  &quot;productName&quot;: &quot;阿迪达斯女生冬季运动夹克外套&quot;,
+  &quot;brandName&quot;: &quot;阿迪达斯&quot;,
+  &quot;sortName&quot;: &quot;上衣&quot;,
+  &quot;productKeyword&quot;: &quot;阿迪达斯，冬季，运动，夹克，外套&quot;
+}
+</code></pre><h3 id="测试数据总览"><a href="#测试数据总览" class="headerlink" title="测试数据总览"></a>测试数据总览</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/7_es_multimatch/test_data.png" alt="测试数据"></p>
+<h2 id="分别搜索【运动】"><a href="#分别搜索【运动】" class="headerlink" title="分别搜索【运动】"></a>分别搜索【运动】</h2><pre><code>POST /gino_product/_search
+{
+  &quot;query&quot;: {
+    &quot;multi_match&quot;: {
+      &quot;query&quot;: &quot;运动&quot;,
+      &quot;fields&quot;: [
+        &quot;brandName^100&quot;,
+        &quot;brandName.brandName_pinyin^100&quot;,
+        &quot;brandName.brandName_keyword^100&quot;,
+        &quot;sortName^80&quot;,
+        &quot;sortName.sortName_pinyin^80&quot;,
+        &quot;productName^60&quot;,
+        &quot;productKeyword^20&quot;
+      ],
+      &quot;type&quot;: &lt;multi-match-type&gt;,
+      &quot;operator&quot;: &quot;AND&quot;
+    }
+  }
+}
+</code></pre><p>发现使用3种type都可以搜索出4条商品数据，而且排序也是一致的。</p>
+<h2 id="分别搜索【运动-上衣】"><a href="#分别搜索【运动-上衣】" class="headerlink" title="分别搜索【运动 上衣】"></a>分别搜索【运动 上衣】</h2><pre><code>POST /gino_product/_search
+{
+  &quot;query&quot;: {
+    &quot;multi_match&quot;: {
+      &quot;query&quot;: &quot;运动 上衣&quot;,
+      &quot;fields&quot;: [
+        &quot;brandName^100&quot;,
+        &quot;brandName.brandName_pinyin^100&quot;,
+        &quot;brandName.brandName_keyword^100&quot;,
+        &quot;sortName^80&quot;,
+        &quot;sortName.sortName_pinyin^80&quot;,
+        &quot;productName^60&quot;,
+        &quot;productKeyword^20&quot;
+      ],
+      &quot;type&quot;: &lt;multi-match-type&gt;,
+      &quot;operator&quot;: &quot;AND&quot;
+    }
+  }
+}
+</code></pre><p>这次搜索只有cross_field才能搜索出数据，而使用best_fields和most_fields不行，为什么？</p>
+<p>使用<strong>validate API</strong>来比较区别</p>
+<pre><code>POST /gino_product/_validate/query?rewrite=true
+{
+  &quot;query&quot;: {
+    &quot;multi_match&quot;: {
+      &quot;query&quot;: &quot;运动 上衣&quot;,
+      &quot;fields&quot;: [
+        &quot;brandName^100&quot;,
+        &quot;brandName.brandName_pinyin^100&quot;,
+        &quot;brandName.brandName_keyword^100&quot;,
+        &quot;sortName^80&quot;,
+        &quot;sortName.sortName_pinyin^80&quot;,
+        &quot;productName^60&quot;,
+        &quot;productKeyword^20&quot;
+      ],
+      &quot;type&quot;: &lt;multi-match-type&gt;,
+      &quot;operator&quot;: &quot;AND&quot;
+    }
+  }
+}
+</code></pre><h3 id="best-fields：所有输入的Token必须在一个字段上全部匹配。"><a href="#best-fields：所有输入的Token必须在一个字段上全部匹配。" class="headerlink" title="best_fields：所有输入的Token必须在一个字段上全部匹配。"></a>best_fields：所有输入的Token必须在一个字段上全部匹配。</h3><p>每个字段匹配时分别使用mapping上定义的<em>analyzer</em>和<em>search_analyzer</em>。</p>
+<pre><code>(+brandName:运动 +brandName:上衣)^100.0 
+| (+brandName.brandName_pinyin:运 +brandName.brandName_pinyin:动 +brandName.brandName_pinyin:上 +brandName.brandName_pinyin:衣)^100.0 
+| (+brandName.brandName_keyword:运 +brandName.brandName_keyword:动 +brandName.brandName_keyword:上 +brandName.brandName_keyword:衣)^100.0
+| (+sortName:运动 +sortName:上衣)^80.0 
+| (+sortName.sortName_pinyin:运 +sortName.sortName_pinyin:动 +sortName.sortName_pinyin:上 +sortName.sortName_pinyin:衣)^80.0 
+| (+productName:运动 +productName:上衣)^60.0 
+| (+productKeyword:运动 +productKeyword:上衣)^20.0 
+</code></pre><h3 id="most-fields：所有输入的Token必须在一个字段上全部匹配。"><a href="#most-fields：所有输入的Token必须在一个字段上全部匹配。" class="headerlink" title="most_fields：所有输入的Token必须在一个字段上全部匹配。"></a>most_fields：所有输入的Token必须在一个字段上全部匹配。</h3><p>与<em>best_fields</em>不同之处在于相关性评分，<em>best_fields</em>取最大匹配得分（max计算），而<em>most_fields</em>取所有匹配之和（sum计算）。</p>
+<pre><code>(
+    (+brandName:运动 +brandName:上衣)^100.0 
+    (+brandName.brandName_pinyin:运 +brandName.brandName_pinyin:动 +brandName.brandName_pinyin:上 +brandName.brandName_pinyin:衣)^100.0 
+    (+brandName.brandName_keyword:运 +brandName.brandName_keyword:动 +brandName.brandName_keyword:上 +brandName.brandName_keyword:衣)^100.0
+    (+sortName:运动 +sortName:上衣)^80.0 
+    (+sortName.sortName_pinyin:运 +sortName.sortName_pinyin:动 +sortName.sortName_pinyin:上 +sortName.sortName_pinyin:衣)^80.0 
+    (+productName:运动 +productName:上衣)^60.0 
+    (+productKeyword:运动 +productKeyword:上衣)^20.0
+)
+</code></pre><h3 id="cross-fields：所有输入的Token必须在同一组的字段上全部匹配。"><a href="#cross-fields：所有输入的Token必须在同一组的字段上全部匹配。" class="headerlink" title="cross_fields：所有输入的Token必须在同一组的字段上全部匹配。"></a>cross_fields：所有输入的Token必须在同一组的字段上全部匹配。</h3><p>首先ES会对cross_fields进行查询重写分组，分组的依据是<em>search_analyzer</em>。具体到我们的例子中【brandName.brandName_pinyin、brandName.brandName_keyword、sortName.sortName_pinyin】这三个字段的search_analyzer是standard，而其余的字段是fulltext_analyzer，因此最终被分为了两组。</p>
+<pre><code>(
+  (
+    +(brandName.brandName_pinyin:运^100.0 | sortName.sortName_pinyin:运^80.0 | brandName.brandName_keyword:运^100.0) 
+    +(brandName.brandName_pinyin:动^100.0 | sortName.sortName_pinyin:动^80.0 | brandName.brandName_keyword:动^100.0) 
+    +(brandName.brandName_pinyin:上^100.0 | sortName.sortName_pinyin:上^80.0 | brandName.brandName_keyword:上^100.0) 
+    +(brandName.brandName_pinyin:衣^100.0 | sortName.sortName_pinyin:衣^80.0 | brandName.brandName_keyword:衣^100.0)
+  ) 
+  (
+    +(productKeyword:运动^20.0 | brandName:运动^100.0 | sortName:运动^80.0 | productName:运动^60.0) 
+    +(productKeyword:上衣^20.0 | brandName:上衣^100.0 | sortName:上衣^80.0 | productName:上衣^60.0)
+  )
+)
+</code></pre><h2 id="继续探索和思考"><a href="#继续探索和思考" class="headerlink" title="继续探索和思考"></a>继续探索和思考</h2><h3 id="如何让best-fields和most-fields也可以匹配出商品？"><a href="#如何让best-fields和most-fields也可以匹配出商品？" class="headerlink" title="如何让best_fields和most_fields也可以匹配出商品？"></a>如何让best_fields和most_fields也可以匹配出商品？</h3><p>最常见的做法就是使用_all字段或者copyTo字段来实现，比如我们mapping里面的bigSearchField字段。</p>
+<h3 id="如何改进cross-fields的搜索结果？"><a href="#如何改进cross-fields的搜索结果？" class="headerlink" title="如何改进cross_fields的搜索结果？"></a>如何改进cross_fields的搜索结果？</h3><p>由于cross_fields需要根据search_analyzer进行分组，因此像搜索【运动 shangyi】这样的输入时是无法匹配到商品的，因此应该尽可能地减少分组既尽量使用统一的search_analyzer，或者在search时强制指定search_analyzer覆盖mapping里定义的search_analyzer。</p>
+<h3 id="把operator改成OR会如何？"><a href="#把operator改成OR会如何？" class="headerlink" title="把operator改成OR会如何？"></a>把operator改成OR会如何？</h3><p>在上面的例子中，我们设置的operator均为AND，意味着所有搜索的Token都必须被匹配。那设置成OR会怎么样以及什么场景下该使用OR呢？</p>
+<p>在使用OR的时候要特别注意，因为只要有一个Token匹配就会把商品搜索出来，比如上面的搜索【运动 上衣】的时候，会把鞋子的商品也匹配出来，这样搜索的准确度会远远降低。</p>
+<p>在一些特殊的搜索中，比如我们搜索【耐克 阿迪达斯 上衣】，如果使用operator为AND，则无论使用哪种multi-search-type都无法匹配出商品（想想为什么？），此时我们可以设置operator为OR并且设置minimum_should_match为60%，这样就可以搜索出属于耐克和阿迪达斯的上衣了，这种情况相当于一种智能的搜索降级了。</p>
+<pre><code>/gino_product/_search
+{
+  &quot;query&quot;: {
+    &quot;multi_match&quot;: {
+      &quot;query&quot;: &quot;耐克 阿迪达斯 上衣&quot;,
+      &quot;fields&quot;: [
+        &quot;brandName^100&quot;,
+        &quot;brandName.brandName_pinyin^100&quot;,
+        &quot;brandName.brandName_keyword^100&quot;,
+        &quot;sortName^80&quot;,
+        &quot;sortName.sortName_pinyin^80&quot;,
+        &quot;productName^60&quot;,
+        &quot;productKeyword^20&quot;
+      ],
+      &quot;type&quot;: &quot;cross_fields&quot;,
+      &quot;operator&quot;: &quot;OR&quot;,
+      &quot;minimum_should_match&quot;: &quot;60%&quot;
+    }
+  }
+}
+</code></pre><h3 id="再谈相关性评分"><a href="#再谈相关性评分" class="headerlink" title="再谈相关性评分"></a>再谈相关性评分</h3><p>在<a href="http://ginobefunny.com/post/elasticsearch_relevancy_score/">Elasticsearch相关性打分机制学习</a>一文中我们曾经探讨过best_fields和cross_fields相关性评分的机制，其中的例子使用的相同的search_analyzer。那对于分组情况下，cross_fields评分又是如何计算的呢？</p>
+<p>我们还是用上面的例子，增加explain参数来看一下。</p>
+<pre><code>POST /gino_product/_search
+{
+  &quot;explain&quot;: true,
+  &quot;query&quot;: {
+    &quot;multi_match&quot;: {
+      &quot;query&quot;: &quot;运动 上衣&quot;,
+      &quot;fields&quot;: [
+        &quot;brandName^100&quot;,
+        &quot;brandName.brandName_pinyin^100&quot;,
+        &quot;brandName.brandName_keyword^100&quot;,
+        &quot;sortName^80&quot;,
+        &quot;sortName.sortName_pinyin^80&quot;,
+        &quot;productName^60&quot;,
+        &quot;productKeyword^20&quot;
+      ],
+      &quot;type&quot;: &quot;cross_fields&quot;,
+      &quot;operator&quot;: &quot;AND&quot;
+    }
+  }
+}
+</code></pre><p>详细ES响应报文：<a href="http://oi46mo3on.bkt.clouddn.com/7_es_multimatch/cross_fields_scoring.json" target="_blank" rel="external">cross_fields_scoring.json</a></p>
+<p>通过上述validate API得到的分组信息和explain得到的评分详情信息，可以总结出一个cross_fields评分公式：</p>
+<pre><code>score(q, d) = coord(q, d) * ∑(∑(max(score(t, f))))
+</code></pre><ul>
+<li>coord(q, d): 分组匹配因子，比如上面我们只有一个分组匹配，coord就是0.5（两个分组中匹配了一个分组）；</li>
+<li>score(t, f): 搜索的一个Token和一个特定的字段的相关性评分（使用TFIDF）计算；</li>
+<li>max：搜索的一个Token在所有字段评分中取最大值；</li>
+<li>分组内求和：一个分组内搜索的所有Token的最大值进行求和；</li>
+<li>分组间求和：所有分组的得分最终进行求和计算；</li>
+</ul>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><ul>
+<li>best_fields对搜索为单个Token的情况下效果更好，比如搜索【耐克】的时候品牌为耐克和商品关键字包含耐克的时候前者相关性得分更高；但是对于都是为多个Token需要跨字段匹配时，只能引进大字段来匹配，这样权重的设置就失去意义了；</li>
+<li>most_fields和best_fields类似，其优点在于能够尽可能多地匹配，相关性评分机制更合理；</li>
+<li>cross_fields最大的优点在于能够跨字段匹配，而且充分利用到了各个字段的权重设置。但是需要注意的是匹配时是根据search_analyzer进行分组，不同分组直接的匹配无法跨字段。</li>
+</ul>
+<h2 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h2><ul>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.3/query-dsl-multi-match-query.html" target="_blank" rel="external">ElaticSearch Reference &gt; Multi Match Query</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          
+            <a href="/tags/Multi-Match-Query/" rel="tag"># Multi Match Query</a>
+          
+            <a href="/tags/best-fields/" rel="tag"># best_fields</a>
+          
+            <a href="/tags/cross-fields/" rel="tag"># cross_fields</a>
+          
+            <a href="/tags/most-fields/" rel="tag"># most_fields</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/reading_record_201612/" rel="next" title="阅读随手记 201612">
+                <i class="fa fa-chevron-left"></i> 阅读随手记 201612
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/summary_for_2016/" rel="prev" title="一个程序员的小结：2016年的进步、收获与成长">
+                一个程序员的小结：2016年的进步、收获与成长 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/elasticsearch_multi_match_query/"
+           data-title="动手学习Elasticsearch中的Multi Match Query" data-url="http://ginobefunny.com/post/elasticsearch_multi_match_query/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#5种类型的Multi-Match-Query"><span class="nav-number">1.</span> <span class="nav-text">5种类型的Multi Match Query</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#创建测试索引，预置测试数据"><span class="nav-number">2.</span> <span class="nav-text">创建测试索引，预置测试数据</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建gino-product索引"><span class="nav-number">2.1.</span> <span class="nav-text">创建gino_product索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入一些测试数据"><span class="nav-number">2.2.</span> <span class="nav-text">插入一些测试数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试数据总览"><span class="nav-number">2.3.</span> <span class="nav-text">测试数据总览</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分别搜索【运动】"><span class="nav-number">3.</span> <span class="nav-text">分别搜索【运动】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分别搜索【运动-上衣】"><span class="nav-number">4.</span> <span class="nav-text">分别搜索【运动 上衣】</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#best-fields：所有输入的Token必须在一个字段上全部匹配。"><span class="nav-number">4.1.</span> <span class="nav-text">best_fields：所有输入的Token必须在一个字段上全部匹配。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#most-fields：所有输入的Token必须在一个字段上全部匹配。"><span class="nav-number">4.2.</span> <span class="nav-text">most_fields：所有输入的Token必须在一个字段上全部匹配。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#cross-fields：所有输入的Token必须在同一组的字段上全部匹配。"><span class="nav-number">4.3.</span> <span class="nav-text">cross_fields：所有输入的Token必须在同一组的字段上全部匹配。</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#继续探索和思考"><span class="nav-number">5.</span> <span class="nav-text">继续探索和思考</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何让best-fields和most-fields也可以匹配出商品？"><span class="nav-number">5.1.</span> <span class="nav-text">如何让best_fields和most_fields也可以匹配出商品？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何改进cross-fields的搜索结果？"><span class="nav-number">5.2.</span> <span class="nav-text">如何改进cross_fields的搜索结果？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#把operator改成OR会如何？"><span class="nav-number">5.3.</span> <span class="nav-text">把operator改成OR会如何？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再谈相关性评分"><span class="nav-number">5.4.</span> <span class="nav-text">再谈相关性评分</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小结"><span class="nav-number">6.</span> <span class="nav-text">小结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考材料"><span class="nav-number">7.</span> <span class="nav-text">参考材料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

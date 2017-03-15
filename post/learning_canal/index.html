@@ -1,0 +1,1095 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Mysql,Canal,binlog," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在电商的搜索模块中，需要支持全量索引和增量索引。全量搜索是指根据数据库的数据重建索引里的数据，一般耗时耗性能，可能一天甚至几天重建一次；而增量索引是根据业务库数据的变化，准实时地更新该部分内容到索引中。对于增量索引而言，就需要能够监听业务的表数据变化，阿里开源的Canal组件便是一个不错的选择。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mysql增量订阅和消费组件Canal学习小记">
+<meta property="og:url" content="http://ginobefunny.com/post/learning_canal/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="在电商的搜索模块中，需要支持全量索引和增量索引。全量搜索是指根据数据库的数据重建索引里的数据，一般耗时耗性能，可能一天甚至几天重建一次；而增量索引是根据业务库数据的变化，准实时地更新该部分内容到索引中。对于增量索引而言，就需要能够监听业务的表数据变化，阿里开源的Canal组件便是一个不错的选择。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_as_slave.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_structure.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_parser.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_parser_uml.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_sink.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_sink_uml.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_store.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_store_uml.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_instance.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_server.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/netty.jpg">
+<meta property="og:updated_time" content="2016-12-29T10:09:17.312Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mysql增量订阅和消费组件Canal学习小记">
+<meta name="twitter:description" content="在电商的搜索模块中，需要支持全量索引和增量索引。全量搜索是指根据数据库的数据重建索引里的数据，一般耗时耗性能，可能一天甚至几天重建一次；而增量索引是根据业务库数据的变化，准实时地更新该部分内容到索引中。对于增量索引而言，就需要能够监听业务的表数据变化，阿里开源的Canal组件便是一个不错的选择。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_as_slave.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/learning_canal/"/>
+
+
+
+
+
+  <title> Mysql增量订阅和消费组件Canal学习小记 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/learning_canal/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Mysql增量订阅和消费组件Canal学习小记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-11-27T15:45:58+08:00">
+                2016-11-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/OpenSource/" itemprop="url" rel="index">
+                    <span itemprop="name">OpenSource</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在电商的搜索模块中，需要支持全量索引和增量索引。全量搜索是指根据数据库的数据重建索引里的数据，一般耗时耗性能，可能一天甚至几天重建一次；而增量索引是根据业务库数据的变化，准实时地更新该部分内容到索引中。对于增量索引而言，就需要能够监听业务的表数据变化，阿里开源的Canal组件便是一个不错的选择。<br><a id="more"></a></p>
+<h1 id="什么是Mysql的二进制日志（binlog）？"><a href="#什么是Mysql的二进制日志（binlog）？" class="headerlink" title="什么是Mysql的二进制日志（binlog）？"></a>什么是Mysql的二进制日志（binlog）？</h1><ul>
+<li>binlog记录了数据库变更的事件（如create table、update records）。由一组二进制日志文件（如log-bin.000010）和一个索引文件（如log-bin.index）组成。</li>
+<li>binlog有两个重要用途：主从复制和数据恢复；</li>
+<li>通过<em>log-bin</em>参数开启binlog，通过<em>binlog-do-db</em>和<em>binlog-ignore-db</em>参数配置记录和忽略的schema；</li>
+<li>使用<em>RESET MASTER</em>命令可以清除已记录的binlog；</li>
+<li>使用Mysql内置的<em>mysqlbinlog</em>工具可以查看和操作binlog；</li>
+<li>binlog有三种格式：基于语句的、基于行数据和混合模式；</li>
+<li>关于记录binlog的时机，官网上如是说：</li>
+</ul>
+<blockquote>
+<p>Binary logging is done immediately after a statement or transaction completes but before any locks are released or any commit is done. This ensures that the log is logged in commit order. Within an uncommitted transaction, all updates (UPDATE, DELETE, or INSERT) that change transactional tables such as InnoDB tables are cached until a COMMIT statement is received by the server. At that point, mysqld writes the entire transaction to the binary log before the COMMIT is executed. </p>
+</blockquote>
+<ul>
+<li>binlog的Event结构（目前主要用的是v4版本），下表中的字段名后的两个用冒号分隔的是offset和length。</li>
+</ul>
+<pre><code>+=====================================+
+| event  | timestamp         0 : 4    |
+| header +----------------------------+
+|        | type_code         4 : 1    | = FORMAT_DESCRIPTION_EVENT = 15
+|        +----------------------------+
+|        | server_id         5 : 4    |
+|        +----------------------------+
+|        | event_length      9 : 4    | &gt;= 91
+|        +----------------------------+
+|        | next_position    13 : 4    |
+|        +----------------------------+
+|        | flags            17 : 2    |
++=====================================+
+| event  | binlog_version   19 : 2    | = 4
+| data   +----------------------------+
+|        | server_version   21 : 50   |
+|        +----------------------------+
+|        | create_timestamp 71 : 4    |
+|        +----------------------------+
+|        | header_length    75 : 1    |
+|        +----------------------------+
+|        | post-header      76 : n    | = array of n bytes, one byte per event
+|        | lengths for all            |   type that the server knows about
+|        | event types                |
++=====================================+
+</code></pre><h1 id="什么是Canal？"><a href="#什么是Canal？" class="headerlink" title="什么是Canal？"></a>什么是Canal？</h1><p>Canal是由Alibaba开源的一个基于binlog的增量日志组件，其核心原理是Canal伪装成Mysql的slave，发送dump协议获取binlog，解析并存储起来给客户端消费。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_as_slave.jpg" alt="Canal act as slave"></p>
+<h1 id="Canal的核心架构"><a href="#Canal的核心架构" class="headerlink" title="Canal的核心架构"></a>Canal的核心架构</h1><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><ul>
+<li>Canal是一个CS的架构，Client和Server基于netty进行通信，采用的protobuf协议；</li>
+<li>Server包含了一个或多个Instance（一个Instance可以想象为监听一个数据库的binlog），Server将Client的请求转至具体的Instance处理；</li>
+<li>一个Instance又包含了EventParser、EventSink和EventStore三个核心部件。EventParser负责获取Mysql的binlog并进行解析，然后将解析的Event交给EventSink进行过滤和路由处理，处理之后的数据交由EventStore进行存储。而Server转过来的请求最终就会获取或者操作EventStore上存储的数据。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_structure.jpg" alt="Canal Structure"></p>
+<h2 id="EventParser设计"><a href="#EventParser设计" class="headerlink" title="EventParser设计"></a>EventParser设计</h2><h3 id="处理流程"><a href="#处理流程" class="headerlink" title="处理流程"></a>处理流程</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_parser.jpg" alt="EventParser"></p>
+<ul>
+<li>MysqlConnection为EventParser的核心组件，它通过dump协议不断地从Mysql获取binlog，并交给EventParser处理；</li>
+<li>如果配置了Mysql的配置了standby，MysqlConnection支持失效转移，从standby的数据库获取binlog；</li>
+<li>MysqlEventParser为核心组件，接收到的Binaly Log的通过Binlog parser进行协议解析，补充一些特定信息；</li>
+<li>MysqlEventParser传递给EventSink模块进行数据存储，是一个阻塞操作，直到存储成功；</li>
+<li>存储成功后，由CanalLogPositionManager定时记录Binaly Log位置，其持久化策略支持内存的、文件的、ZK的以及混合式的；</li>
+</ul>
+<h3 id="代码设计"><a href="#代码设计" class="headerlink" title="代码设计"></a>代码设计</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_parser_uml.jpg" alt="EventParser UML"></p>
+<h3 id="核心源码解析"><a href="#核心源码解析" class="headerlink" title="核心源码解析"></a>核心源码解析</h3><p>以下核心源码为AbstractEventParser类的start方法，具体的执行流程见代码注释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.start();</div><div class="line">    MDC.put(<span class="string">"destination"</span>, destination);</div><div class="line">    <span class="comment">// 配置transaction buffer</span></div><div class="line">    <span class="comment">// 初始化缓冲队列</span></div><div class="line">    transactionBuffer.setBufferSize(transactionSize);<span class="comment">// 设置buffer大小</span></div><div class="line">    transactionBuffer.start();</div><div class="line">    <span class="comment">// 构造bin log parser</span></div><div class="line">    binlogParser = buildParser();<span class="comment">// 初始化一下BinLogParser</span></div><div class="line">    binlogParser.start();</div><div class="line">    <span class="comment">// 启动工作线程</span></div><div class="line">    parseThread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">            MDC.put(<span class="string">"destination"</span>, String.valueOf(destination));</div><div class="line">            ErosaConnection erosaConnection = <span class="keyword">null</span>;</div><div class="line">            <span class="keyword">while</span> (running) &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line"></div><div class="line">                    <span class="comment">// 开始执行replication</span></div><div class="line">                    <span class="comment">// 1. 构造Erosa连接</span></div><div class="line">                    erosaConnection = buildErosaConnection();</div><div class="line"></div><div class="line">                    <span class="comment">// 2. 启动一个心跳线程</span></div><div class="line">                    startHeartBeat(erosaConnection);</div><div class="line"></div><div class="line">                    <span class="comment">// 3. 执行dump前的准备工作</span></div><div class="line">                    preDump(erosaConnection);</div><div class="line"></div><div class="line">                    erosaConnection.connect();<span class="comment">// 链接</span></div><div class="line">                    <span class="comment">// 4. 获取最后的位置信息</span></div><div class="line">                    <span class="keyword">final</span> EntryPosition startPosition = findStartPosition(erosaConnection);</div><div class="line">                    <span class="keyword">if</span> (startPosition == <span class="keyword">null</span>) &#123;</div><div class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> CanalParseException(<span class="string">"can't find start position for "</span> + destination);</div><div class="line">                    &#125;</div><div class="line">                    logger.info(<span class="string">"find start position : &#123;&#125;"</span>, startPosition.toString());</div><div class="line">                    <span class="comment">// 重新链接，因为在找position过程中可能有状态，需要断开后重建</span></div><div class="line">                    erosaConnection.reconnect();</div><div class="line"></div><div class="line">                    <span class="keyword">final</span> SinkFunction sinkHandler = <span class="keyword">new</span> SinkFunction&lt;EVENT&gt;() &#123;</div><div class="line"></div><div class="line">                        <span class="keyword">private</span> LogPosition lastPosition;</div><div class="line"></div><div class="line">                        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">sink</span><span class="params">(EVENT event)</span> </span>&#123;</div><div class="line">                            <span class="keyword">try</span> &#123;</div><div class="line">                                CanalEntry.Entry entry = parseAndProfilingIfNecessary(event);</div><div class="line"></div><div class="line">                                <span class="keyword">if</span> (!running) &#123;</div><div class="line">                                    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">                                &#125;</div><div class="line"></div><div class="line">                                <span class="keyword">if</span> (entry != <span class="keyword">null</span>) &#123;</div><div class="line">                                    exception = <span class="keyword">null</span>; <span class="comment">// 有正常数据流过，清空exception</span></div><div class="line">                                    transactionBuffer.add(entry);</div><div class="line">                                    <span class="comment">// 记录一下对应的positions</span></div><div class="line">                                    <span class="keyword">this</span>.lastPosition = buildLastPosition(entry);</div><div class="line">                                    <span class="comment">// 记录一下最后一次有数据的时间</span></div><div class="line">                                    lastEntryTime = System.currentTimeMillis();</div><div class="line">                                &#125;</div><div class="line">                                <span class="keyword">return</span> running;</div><div class="line">                            &#125; <span class="keyword">catch</span> (TableIdNotFoundException e) &#123;</div><div class="line">                                <span class="keyword">throw</span> e;</div><div class="line">                            &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">                                <span class="comment">// 记录一下，出错的位点信息</span></div><div class="line">                                processError(e,</div><div class="line">                                    <span class="keyword">this</span>.lastPosition,</div><div class="line">                                    startPosition.getJournalName(),</div><div class="line">                                    startPosition.getPosition());</div><div class="line">                                <span class="keyword">throw</span> <span class="keyword">new</span> CanalParseException(e); <span class="comment">// 继续抛出异常，让上层统一感知</span></div><div class="line">                            &#125;</div><div class="line">                        &#125;</div><div class="line"></div><div class="line">                    &#125;;</div><div class="line"></div><div class="line">                    <span class="comment">// 4. 开始dump数据</span></div><div class="line">                    <span class="keyword">if</span> (StringUtils.isEmpty(startPosition.getJournalName()) &amp;&amp; startPosition.getTimestamp() != <span class="keyword">null</span>) &#123;</div><div class="line">                        erosaConnection.dump(startPosition.getTimestamp(), sinkHandler);</div><div class="line">                    &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        erosaConnection.dump(startPosition.getJournalName(),</div><div class="line">                            startPosition.getPosition(),</div><div class="line">                            sinkHandler);</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                &#125; <span class="keyword">catch</span> (TableIdNotFoundException e) &#123;</div><div class="line">                    exception = e;</div><div class="line">                    <span class="comment">// 特殊处理TableIdNotFound异常,出现这样的异常，一种可能就是起始的position是一个事务当中，导致tablemap</span></div><div class="line">                    <span class="comment">// Event时间没解析过</span></div><div class="line">                    needTransactionPosition.compareAndSet(<span class="keyword">false</span>, <span class="keyword">true</span>);</div><div class="line">                    logger.error(String.format(<span class="string">"dump address %s has an error, retrying. caused by "</span>,</div><div class="line">                        runningInfo.getAddress().toString()), e);</div><div class="line">                &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">                    exception = e;</div><div class="line">                    <span class="keyword">if</span> (!running) &#123;</div><div class="line">                        <span class="keyword">if</span> (!(e <span class="keyword">instanceof</span> java.nio.channels.ClosedByInterruptException || e.getCause() <span class="keyword">instanceof</span> java.nio.channels.ClosedByInterruptException)) &#123;</div><div class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> CanalParseException(String.format(<span class="string">"dump address %s has an error, retrying. "</span>,</div><div class="line">                                runningInfo.getAddress().toString()), e);</div><div class="line">                        &#125;</div><div class="line">                    &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        logger.error(String.format(<span class="string">"dump address %s has an error, retrying. caused by "</span>,</div><div class="line">                            runningInfo.getAddress().toString()), e);</div><div class="line">                        sendAlarm(destination, ExceptionUtils.getFullStackTrace(e));</div><div class="line">                    &#125;</div><div class="line">                &#125; <span class="keyword">finally</span> &#123;</div><div class="line">                    <span class="comment">// 关闭一下链接</span></div><div class="line">                    afterDump(erosaConnection);</div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        <span class="keyword">if</span> (erosaConnection != <span class="keyword">null</span>) &#123;</div><div class="line">                            erosaConnection.disconnect();</div><div class="line">                        &#125;</div><div class="line">                    &#125; <span class="keyword">catch</span> (IOException e1) &#123;</div><div class="line">                        <span class="keyword">if</span> (!running) &#123;</div><div class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> CanalParseException(String.format(<span class="string">"disconnect address %s has an error, retrying. "</span>,</div><div class="line">                                runningInfo.getAddress().toString()),</div><div class="line">                                e1);</div><div class="line">                        &#125; <span class="keyword">else</span> &#123;</div><div class="line">                            logger.error(<span class="string">"disconnect address &#123;&#125; has an error, retrying., caused by "</span>,</div><div class="line">                                runningInfo.getAddress().toString(),</div><div class="line">                                e1);</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// 出异常了，退出sink消费，释放一下状态</span></div><div class="line">                eventSink.interrupt();</div><div class="line">                transactionBuffer.reset();<span class="comment">// 重置一下缓冲队列，重新记录数据</span></div><div class="line">                binlogParser.reset();<span class="comment">// 重新置位</span></div><div class="line"></div><div class="line">                <span class="keyword">if</span> (running) &#123;</div><div class="line">                    <span class="comment">// sleep一段时间再进行重试</span></div><div class="line">                    <span class="keyword">try</span> &#123;</div><div class="line">                        Thread.sleep(<span class="number">10000</span> + RandomUtils.nextInt(<span class="number">10000</span>));</div><div class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">            MDC.remove(<span class="string">"destination"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    parseThread.setUncaughtExceptionHandler(handler);</div><div class="line">    parseThread.setName(String.format(<span class="string">"destination = %s , address = %s , EventParser"</span>,</div><div class="line">        destination,</div><div class="line">        runningInfo == <span class="keyword">null</span> ? <span class="keyword">null</span> : runningInfo.getAddress().toString()));</div><div class="line">    parseThread.start();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="EventSink设计"><a href="#EventSink设计" class="headerlink" title="EventSink设计"></a>EventSink设计</h2><h3 id="处理流程-1"><a href="#处理流程-1" class="headerlink" title="处理流程"></a>处理流程</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_sink.jpg" alt="EventSink"></p>
+<ul>
+<li>数据过滤：支持通配符的过滤模式，表名、字段内容等；</li>
+<li>数据路由/分发：解决1:n (1个parser对应多个store的模式)；</li>
+<li>数据归并：解决n:1 (多个parser对应1个store)；</li>
+<li>数据加工：在进入store之前进行额外的处理，比如join；</li>
+</ul>
+<h3 id="代码设计-1"><a href="#代码设计-1" class="headerlink" title="代码设计"></a>代码设计</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_sink_uml.jpg" alt="EventSink"></p>
+<h3 id="核心源码解析-1"><a href="#核心源码解析-1" class="headerlink" title="核心源码解析"></a>核心源码解析</h3><p>以下核心代码为EntryEventSink类的sinkData方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">sinkData</span><span class="params">(List&lt;CanalEntry.Entry&gt; entrys, InetSocketAddress remoteAddress)</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</div><div class="line">    <span class="keyword">boolean</span> hasRowData = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">boolean</span> hasHeartBeat = <span class="keyword">false</span>;</div><div class="line">    List&lt;Event&gt; events = <span class="keyword">new</span> ArrayList&lt;Event&gt;();</div><div class="line">    <span class="keyword">for</span> (CanalEntry.Entry entry : entrys) &#123;</div><div class="line">        Event event = <span class="keyword">new</span> Event(<span class="keyword">new</span> LogIdentity(remoteAddress, -<span class="number">1L</span>), entry);</div><div class="line">        <span class="keyword">if</span> (!doFilter(event)) &#123;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        events.add(event);</div><div class="line">        hasRowData |= (entry.getEntryType() == EntryType.ROWDATA);</div><div class="line">        hasHeartBeat |= (entry.getEntryType() == EntryType.HEARTBEAT);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (hasRowData) &#123;</div><div class="line">        <span class="comment">// 存在row记录</span></div><div class="line">        <span class="keyword">return</span> doSink(events);</div><div class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (hasHeartBeat) &#123;</div><div class="line">        <span class="comment">// 存在heartbeat记录，直接跳给后续处理</span></div><div class="line">        <span class="keyword">return</span> doSink(events);</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="comment">// 需要过滤的数据</span></div><div class="line">        <span class="keyword">if</span> (filterEmtryTransactionEntry &amp;&amp; !CollectionUtils.isEmpty(events)) &#123;</div><div class="line">            <span class="keyword">long</span> currentTimestamp = events.get(<span class="number">0</span>).getEntry().getHeader().getExecuteTime();</div><div class="line">            <span class="comment">// 基于一定的策略控制，放过空的事务头和尾，便于及时更新数据库位点，表明工作正常</span></div><div class="line">            <span class="keyword">if</span> (Math.abs(currentTimestamp - lastEmptyTransactionTimestamp) &gt; emptyTransactionInterval</div><div class="line">                || lastEmptyTransactionCount.incrementAndGet() &gt; emptyTransctionThresold) &#123;</div><div class="line">                lastEmptyTransactionCount.set(<span class="number">0L</span>);</div><div class="line">                lastEmptyTransactionTimestamp = currentTimestamp;</div><div class="line">                <span class="keyword">return</span> doSink(events);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 直接返回true，忽略空的事务头和尾</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="EventStore设计"><a href="#EventStore设计" class="headerlink" title="EventStore设计"></a>EventStore设计</h2><h3 id="处理流程-2"><a href="#处理流程-2" class="headerlink" title="处理流程"></a>处理流程</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_store.jpg" alt="EventStore"></p>
+<ul>
+<li>EventStore借鉴了Disruptor的RingBuffer的实现思路，定义了3个cursor：Put（Sink模块进行数据存储的最后一次写入位置）、Get（数据订阅获取的最后一次提取位置）、Ack（数据消费成功的最后一次消费位置）；</li>
+<li>目前仅实现了Memory内存模式，暂不支持文件等方式存储；</li>
+<li>这里Ack的设计主要是为了确保消息被客户端正常消费，当客户端调用rollback时，对应的Get会重置到Ack的位置；</li>
+</ul>
+<h3 id="代码设计-2"><a href="#代码设计-2" class="headerlink" title="代码设计"></a>代码设计</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/event_store_uml.jpg" alt="EventStore UML"></p>
+<h3 id="核心源码解析-2"><a href="#核心源码解析-2" class="headerlink" title="核心源码解析"></a>核心源码解析</h3><p>以下核心代码为MemoryEventStoreWithBuffer类的几个重要操作方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 执行具体的put操作</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doPut</span><span class="params">(List&lt;Event&gt; data)</span> </span>&#123;</div><div class="line">    <span class="keyword">long</span> current = putSequence.get();</div><div class="line">    <span class="keyword">long</span> end = current + data.size();</div><div class="line"></div><div class="line">    <span class="comment">// 先写数据，再更新对应的cursor,并发度高的情况，putSequence会被get请求可见，拿出了ringbuffer中的老的Entry值</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">long</span> next = current + <span class="number">1</span>; next &lt;= end; next++) &#123;</div><div class="line">        entries[getIndex(next)] = data.get((<span class="keyword">int</span>) (next - current - <span class="number">1</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    putSequence.set(end);</div><div class="line">    <span class="comment">// 记录一下gets memsize信息，方便快速检索</span></div><div class="line">    <span class="keyword">if</span> (batchMode.isMemSize()) &#123;</div><div class="line">        <span class="keyword">long</span> size = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (Event event : data) &#123;</div><div class="line">            size += calculateSize(event);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        putMemSize.getAndAdd(size);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// tell other threads that store is not empty</span></div><div class="line">    notEmpty.signal();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> Events&lt;Event&gt; <span class="title">doGet</span><span class="params">(Position start, <span class="keyword">int</span> batchSize)</span> <span class="keyword">throws</span> CanalStoreException </span>&#123;</div><div class="line">    LogPosition startPosition = (LogPosition) start;</div><div class="line"></div><div class="line">    <span class="keyword">long</span> current = getSequence.get();</div><div class="line">    <span class="keyword">long</span> maxAbleSequence = putSequence.get();</div><div class="line">    <span class="keyword">long</span> next = current;</div><div class="line">    <span class="keyword">long</span> end = current;</div><div class="line">    <span class="comment">// 如果startPosition为null，说明是第一次，默认+1处理</span></div><div class="line">    <span class="keyword">if</span> (startPosition == <span class="keyword">null</span> || !startPosition.getPostion().isIncluded()) &#123; <span class="comment">// 第一次订阅之后，需要包含一下start位置，防止丢失第一条记录</span></div><div class="line">        next = next + <span class="number">1</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (current &gt;= maxAbleSequence) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Events&lt;Event&gt;();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    Events&lt;Event&gt; result = <span class="keyword">new</span> Events&lt;Event&gt;();</div><div class="line">    List&lt;Event&gt; entrys = result.getEvents();</div><div class="line">    <span class="keyword">long</span> memsize = <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> (batchMode.isItemSize()) &#123;</div><div class="line">        end = (next + batchSize - <span class="number">1</span>) &lt; maxAbleSequence ? (next + batchSize - <span class="number">1</span>) : maxAbleSequence;</div><div class="line">        <span class="comment">// 提取数据并返回</span></div><div class="line">        <span class="keyword">for</span> (; next &lt;= end; next++) &#123;</div><div class="line">            Event event = entries[getIndex(next)];</div><div class="line">            <span class="keyword">if</span> (ddlIsolation &amp;&amp; isDdl(event.getEntry().getHeader().getEventType())) &#123;</div><div class="line">                <span class="comment">// 如果是ddl隔离，直接返回</span></div><div class="line">                <span class="keyword">if</span> (entrys.size() == <span class="number">0</span>) &#123;</div><div class="line">                    entrys.add(event);<span class="comment">// 如果没有DML事件，加入当前的DDL事件</span></div><div class="line">                    end = next; <span class="comment">// 更新end为当前</span></div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// 如果之前已经有DML事件，直接返回了，因为不包含当前next这记录，需要回退一个位置</span></div><div class="line">                    end = next - <span class="number">1</span>; <span class="comment">// next-1一定大于current，不需要判断</span></div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                entrys.add(event);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">long</span> maxMemSize = batchSize * bufferMemUnit;</div><div class="line">        <span class="keyword">for</span> (; memsize &lt;= maxMemSize &amp;&amp; next &lt;= maxAbleSequence; next++) &#123;</div><div class="line">            <span class="comment">// 永远保证可以取出第一条的记录，避免死锁</span></div><div class="line">            Event event = entries[getIndex(next)];</div><div class="line">            <span class="keyword">if</span> (ddlIsolation &amp;&amp; isDdl(event.getEntry().getHeader().getEventType())) &#123;</div><div class="line">                <span class="comment">// 如果是ddl隔离，直接返回</span></div><div class="line">                <span class="keyword">if</span> (entrys.size() == <span class="number">0</span>) &#123;</div><div class="line">                    entrys.add(event);<span class="comment">// 如果没有DML事件，加入当前的DDL事件</span></div><div class="line">                    end = next; <span class="comment">// 更新end为当前</span></div><div class="line">                &#125; <span class="keyword">else</span> &#123;</div><div class="line">                    <span class="comment">// 如果之前已经有DML事件，直接返回了，因为不包含当前next这记录，需要回退一个位置</span></div><div class="line">                    end = next - <span class="number">1</span>; <span class="comment">// next-1一定大于current，不需要判断</span></div><div class="line">                &#125;</div><div class="line">                <span class="keyword">break</span>;</div><div class="line">            &#125; <span class="keyword">else</span> &#123;</div><div class="line">                entrys.add(event);</div><div class="line">                memsize += calculateSize(event);</div><div class="line">                end = next;<span class="comment">// 记录end位点</span></div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    PositionRange&lt;LogPosition&gt; range = <span class="keyword">new</span> PositionRange&lt;LogPosition&gt;();</div><div class="line">    result.setPositionRange(range);</div><div class="line"></div><div class="line">    range.setStart(CanalEventUtils.createPosition(entrys.get(<span class="number">0</span>)));</div><div class="line">    range.setEnd(CanalEventUtils.createPosition(entrys.get(result.getEvents().size() - <span class="number">1</span>)));</div><div class="line">    <span class="comment">// 记录一下是否存在可以被ack的点</span></div><div class="line"></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = entrys.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; i--) &#123;</div><div class="line">        Event event = entrys.get(i);</div><div class="line">        <span class="keyword">if</span> (CanalEntry.EntryType.TRANSACTIONBEGIN == event.getEntry().getEntryType()</div><div class="line">            || CanalEntry.EntryType.TRANSACTIONEND == event.getEntry().getEntryType()</div><div class="line">            || isDdl(event.getEntry().getHeader().getEventType())) &#123;</div><div class="line">            <span class="comment">// 将事务头/尾设置可被为ack的点</span></div><div class="line">            range.setAck(CanalEventUtils.createPosition(event));</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (getSequence.compareAndSet(current, end)) &#123;</div><div class="line">        getMemSize.addAndGet(memsize);</div><div class="line">        notFull.signal();</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Events&lt;Event&gt;();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rollback</span><span class="params">()</span> <span class="keyword">throws</span> CanalStoreException </span>&#123;</div><div class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</div><div class="line">    lock.lock();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        getSequence.set(ackSequence.get());</div><div class="line">        getMemSize.set(ackMemSize.get());</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">ack</span><span class="params">(Position position)</span> <span class="keyword">throws</span> CanalStoreException </span>&#123;</div><div class="line">    cleanUntil(position);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cleanUntil</span><span class="params">(Position position)</span> <span class="keyword">throws</span> CanalStoreException </span>&#123;</div><div class="line">    <span class="keyword">final</span> ReentrantLock lock = <span class="keyword">this</span>.lock;</div><div class="line">    lock.lock();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">long</span> sequence = ackSequence.get();</div><div class="line">        <span class="keyword">long</span> maxSequence = getSequence.get();</div><div class="line"></div><div class="line">        <span class="keyword">boolean</span> hasMatch = <span class="keyword">false</span>;</div><div class="line">        <span class="keyword">long</span> memsize = <span class="number">0</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">long</span> next = sequence + <span class="number">1</span>; next &lt;= maxSequence; next++) &#123;</div><div class="line">            Event event = entries[getIndex(next)];</div><div class="line">            memsize += calculateSize(event);</div><div class="line">            <span class="keyword">boolean</span> match = CanalEventUtils.checkPosition(event, (LogPosition) position);</div><div class="line">            <span class="keyword">if</span> (match) &#123;<span class="comment">// 找到对应的position，更新ack seq</span></div><div class="line">                hasMatch = <span class="keyword">true</span>;</div><div class="line"></div><div class="line">                <span class="keyword">if</span> (batchMode.isMemSize()) &#123;</div><div class="line">                    ackMemSize.addAndGet(memsize);</div><div class="line">                    <span class="comment">// 尝试清空buffer中的内存，将ack之前的内存全部释放掉</span></div><div class="line">                    <span class="keyword">for</span> (<span class="keyword">long</span> index = sequence + <span class="number">1</span>; index &lt; next; index++) &#123;</div><div class="line">                        entries[getIndex(index)] = <span class="keyword">null</span>;<span class="comment">// 设置为null</span></div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line"></div><div class="line">                <span class="keyword">if</span> (ackSequence.compareAndSet(sequence, next)) &#123;<span class="comment">// 避免并发ack</span></div><div class="line">                    notFull.signal();</div><div class="line">                    <span class="keyword">return</span>;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!hasMatch) &#123;<span class="comment">// 找不到对应需要ack的position</span></div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> CanalStoreException(<span class="string">"no match ack position"</span> + position.toString());</div><div class="line">        &#125;</div><div class="line">    &#125; <span class="keyword">finally</span> &#123;</div><div class="line">        lock.unlock();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Instance设计"><a href="#Instance设计" class="headerlink" title="Instance设计"></a>Instance设计</h2><h3 id="代码设计-3"><a href="#代码设计-3" class="headerlink" title="代码设计"></a>代码设计</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_instance.jpg" alt="Canal Instance"></p>
+<h3 id="核心源码解析-3"><a href="#核心源码解析-3" class="headerlink" title="核心源码解析"></a>核心源码解析</h3><p>CanalInstance的设计比较简单，主要是包含了上述三个组件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"> * 代表单个canal实例，比如一个destination会独立一个实例</div><div class="line"> */</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CanalInstance</span> <span class="keyword">extends</span> <span class="title">CanalLifeCycle</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function">String <span class="title">getDestination</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function">CanalEventParser <span class="title">getEventParser</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function">CanalEventSink <span class="title">getEventSink</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function">CanalEventStore <span class="title">getEventStore</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function">CanalMetaManager <span class="title">getMetaManager</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="function">CanalAlarmHandler <span class="title">getAlarmHandler</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 客户端发生订阅/取消订阅行为</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">subscribeChange</span><span class="params">(ClientIdentity identity)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Servers设计"><a href="#Servers设计" class="headerlink" title="Servers设计"></a>Servers设计</h2><h3 id="代码设计-4"><a href="#代码设计-4" class="headerlink" title="代码设计"></a>代码设计</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/canal_server.jpg" alt="Canal Server"></p>
+<h3 id="netty"><a href="#netty" class="headerlink" title="netty"></a>netty</h3><p>Canal Server是基于netty和protobuf实现的，netty是一个很流行的nio框架，其官网描述为：</p>
+<blockquote>
+<p>Netty is a NIO client server framework which enables quick and easy development of network applications such as protocol servers and clients. It greatly simplifies and streamlines network programming such as TCP and UDP socket server.</p>
+</blockquote>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/3_midware_canal/netty.jpg" alt="netty"></p>
+<ul>
+<li>client 传递过来的消息会有个Channel对象接收，然后产生一个Channel事件，并发送到ChannelPipeline。</li>
+<li>ChannelPipeline会选择一个ChannelHandler进行处理。</li>
+<li>ChannelHandler处理之后，可能会产生新的ChannelEvent，并流转到下一个ChannelHandler。</li>
+</ul>
+<h3 id="protobuf"><a href="#protobuf" class="headerlink" title="protobuf"></a>protobuf</h3><p>protobuf是Google开发的一种数据描述语言语言，能够将结构化的数据序列化，可用于数据存储，通信协议等方面，官方版本支持C++、Java、Python，社区版本支持更多语言。相对于JSON和XML具有以下优点：</p>
+<ul>
+<li>简洁；</li>
+<li>体积小：消息大小只需要XML的1/10 ~ 1/3；</li>
+<li>速度快：解析速度比XML快20 ~ 100倍；</li>
+<li>使用Protobuf的编译器，可以生成更容易在编程中使用的数据访问代码；</li>
+<li>更好的兼容性，Protobuf设计的一个原则就是要能够很好的支持向下或向上兼容；</li>
+</ul>
+<p>Canal主要包含以下两个protobuf定义：<a href="https://github.com/alibaba/canal/blob/master/protocol/src/main/java/com/alibaba/otter/canal/protocol/CanalProtocol.proto" target="_blank" rel="external">CanalProtocol.proto</a> 和  <a href="https://github.com/alibaba/canal/blob/master/protocol/src/main/java/com/alibaba/otter/canal/protocol/EntryProtocol.proto" target="_blank" rel="external">EntryProtocol.proto</a></p>
+<h3 id="核心源码解析-4"><a href="#核心源码解析-4" class="headerlink" title="核心源码解析"></a>核心源码解析</h3><p>以下核心源码为CanalServerWithNetty类的start方法，其中piplines包含了四个Handler，最主要的Handler为SessionHandler。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="keyword">super</span>.start();</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (!embeddedServer.isStart()) &#123;</div><div class="line">        embeddedServer.start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">this</span>.bootstrap = <span class="keyword">new</span> ServerBootstrap(<span class="keyword">new</span> NioServerSocketChannelFactory(Executors.newCachedThreadPool(),</div><div class="line">        Executors.newCachedThreadPool()));</div><div class="line"></div><div class="line">    <span class="comment">// 构造对应的pipeline</span></div><div class="line">    bootstrap.setPipelineFactory(<span class="keyword">new</span> ChannelPipelineFactory() &#123;</div><div class="line"></div><div class="line">        <span class="function"><span class="keyword">public</span> ChannelPipeline <span class="title">getPipeline</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</div><div class="line">            ChannelPipeline pipelines = Channels.pipeline();</div><div class="line">            pipelines.addLast(FixedHeaderFrameDecoder.class.getName(), <span class="keyword">new</span> FixedHeaderFrameDecoder());</div><div class="line">            pipelines.addLast(HandshakeInitializationHandler.class.getName(), <span class="keyword">new</span> HandshakeInitializationHandler());</div><div class="line">            pipelines.addLast(ClientAuthenticationHandler.class.getName(),</div><div class="line">                <span class="keyword">new</span> ClientAuthenticationHandler(embeddedServer));</div><div class="line"></div><div class="line">            SessionHandler sessionHandler = <span class="keyword">new</span> SessionHandler(embeddedServer);</div><div class="line">            pipelines.addLast(SessionHandler.class.getName(), sessionHandler);</div><div class="line">            <span class="keyword">return</span> pipelines;</div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line"></div><div class="line">    <span class="comment">// 启动</span></div><div class="line">    <span class="keyword">if</span> (StringUtils.isNotEmpty(ip)) &#123;</div><div class="line">        <span class="keyword">this</span>.serverChannel = bootstrap.bind(<span class="keyword">new</span> InetSocketAddress(<span class="keyword">this</span>.ip, <span class="keyword">this</span>.port));</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">this</span>.serverChannel = bootstrap.bind(<span class="keyword">new</span> InetSocketAddress(<span class="keyword">this</span>.port));</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Client设计"><a href="#Client设计" class="headerlink" title="Client设计"></a>Client设计</h2><h3 id="核心源码解析-5"><a href="#核心源码解析-5" class="headerlink" title="核心源码解析"></a>核心源码解析</h3><p>Canal Client支持对Server集群的处理，其是基于zk来实现的。对于Client最主要是负责封装请求发送给Server处理，以下为SimpleCanalConnector类的getWithoutAck方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> Message <span class="title">getWithoutAck</span><span class="params">(<span class="keyword">int</span> batchSize, Long timeout, TimeUnit unit)</span> <span class="keyword">throws</span> CanalClientException </span>&#123;</div><div class="line">    waitClientRunning();</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        <span class="keyword">int</span> size = (batchSize &lt;= <span class="number">0</span>) ? <span class="number">1000</span> : batchSize;</div><div class="line">        <span class="keyword">long</span> time = (timeout == <span class="keyword">null</span> || timeout &lt; <span class="number">0</span>) ? -<span class="number">1</span> : timeout; <span class="comment">// -1代表不做timeout控制</span></div><div class="line">        <span class="keyword">if</span> (unit == <span class="keyword">null</span>) &#123;</div><div class="line">            unit = TimeUnit.MILLISECONDS;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        writeWithHeader(channel,</div><div class="line">            Packet.newBuilder()</div><div class="line">                .setType(PacketType.GET)</div><div class="line">                .setBody(Get.newBuilder()</div><div class="line">                    .setAutoAck(<span class="keyword">false</span>)</div><div class="line">                    .setDestination(clientIdentity.getDestination())</div><div class="line">                    .setClientId(String.valueOf(clientIdentity.getClientId()))</div><div class="line">                    .setFetchSize(size)</div><div class="line">                    .setTimeout(time)</div><div class="line">                    .setUnit(unit.ordinal())</div><div class="line">                    .build()</div><div class="line">                    .toByteString())</div><div class="line">                .build()</div><div class="line">                .toByteArray());</div><div class="line"></div><div class="line">        <span class="keyword">return</span> receiveMessages();</div><div class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> CanalClientException(e);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Consumer样例代码"><a href="#Consumer样例代码" class="headerlink" title="Consumer样例代码"></a>Consumer样例代码</h2><p>我们的Consumer代码通过Client就可以向Canal Server获取binlog的Event进行增量消费了，以下是一个样例代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startClient</span><span class="params">()</span> </span>&#123;</div><div class="line">	<span class="keyword">for</span> (ZkClusterCanalConfig instance : canalInstances) &#123;</div><div class="line">		threadPool.execute(() -&gt; &#123;</div><div class="line">               Thread.currentThread().setName(Thread.currentThread().getName() + <span class="string">"-"</span> + instance.getDestination());</div><div class="line">               initConnector(instance);</div><div class="line">               <span class="keyword">while</span> (!threadPool.isShutdown() &amp;&amp; !threadPool.isTerminated()) &#123;</div><div class="line">                   <span class="keyword">try</span> &#123;</div><div class="line">                       handleCanalMessage(canalInstConnectors.get(instance.getDestination()), instance);</div><div class="line">                   &#125; <span class="keyword">catch</span> (CanalClientException e) &#123;</div><div class="line">                       reConnectCanal(instance);</div><div class="line">                   &#125;</div><div class="line">                   <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">                       <span class="keyword">try</span> &#123;</div><div class="line">                           Thread.sleep(<span class="number">1000</span>);</div><div class="line">                       &#125; <span class="keyword">catch</span> (InterruptedException ie) &#123;</div><div class="line">                           Thread.currentThread().interrupt();</div><div class="line">                       &#125;</div><div class="line">                   &#125;</div><div class="line">               &#125;</div><div class="line">		&#125;);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initConnector</span><span class="params">(ZkClusterCanalConfig instance)</span> </span>&#123;</div><div class="line">       CanalConnector canalConnector = CanalConnectors.newClusterConnector(instance.getZkAddress(), instance.getDestination(), instance.getUsername(), instance.getPassword());</div><div class="line">       canalConnector.connect();</div><div class="line">       canalConnector.subscribe(instance.getSubscribeChannel());</div><div class="line">       canalConnector.rollback();</div><div class="line">       canalInstConnectors.put(instance.getDestination(), canalConnector);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleCanalMessage</span><span class="params">(CanalConnector connector, CanalConfig config)</span> <span class="keyword">throws</span> CanalClientException</span>&#123;</div><div class="line">	<span class="keyword">long</span> batchId = <span class="number">0</span>;</div><div class="line">	<span class="keyword">try</span> &#123;</div><div class="line">		Message message = connector.getWithoutAck(config.getFetchSize(), <span class="number">10L</span>, TimeUnit.SECONDS); </div><div class="line">		batchId = message.getId();</div><div class="line">		<span class="keyword">int</span> size = message.getEntries().size();</div><div class="line">		<span class="keyword">if</span> (batchId &gt;= <span class="number">0</span> &amp;&amp; size &gt; <span class="number">0</span>) &#123;</div><div class="line">			List&lt;Entry&gt; entryList = message.getEntries();</div><div class="line">			<span class="keyword">for</span> (Entry entry : entryList) &#123;</div><div class="line">				handleEntry(entry);</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">       <span class="keyword">catch</span> (CanalClientException e) &#123;</div><div class="line">           <span class="keyword">throw</span> e;</div><div class="line">       &#125;</div><div class="line">	<span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">		logger.error(e.getMessage(), e);</div><div class="line">	&#125; <span class="keyword">finally</span> &#123;</div><div class="line">		connector.ack(batchId);</div><div class="line">	&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h1><ol>
+<li><a href="http://dev.mysql.com/doc/refman/5.7/en/binary-log.html" target="_blank" rel="external">MySQL 5.7 Reference Manual – The Binary Log</a></li>
+<li><a href="http://dev.mysql.com/doc/internals/en/binary-log.html" target="_blank" rel="external">MySQL Internals Manual – The Binary Log</a></li>
+<li><a href="http://dev.mysql.com/doc/refman/5.7/en/mysqlbinlog.html" target="_blank" rel="external">MySQL 5.7 Reference Manual – mysqlbinlog Utility for Processing Binary Log Files</a></li>
+<li><a href="https://github.com/alibaba/canal" target="_blank" rel="external">alibaba/canal – 阿里巴巴mysql数据库binlog的增量订阅&amp;消费组件</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Mysql/" rel="tag"># Mysql</a>
+          
+            <a href="/tags/Canal/" rel="tag"># Canal</a>
+          
+            <a href="/tags/binlog/" rel="tag"># binlog</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/java8_lambda_notes/" rel="prev" title="《Java 8函数式编程》读书笔记">
+                《Java 8函数式编程》读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/learning_canal/"
+           data-title="Mysql增量订阅和消费组件Canal学习小记" data-url="http://ginobefunny.com/post/learning_canal/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Mysql的二进制日志（binlog）？"><span class="nav-number">1.</span> <span class="nav-text">什么是Mysql的二进制日志（binlog）？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是Canal？"><span class="nav-number">2.</span> <span class="nav-text">什么是Canal？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Canal的核心架构"><span class="nav-number">3.</span> <span class="nav-text">Canal的核心架构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体架构"><span class="nav-number">3.1.</span> <span class="nav-text">整体架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventParser设计"><span class="nav-number">3.2.</span> <span class="nav-text">EventParser设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理流程"><span class="nav-number">3.2.1.</span> <span class="nav-text">处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码设计"><span class="nav-number">3.2.2.</span> <span class="nav-text">代码设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心源码解析"><span class="nav-number">3.2.3.</span> <span class="nav-text">核心源码解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventSink设计"><span class="nav-number">3.3.</span> <span class="nav-text">EventSink设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理流程-1"><span class="nav-number">3.3.1.</span> <span class="nav-text">处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码设计-1"><span class="nav-number">3.3.2.</span> <span class="nav-text">代码设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心源码解析-1"><span class="nav-number">3.3.3.</span> <span class="nav-text">核心源码解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventStore设计"><span class="nav-number">3.4.</span> <span class="nav-text">EventStore设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理流程-2"><span class="nav-number">3.4.1.</span> <span class="nav-text">处理流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码设计-2"><span class="nav-number">3.4.2.</span> <span class="nav-text">代码设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心源码解析-2"><span class="nav-number">3.4.3.</span> <span class="nav-text">核心源码解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Instance设计"><span class="nav-number">3.5.</span> <span class="nav-text">Instance设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码设计-3"><span class="nav-number">3.5.1.</span> <span class="nav-text">代码设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心源码解析-3"><span class="nav-number">3.5.2.</span> <span class="nav-text">核心源码解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Servers设计"><span class="nav-number">3.6.</span> <span class="nav-text">Servers设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码设计-4"><span class="nav-number">3.6.1.</span> <span class="nav-text">代码设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#netty"><span class="nav-number">3.6.2.</span> <span class="nav-text">netty</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#protobuf"><span class="nav-number">3.6.3.</span> <span class="nav-text">protobuf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#核心源码解析-4"><span class="nav-number">3.6.4.</span> <span class="nav-text">核心源码解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Client设计"><span class="nav-number">3.7.</span> <span class="nav-text">Client设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心源码解析-5"><span class="nav-number">3.7.1.</span> <span class="nav-text">核心源码解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Consumer样例代码"><span class="nav-number">3.8.</span> <span class="nav-text">Consumer样例代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资源"><span class="nav-number">4.</span> <span class="nav-text">参考资源</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

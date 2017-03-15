@@ -1,0 +1,1122 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,读书笔记,JVM,垃圾收集,内存分配," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第二部分对应原书的第三章，主要介绍JVM的垃圾回收算法、实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略">
+<meta property="og:url" content="http://ginobefunny.com/post/deep_in_jvm_notes_part2/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第二部分对应原书的第三章，主要介绍JVM的垃圾回收算法、实现。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_roots_reference_chain.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_for_hotspot.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_serial.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_parnew.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_serial_old.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_parallel_old.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_cms.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_g1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_log.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param2.png">
+<meta property="og:updated_time" content="2017-01-31T09:49:23.821Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略">
+<meta name="twitter:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第二部分对应原书的第三章，主要介绍JVM的垃圾回收算法、实现。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_roots_reference_chain.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/deep_in_jvm_notes_part2/"/>
+
+
+
+
+
+  <title> 《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/deep_in_jvm_notes_part2/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-08T09:29:44+08:00">
+                2017-01-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>国内JVM相关书籍NO.1，Java程序员必读。读书笔记第二部分对应原书的第三章，主要介绍JVM的垃圾回收算法、实现。<br><a id="more"></a></p>
+<h2 id="第三章-垃圾收集器与内存分配策略"><a href="#第三章-垃圾收集器与内存分配策略" class="headerlink" title="第三章 垃圾收集器与内存分配策略"></a>第三章 垃圾收集器与内存分配策略</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>思考GC需要完成的3件事情：</p>
+<ul>
+<li>哪些内存需要回收？</li>
+<li>什么时候回收？</li>
+<li>如何回收？</li>
+</ul>
+<p>再回头看看第二章介绍的Java内存运行时区域的各个部分：</p>
+<ul>
+<li>程序计时器、虚拟机栈、本地方法栈：随线程而灭，栈帧随方法而进行出栈和入栈，每一个栈帧分配的内存在类结构确定就已知，因此这几个区域不需要考虑回收；</li>
+<li>对于Java堆和方法区，只有程序运行期间才知道会创建哪些对象，内存的分配和回收都是动态的，垃圾收集器所关注的是这部分内存；</li>
+</ul>
+<h4 id="对象已死吗？"><a href="#对象已死吗？" class="headerlink" title="对象已死吗？"></a>对象已死吗？</h4><p>在垃圾收集器进行回收前，第一件事就是确定这些对象哪些还存活，哪些已经死去。</p>
+<h4 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h4><p>给对象添加引用计数器，当有地方引用它时就加1，引用失效就减1，为0时就认为对象不再被使用可回收。该算法失效简单，判断高效，但并不被主流虚拟机采用，主要原因是它很难解决对象之间相互循环引用的问题。</p>
+<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p>通过一系列的称为“GC Roots”的对象作为起点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），如果一个对象到GC Roots没有引用链相连，则该对象是不可用的。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_roots_reference_chain.png" alt="可达性分析"></p>
+<p>在Java语言中，可作为GC Roots的对象包括：</p>
+<ul>
+<li>虚拟机栈（栈帧中的本地变量表）中引用的对象；</li>
+<li>方法区中类静态属性引用的对象；</li>
+<li>方法区中常量引用的对象；</li>
+<li>本地方法栈中JNI（即一般说的Native方法）引用的对象；</li>
+</ul>
+<h4 id="再谈引用"><a href="#再谈引用" class="headerlink" title="再谈引用"></a>再谈引用</h4><p>在JDK 1.2之后，Java对引用的概念进行了扩充，将引用分为强引用、软引用、弱引用和虚引用，这4种引用强度依次减弱。</p>
+<h4 id="生存还是死亡"><a href="#生存还是死亡" class="headerlink" title="生存还是死亡"></a>生存还是死亡</h4><p>要真正宣告一个对象死亡，至少要经历两次标记过程：如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行finalize方法（如没有重写finalize方法或者已经被调用过则认为没有必要执行）；如果有必要执行则将该对象放置在F-Queue队列中，并在稍后由一个由虚拟机自己建立的、低优先级的Finalizer线程去执行它；稍后GC将对F-Queue中的对象进行第二次标记，如果对象还是没有被引用，则会被回收。</p>
+<p>但是作者不建议通过finalize方法“拯救”对象，因为它运行代价高、不确定性大、无法保证各个对象的调用顺序。</p>
+<h4 id="回收方法区"><a href="#回收方法区" class="headerlink" title="回收方法区"></a>回收方法区</h4><p>永久代的垃圾收集主要回收两部分内容：废弃常量和无用的类。</p>
+<p>一个无用的类需要满足以下三个条件：</p>
+<ul>
+<li>该类的所有实例都已经被回收；</li>
+<li>加载该类的ClassLoader已经被回收；</li>
+<li>该类对象的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法；</li>
+</ul>
+<p>在大量使用反射、动态代理、CGLib等ByteCode框架、动态生成JSP以及OSGI这类频繁自定义ClassLoader的场景都需要虚拟机具备类卸载的功能（HotSpot提供-Xnoclassgc参数控制），以保证永久代不会溢出。</p>
+<h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><ul>
+<li>标记-清除算法：首先标记出所有需要回收的对象，然后统一回收所有被标记的对象；缺点是效率不高且容易产生大量不连续的内存碎片；</li>
+<li>复制算法：将可用内存分为大小相等的两块，每次只使用其中一块；当这一块用完了，就将还活着的对象复制到另一块上，然后把已使用过的内存清理掉。在HotSpot里，考虑到大部分对象存活时间很短将内存分为Eden和两块Survivor，默认比例为8:1:1。代价是存在部分内存空间浪费，适合在新生代使用；</li>
+<li>标记-整理算法：首先标记出所有需要回收的对象，然后让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存。适用于老年代。</li>
+<li>分代收集算法：一般把Java堆分新生代和老年代，在新生代用复制算法，在老年代用标记-清理或标记-整理算法，是现代虚拟机通常采用的算法。</li>
+</ul>
+<h3 id="HotSpot的算法实现"><a href="#HotSpot的算法实现" class="headerlink" title="HotSpot的算法实现"></a>HotSpot的算法实现</h3><h4 id="枚举根节点"><a href="#枚举根节点" class="headerlink" title="枚举根节点"></a>枚举根节点</h4><ul>
+<li>由于要确保在一致性的快照中进行可达性分析，从而导致GC进行时必须要停顿所有Java执行线程；</li>
+<li>在HotSpot里通过一组OopMap数据结构来知道哪些地方存放着对象引用；</li>
+</ul>
+<h4 id="安全点"><a href="#安全点" class="headerlink" title="安全点"></a>安全点</h4><ul>
+<li>HotSpot只在特定的位置记录了OopMap，这些位置称为安全点（SafePoint）；</li>
+<li>即程序执行时并非在所有地方都能停顿下来开始GC，只有到达安全点时才能暂停；</li>
+<li>对于安全点基本上是以程序“是否具有让程序长时间执行的特征”（比如方法调用、循环跳转、异常跳转等）为标准进行选定的；</li>
+<li>另外还需要考虑如果在GC时让所有线程都跑到最近的安全点上，有两种方案：抢先式中断和主动式中断（主流选择）；</li>
+</ul>
+<h4 id="安全区域"><a href="#安全区域" class="headerlink" title="安全区域"></a>安全区域</h4><ul>
+<li>如果程序没有分配CPU时间（如线程处于Sleep或Blocked），此时就需要安全区域（Safe Region），其是指在一段代码片段之中，引用关系不会发生变化；</li>
+<li>线程执行到安全区域时，首先标识自己已经进入了安全区域，这样JVM在GC时就不管这些线程了；</li>
+</ul>
+<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><ul>
+<li>垃圾收集算法是内存回收的方法论，垃圾收集器就是内存回收的具体实现。</li>
+<li>这里讨论JDK 1.7 Update 14之后的HotSpot虚拟机（此时G1仍处于实验状态），包含的虚拟机如下图所示（存在连线的表示可以搭配使用）：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_for_hotspot.png" alt="HotSpot垃圾收集器"></p>
+<h4 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_serial.png" alt="Serial收集器"></p>
+<ul>
+<li>最基本、发展历史最悠久，在JDK 1.3之前是新生代收集的唯一选择；</li>
+<li>是一个单线程（并非指一个收集线程，而是会暂停索引工作线程）的收集器；</li>
+<li>现在依然是虚拟机运行在Client模式下的默认新生代收集器，主要就是因为它简单而高效（没有线程交互的开销）；</li>
+</ul>
+<h4 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_parnew.png" alt="ParNew收集器"></p>
+<ul>
+<li>其实就是Serial收集器的多线程版本；</li>
+<li>ParNew收集器在单CPU环境中绝对不会有比Serial收集器更好的效果；</li>
+<li>是许多运行在Server模式下虚拟机首选的新生代收集器，重要原因就是除了Serial收集器外，只有它能与CMS收集器配合工作；</li>
+<li>并行（Parallel）：指多条垃圾收集线程并行工作，但此时用户线程仍处于等待状态；</li>
+<li>并发（Concurrent）：指用户线程与垃圾收集线程同时执行，用户线程在继续执行而垃圾收集程序运行在另外一个CPU上；</li>
+</ul>
+<h4 id="Parallel-Scavenge收集器"><a href="#Parallel-Scavenge收集器" class="headerlink" title="Parallel Scavenge收集器"></a>Parallel Scavenge收集器</h4><ul>
+<li>新生代收集器，使用复制算法，并行的多线程收集器；</li>
+<li>与其他收集器关注于尽可能缩短垃圾收集时用户线程停顿时间不同，它的目标是达到一个可控制的吞吐量；</li>
+<li>高吞吐量可以高效率利用CPU时间，适合在后台运算而不需要太多交互的任务；</li>
+<li>-XX:MaxGCPauseMillis参数可以设置最大停顿时间，而停顿时间缩短是以牺牲吞吐量和新生代空间来换取的；</li>
+<li>另外它还支持GC自适应的调节策略；</li>
+</ul>
+<h4 id="Serial-Old收集器"><a href="#Serial-Old收集器" class="headerlink" title="Serial Old收集器"></a>Serial Old收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_serial_old.png" alt="Serial Old收集器"></p>
+<ul>
+<li>是Serial收集器的老年代版本，同样是单线程，使用标记-整理算法；</li>
+<li>主要是给Client模式下的虚拟机使用的；</li>
+<li>在Server模式下主要是给JDK 1.5及之前配合Parallel Scavenge使用或作为CMS收集器的后备预案；</li>
+</ul>
+<h4 id="Parallel-Old收集器"><a href="#Parallel-Old收集器" class="headerlink" title="Parallel Old收集器"></a>Parallel Old收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_parallel_old.png" alt="Parallel Old收集器"></p>
+<ul>
+<li>是Parallel Scavenge的老年代版本，使用多线程和标记-整理算法；</li>
+<li>是JDK 1.6中才开始提供的；</li>
+</ul>
+<h4 id="CMS收集器"><a href="#CMS收集器" class="headerlink" title="CMS收集器"></a>CMS收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_cms.png" alt="CMS收集器"></p>
+<ul>
+<li>是一种以获取最短回收停顿时间为目标的收集器，特别适合互联网站或者B/S的服务端；</li>
+<li>主要包括4个步骤：初始标记、并发标记、重新标记和并发清除；</li>
+<li>还有3个明显的缺点：CMS收集器对CPU非常敏感、无法处理浮动垃圾、大量内存碎片产生；</li>
+</ul>
+<h4 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_g1.png" alt="G1收集器"></p>
+<ul>
+<li>一款面向服务端应用的垃圾收集器，后续会替换掉CMS垃圾收集器；</li>
+<li>特点：并行与并发（充分利用多核多CPU缩短Stop-The-World时间）、分代收集（独立管理整个Java堆，但针对不同年龄的对象采取不同的策略）、空间整合（基于标记-整理）、可预测的停顿（将堆分为大小相等的独立区域，避免全区域的垃圾收集）；</li>
+<li>关于Region：新生代和老年代不再物理隔离，只是部分Region的集合；G1跟踪各个Region垃圾堆积的价值大小，在后台维护一个优先列表，根据允许的收集时间优先回收价值最大的Region；Region之间的对象引用以及其他收集器中的新生代与老年代之间的对象引用，采用Remembered Set来避免全堆扫描；</li>
+<li>分为几个步骤：初始标记（标记一下GC Roots能直接关联的对象并修改TAMS值，需要STW但耗时很短）、并发标记（从GC Root从堆中对象进行可达性分析找存活的对象，耗时较长但可以与用户线程并发执行）、最终标记（为了修正并发标记期间产生变动的那一部分标记记录，这一期间的变化记录在Remembered Set Log里，然后合并到Remembered Set里，该阶段需要STW但是可并行执行）、筛选回收（对各个Region回收价值排序，根据用户期望的GC停顿时间制定回收计划来回收）；</li>
+</ul>
+<h4 id="理解GC日志"><a href="#理解GC日志" class="headerlink" title="理解GC日志"></a>理解GC日志</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_log.png" alt="GC日志"></p>
+<ul>
+<li>最前面的数字代表GC发生的时间（虚拟机启动以后的秒杀）；</li>
+<li>“[GC”和“[Full GC”说明停顿类型，有Full代表的是Stop-The-World的；</li>
+<li>“[DefNew”、“[Tenured”和“[Perm”表示GC发生的区域；</li>
+<li>方括号内部的“3324K -&gt; 152K(3712K)” 含义是 “GC前该内存已使用容量 -&gt; GC后该内存区域已使用容量(该区域总容量)”;</li>
+<li>方括号之外的“3324K -&gt; 152K(11904)” 含义是 “GC前Java堆已使用容量 -&gt; GC后Java堆已使用容量(Java堆总容量)”;</li>
+<li>再往后“0.0025925 secs”表示该内存区域GC所占用的时间；</li>
+</ul>
+<h4 id="垃圾收集器参数总结"><a href="#垃圾收集器参数总结" class="headerlink" title="垃圾收集器参数总结"></a>垃圾收集器参数总结</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param1.png" alt="垃圾收集器参数1"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param2.png" alt="垃圾收集器参数2"></p>
+<h3 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h3><ul>
+<li>对象优先在新生代分配</li>
+<li>大对象直接进入老年代</li>
+<li>长期存活的对象将进入老年代</li>
+<li>动态对象年龄判断：如果在Survivor空间中相同年龄所有对象大小总和大于Survivor空间的一半，大于或等于该年龄的对象直接进入老年代；</li>
+<li>空间分配担保：发生Minor GC前，虚拟机会先检查老年代最大可用连续空间是否大于新生代所有对象总空间，如果不成立，虚拟机会查看HandlePromotionFailure设置值是否允许担保失败，如果允许继续检查老年代最大可用的连续空间是否大于历次晋升到老年代的平均大小，如果大于会尝试进行一次Minor GC；如果小于或者不允许冒险，会进行一次Full GC；</li>
+</ul>
+<h3 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h3><p>本章介绍了垃圾回收算法、几款JDK 1.7中提供的垃圾收集器特点以及运作原理。内存回收与垃圾收集器在很多时候都是影响系统性能、并发能力的主要因素之一，然而没有固定收集器和参数组合，也没有最优的调优方法，需要根据实践了解各自的行为、优势和劣势。</p>
+<p><strong>系列读书笔记</strong></p>
+<ul>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part1">《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part2">《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part3">《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part4">《深入理解Java虚拟机》读书笔记4：类文件结构</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part5">《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part6">《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part7">《深入理解Java虚拟机》读书笔记7：高效并发</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+            <a href="/tags/垃圾收集/" rel="tag"># 垃圾收集</a>
+          
+            <a href="/tags/内存分配/" rel="tag"># 内存分配</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/deep_in_jvm_notes_part1/" rel="next" title="《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常">
+                <i class="fa fa-chevron-left"></i> 《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/deep_in_jvm_notes_part3/" rel="prev" title="《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战">
+                《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/deep_in_jvm_notes_part2/"
+           data-title="《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略" data-url="http://ginobefunny.com/post/deep_in_jvm_notes_part2/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第三章-垃圾收集器与内存分配策略"><span class="nav-text">第三章 垃圾收集器与内存分配策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对象已死吗？"><span class="nav-text">对象已死吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#引用计数算法"><span class="nav-text">引用计数算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#可达性分析算法"><span class="nav-text">可达性分析算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#再谈引用"><span class="nav-text">再谈引用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生存还是死亡"><span class="nav-text">生存还是死亡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#回收方法区"><span class="nav-text">回收方法区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集算法"><span class="nav-text">垃圾收集算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HotSpot的算法实现"><span class="nav-text">HotSpot的算法实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#枚举根节点"><span class="nav-text">枚举根节点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安全点"><span class="nav-text">安全点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安全区域"><span class="nav-text">安全区域</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#垃圾收集器"><span class="nav-text">垃圾收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Serial收集器"><span class="nav-text">Serial收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ParNew收集器"><span class="nav-text">ParNew收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Parallel-Scavenge收集器"><span class="nav-text">Parallel Scavenge收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Serial-Old收集器"><span class="nav-text">Serial Old收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Parallel-Old收集器"><span class="nav-text">Parallel Old收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#CMS收集器"><span class="nav-text">CMS收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#G1收集器"><span class="nav-text">G1收集器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#理解GC日志"><span class="nav-text">理解GC日志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#垃圾收集器参数总结"><span class="nav-text">垃圾收集器参数总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#内存分配与回收策略"><span class="nav-text">内存分配与回收策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本章小结"><span class="nav-text">本章小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

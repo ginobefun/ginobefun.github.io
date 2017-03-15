@@ -1,0 +1,1288 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Spring,Spring Framework,一起读文档," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="主要包括Spring Framework的介绍、快速入门、模块体系以及4.x各个版本的新特性和改进。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一起读Spring Framework文档（1）：概述与新特性">
+<meta property="og:url" content="http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="主要包括Spring Framework的介绍、快速入门、模块体系以及4.x各个版本的新特性和改进。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_modules.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_web.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_other_web_framework.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_remoting.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_ejb.png">
+<meta property="og:updated_time" content="2017-01-18T08:50:06.921Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一起读Spring Framework文档（1）：概述与新特性">
+<meta name="twitter:description" content="主要包括Spring Framework的介绍、快速入门、模块体系以及4.x各个版本的新特性和改进。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_modules.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/"/>
+
+
+
+
+
+  <title> 一起读Spring Framework文档（1）：概述与新特性 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                一起读Spring Framework文档（1）：概述与新特性
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-29T10:15:49+08:00">
+                2016-12-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index">
+                    <span itemprop="name">Spring</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>主要包括Spring Framework的介绍、快速入门、模块体系以及4.x各个版本的新特性和改进。<br><a id="more"></a></p>
+<p><strong>阅读说明：</strong></p>
+<ol>
+<li>Spring经过多年的发展，现在已经有多个成熟的项目，包括Spring Framework、Spring Boot、Spring Cloud、Spring Data等，但是大家最熟知的应该还是Spring Framework，在这一系列的博文中，如无特殊说明，Spring指的皆为Spring Framework；</li>
+<li>Spring中很大一部分我没有用过，在笔记中可能存在错误描述，欢迎指正。另外如果有些词不好翻译，会保留英文单词；</li>
+<li>该笔记阅读的文档是Spring最新的4.3.5版本，官网地址可能随着新版本的发布而替换；</li>
+<li>部分内容会因为个人喜好进行增减，如需完整阅读，可以阅读官网原文。</li>
+</ol>
+<h1 id="第一部分-Spring概述"><a href="#第一部分-Spring概述" class="headerlink" title="第一部分 Spring概述"></a>第一部分 Spring概述</h1><ul>
+<li>轻量级的开源框架；</li>
+<li>潜在的一站式企业级应用开发解决方案；</li>
+<li>模块化的设计；</li>
+<li>非侵入式的设计；</li>
+<li>支持声明式的事务管理；</li>
+<li>提供全功能的MVC框架；</li>
+<li>能将AOP透明地集成；</li>
+</ul>
+<h2 id="1-Spring快速入门"><a href="#1-Spring快速入门" class="headerlink" title="1. Spring快速入门"></a>1. Spring快速入门</h2><p>Spring Framework Reference主要介绍的是框架的详细信息，如果是新手，建议从官的<a href="https://spring.io/guides" target="_blank" rel="external">Guides</a>的实例入手（比如<a href="https://spring.io/guides/tutorials/bookmarks/" target="_blank" rel="external">Building REST services with Spring</a>这个就超级棒），这些实例很多都是基于Spring Boot来运行。</p>
+<h2 id="2-Spring介绍"><a href="#2-Spring介绍" class="headerlink" title="2. Spring介绍"></a>2. Spring介绍</h2><p>Spring为开发Java提供了基础架构的支持，基于普通的POJO使得开发J2EE更加轻松。</p>
+<h3 id="2-1-依赖注入和控制反转"><a href="#2-1-依赖注入和控制反转" class="headerlink" title="2.1 依赖注入和控制反转"></a>2.1 依赖注入和控制反转</h3><p>通常一个Java程序包含了大量的对象需要管理，而这些对象之间又存在各种依赖关系。这时虽然一些设计模式如工厂模式、构造器、服务定位的方式可以采用，但是更好的方式利用一个统一的模式：我们只需描述是什么以及在哪里使用即可，剩下的一起交给框架去实现。</p>
+<p>Spring的控制反转组件（<em>Inversion of Control, IOC</em>）开箱即用，其通过一系列的组件来形成统一的模式来实现。Spring的IOC是Spring最经典的设计之一，越来越多的公司采用这种方案。</p>
+<p>关于IOC，应该读读Martin Fowler大神的《<a href="http://martinfowler.com/articles/injection.html" target="_blank" rel="external">Inversion of Control Containers and the Dependency Injection pattern</a>》一文。</p>
+<h3 id="2-2-Spring的模块"><a href="#2-2-Spring的模块" class="headerlink" title="2.2 Spring的模块"></a>2.2 Spring的模块</h3><p>Spring现在已经发展到包括大约20个模块，按功能可分为：核心容器、数据访问与集成、Web开发、面向切面（AOP）、类代理、消息和测试，整体框架图如下所示：</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_modules.png" alt="Spring Modules"></p>
+<h4 id="2-2-1-核心容器"><a href="#2-2-1-核心容器" class="headerlink" title="2.2.1 核心容器"></a>2.2.1 核心容器</h4><ul>
+<li><strong>spring-core</strong>和<strong>spring-beans</strong>是Spring最基础的模块，提供了控制反转（IOC）和依赖注入（DI）特性。<strong>BeanFactory</strong>接口解耦了程序中的配置和依赖关系。</li>
+<li><strong>spring-context</strong>使得访问对象更加便捷，还增加了对国际化、事件传播、资源加载的支持，以及透明化创建上下文的能力。<strong>ApplicationContext</strong>是该模块的核心接口。</li>
+<li><strong>spring-context-support</strong>提供了常见的第三方库集成到Spring上下文的支持，如缓存（EhCache, Guava, JCache）、通知（JavaMail）、调度（CommonJ, Quartz）和模板引擎（FreeMarker, JasperReports, Velocity）。</li>
+<li><strong>spring-expression</strong>提供了一个强大的表达式语言（EL）来查询和操作运行时的对象图。该表达式语言支持属性赋值、方法调用、访问集合、算术和逻辑运算等能力。</li>
+</ul>
+<h4 id="2-2-2-AOP和类代理（Instrumentation）"><a href="#2-2-2-AOP和类代理（Instrumentation）" class="headerlink" title="2.2.2 AOP和类代理（Instrumentation）"></a>2.2.2 AOP和类代理（Instrumentation）</h4><ul>
+<li><strong>spring-aop</strong>提供了面向切面编程（<em>Aspect Oriented Programming, AOP</em>）的能力，利用方法拦截器和切入点能使原始方法和新的逻辑完全分离。使用源码级的元数据功能，还可以将行为信息合并到你的代码中。</li>
+<li><strong>spring-aspects</strong>集成了AspectJ（另外一个流行的AOP利器）；</li>
+<li><strong>spring-instrument</strong>为应用服务器提供了类代理支持（<em>注：这个地方叫做类代码不知道正确与否，主要是参考了<a href="https://www.ibm.com/developerworks/cn/java/j-lo-jse61/" target="_blank" rel="external">Java SE 6 新特性: Instrumentation 新功能</a>一文 随着后面的阅读再来更正</em>）和类加载器实现。</li>
+<li><strong>spring-instrument-tomcat</strong>模块是为Tomcat服务器实现的类代理。</li>
+</ul>
+<h4 id="2-2-3-消息"><a href="#2-2-3-消息" class="headerlink" title="2.2.3 消息"></a>2.2.3 消息</h4><p><strong>spring-messaging</strong>模块为信息通信处理提供了一套包含抽象概念的实现，包括<em>Message</em>，<em>MessageChannel</em>，<em>MessageHandler</em>等，另外还提供了一些易用的注解。</p>
+<h4 id="2-2-4-数据访问与集成"><a href="#2-2-4-数据访问与集成" class="headerlink" title="2.2.4 数据访问与集成"></a>2.2.4 数据访问与集成</h4><ul>
+<li><strong>spring-jdbc</strong> 模块提供了一个JDBC抽象层，消除冗长的JDBC编码和数据库厂商特有的错误码。</li>
+<li><strong>spring-tx</strong>模块支持编程和声明式事务，而这只需实现特定的接口甚至是简单的POJO。</li>
+<li><strong>spring-orm</strong>模块集成了流行的对象关系映射（ORM）API，包括JPA、JDO和Hibernate。</li>
+<li><strong>spring-oxm</strong>模块提供了“对象XML映射”抽象实现，支持JAXB, Castor, XMLBeans, JiBX和XStream。</li>
+<li><strong>spring-jms</strong>模块包含了生产和消费信息的功能。4.1版本后还提供了与<strong>spring-messaging</strong>模块的集成。</li>
+</ul>
+<h4 id="2-2-5-Web开发"><a href="#2-2-5-Web开发" class="headerlink" title="2.2.5 Web开发"></a>2.2.5 Web开发</h4><ul>
+<li><strong>spring-web</strong>模块提供了基本的面向Web的集成特性，例如方文件上传功能、使用Servlet的监听器以及一个面向Web应用程序上下文IoC容器的初始化。它还包含一个HTTP客户端和远程访问相关的部分。</li>
+<li><strong>spring-webmvc</strong>模块包含Spring的模型-视图-控制器（<em>MVC</em>）和REST Web服务实现。Spring MVC框架使得领域模型代码和Web展示的代码完全分离，并能与其他Spring功能无缝集成。</li>
+<li><strong>spring-webmvc-portlet</strong>模块为Portlet环境提供了Spring MVC实现。</li>
+</ul>
+<h4 id="2-2-6-测试"><a href="#2-2-6-测试" class="headerlink" title="2.2.6 测试"></a>2.2.6 测试</h4><p><strong>spring-test</strong>模块支持Spring这些组件基于Junit或TestNG的单元测试和集成测试。它提供了一致的上下文加载和缓存，另外它还使得对象的Mock更加容易。</p>
+<h3 id="2-3-Spring的使用场景"><a href="#2-3-Spring的使用场景" class="headerlink" title="2.3 Spring的使用场景"></a>2.3 Spring的使用场景</h3><p>++典型的基于Spring的Web应用++</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_web.png" alt="典型的基于Spring的Web应用"></p>
+<ul>
+<li>持久化层可以利用<strong>spring-orm</strong>来实现对象关系映射，用<strong>spring-tx</strong>来声明事务；</li>
+<li>逻辑层可以基于POJO，并使用IOC容器来管理对象；另外还可以使用邮件发送通知，远程服务实现RPC；</li>
+<li>展示层可以使用<strong>spring-webmvc</strong>分离逻辑和展示；</li>
+</ul>
+<p>++与其他Web开发框架集成++</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_other_web_framework.png" alt="与其他Web开发框架集成"></p>
+<p>++远程服务调用++</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_remoting.png" alt="远程服务调用"></p>
+<p>++EJB集成++</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_ejb.png" alt="EJB集成"></p>
+<h4 id="2-3-1-依赖管理与命名约定"><a href="#2-3-1-依赖管理与命名约定" class="headerlink" title="2.3.1 依赖管理与命名约定"></a>2.3.1 依赖管理与命名约定</h4><ul>
+<li>Maven依赖仓库：Maven的中央仓库和一些特别为Spring建立的公共Maven仓库；</li>
+<li>命名约定：GroupId为<em>org.springframework</em>，ArtifactId为各个模块名如<em>spring-aop</em>；</li>
+<li>最小化依赖原则：不必依赖所有的模块，按需依赖；</li>
+</ul>
+<p>Maven依赖配置：</p>
+<pre><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+        &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+        &lt;scope&gt;runtime&lt;/scope&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><p>Gradle依赖配置：</p>
+<pre><code>repositories {
+    mavenCentral()
+    // and optionally...
+    maven { url &quot;http://repo.spring.io/release&quot; }
+}
+
+dependencies {
+    compile(&quot;org.springframework:spring-context:4.3.5.RELEASE&quot;)
+    testCompile(&quot;org.springframework:spring-test:4.3.5.RELEASE&quot;)
+}
+</code></pre><h4 id="2-3-2-日志框架"><a href="#2-3-2-日志框架" class="headerlink" title="2.3.2 日志框架"></a>2.3.2 日志框架</h4><p>日志框架依赖的问题对于Spring框架非常的重要，因为：</p>
+<ul>
+<li>它是Spring仅有的必须的外部依赖；</li>
+<li>应用程序本身也离不开日志；</li>
+<li>Spring所集成的第三方框架本身也会依赖日志框架；</li>
+</ul>
+<p>Spring采取的方案是在<strong>spring-core</strong>模块中依赖<strong>commons-logging</strong>，其他模块通过传递依赖来依赖该模块。这样的好处是你无须做特别的处理，程序会在classpath或特定的路径寻找最合适的日志框架，即使找不到也会有看着不错的日志输出。</p>
+<p>另外一种选择是放弃<strong>commons-logging</strong>改用SLF4J（<em>Simple Logging Facade for Java，基于门面模式本身并不负责记录日志、支持常用的日志框架</em>），依赖配置如下：</p>
+<pre><code>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+        &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
+        &lt;exclusions&gt;
+            &lt;exclusion&gt;
+                &lt;groupId&gt;commons-logging&lt;/groupId&gt;
+                &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
+            &lt;/exclusion&gt;
+        &lt;/exclusions&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;
+        &lt;version&gt;1.5.8&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
+        &lt;version&gt;1.5.8&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
+        &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
+        &lt;version&gt;1.5.8&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;log4j&lt;/groupId&gt;
+        &lt;artifactId&gt;log4j&lt;/artifactId&gt;
+        &lt;version&gt;1.2.14&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</code></pre><h1 id="第二部分-Spring框架4-x版本新特性"><a href="#第二部分-Spring框架4-x版本新特性" class="headerlink" title="第二部分 Spring框架4.x版本新特性"></a>第二部分 Spring框架4.x版本新特性</h1><h2 id="3-Spring-4-0版本新特性与改进"><a href="#3-Spring-4-0版本新特性与改进" class="headerlink" title="3. Spring 4.0版本新特性与改进"></a>3. Spring 4.0版本新特性与改进</h2><p>Spring自从2004年发布以来，经历了多个重大版本的演变。在Spring 2.0中提供了XML命名空间和AspectJ支持；在Spring 2.5中拥抱注解驱动的配置；在Spring 3.0在框架代码中大量使用Java 5+的特性，如<em>@Configuration</em>。</p>
+<p>Spring 4.0是目前的最新主要版本，首次支持Java 8的功能，当前你也可以使用旧版本的Java，但是最低要求是Java 6。</p>
+<p>在这个版本中，Spring清除了很多过时的类和方法。具体升级时可以参考<a href="https://github.com/spring-projects/spring-framework/wiki/Migrating-from-earlier-versions-of-the-spring-framework" target="_blank" rel="external">migration guide for upgrading to Spring 4.0</a>指南。</p>
+<h3 id="3-1-改进快速入门体验"><a href="#3-1-改进快速入门体验" class="headerlink" title="3.1 改进快速入门体验"></a>3.1 改进快速入门体验</h3><p>网站改版，同时例子补充得更完整更易理解</p>
+<h3 id="3-2-移除废弃的包和类"><a href="#3-2-移除废弃的包和类" class="headerlink" title="3.2 移除废弃的包和类"></a>3.2 移除废弃的包和类</h3><p>同时对第三方依赖的框架也进行了版本升级</p>
+<h3 id="3-3-对Java-8的支持"><a href="#3-3-对Java-8的支持" class="headerlink" title="3.3 对Java 8的支持"></a>3.3 对Java 8的支持</h3><p>包括Lambda表达式、方法引用、java.time；</p>
+<h3 id="3-4-对Java-EE-6和7的支持"><a href="#3-4-对Java-EE-6和7的支持" class="headerlink" title="3.4 对Java EE 6和7的支持"></a>3.4 对Java EE 6和7的支持</h3><ul>
+<li>J2EE 6：JPA 2.0, Servlet 3.0;</li>
+<li>J2EE 7：JMS 2.0, JTA 1.2, JPA 2.1, Bean Validation 1.1, JSR-236;</li>
+</ul>
+<h3 id="3-5-使用Groovy的领域专业语言（DSL）定义Bean"><a href="#3-5-使用Groovy的领域专业语言（DSL）定义Bean" class="headerlink" title="3.5 使用Groovy的领域专业语言（DSL）定义Bean"></a>3.5 使用Groovy的领域专业语言（DSL）定义Bean</h3><p>举个栗子：</p>
+<pre><code>def reader = new GroovyBeanDefinitionReader(myApplicationContext)
+reader.beans {
+    dataSource(BasicDataSource) {
+        driverClassName = &quot;org.hsqldb.jdbcDriver&quot;
+        url = &quot;jdbc:hsqldb:mem:grailsDB&quot;
+        username = &quot;sa&quot;
+        password = &quot;&quot;
+        settings = [mynew:&quot;setting&quot;]
+    }
+    sessionFactory(SessionFactory) {
+        dataSource = dataSource
+    }
+    myService(MyService) {
+        nestedBean = { AnotherBean bean -&gt;
+            dataSource = dataSource
+        }
+    }
+}
+</code></pre><h3 id="3-6-核心容器改进"><a href="#3-6-核心容器改进" class="headerlink" title="3.6 核心容器改进"></a>3.6 核心容器改进</h3><ul>
+<li>注入Bean时支持泛型作为一个标识符，如@Autowired Repository<customer> customerRepository；</customer></li>
+<li>Spring的元注解支持定制来实现暴露源注解的特定属性；</li>
+<li>集合和数组属性在装配时支持排序；</li>
+<li>@Lazy注解允许在注入点和@Bean定义时使用；</li>
+<li>引入新的@Description注解；</li>
+<li>通过@Conditional注解实现了条件过滤Bean，和@Profile不同之处在于@Conditional可以通过自定义编程来过滤；</li>
+<li>基于CGLIB的代理类不再需要默认的构造函数，从而实现了无须调用构造函数的代理；</li>
+<li>通过LocaleContext支持对时区进行管理；</li>
+</ul>
+<h3 id="3-7-Web开发改进"><a href="#3-7-Web开发改进" class="headerlink" title="3.7 Web开发改进"></a>3.7 Web开发改进</h3><ul>
+<li>全面采用Servlet 3；</li>
+<li>增加@RestController注解，这样无须在RequestMapping的方法上添加@ResponseBody注解；</li>
+<li>AsyncRestTemplate支持非阻塞异步REST请求；</li>
+<li>Spring MVC中更易理解的时区机制；</li>
+</ul>
+<h3 id="3-8-WebSocket、SockJS以及STOMP通信"><a href="#3-8-WebSocket、SockJS以及STOMP通信" class="headerlink" title="3.8 WebSocket、SockJS以及STOMP通信"></a>3.8 WebSocket、SockJS以及STOMP通信</h3><ul>
+<li>增加了<strong>spring-websocket</strong>模块支持JSR-356;</li>
+<li>增加了<strong>spring-messaging</strong>模块支持STOMP，另外该工程还对消息通信进行了抽象以便给其他模块集成；</li>
+</ul>
+<h3 id="3-9-测试方面的改进"><a href="#3-9-测试方面的改进" class="headerlink" title="3.9 测试方面的改进"></a>3.9 测试方面的改进</h3><ul>
+<li>几乎所有的Spring注解都可以在测试代码中使用；</li>
+<li>Active bean definition profiles可以通过自定义编码来实现；</li>
+<li><strong>spring-core</strong>工程的SocketUtils类可以扫描本地空闲的TCP和UDP端口；</li>
+<li>大部分的Servlet相关的Mock类都升级到Servlet 3.0版本了；</li>
+</ul>
+<h2 id="4-Spring-4-1版本新特性与改进"><a href="#4-Spring-4-1版本新特性与改进" class="headerlink" title="4. Spring 4.1版本新特性与改进"></a>4. Spring 4.1版本新特性与改进</h2><h3 id="4-1-JMS的改进"><a href="#4-1-JMS的改进" class="headerlink" title="4.1 JMS的改进"></a>4.1 JMS的改进</h3><ul>
+<li>Spring 4.1引进了一个更简单的方式来注册JMS监听，即给Bean的方法上增加@JmsListener注解，同时XML命名空间上也增加了jms:annotation-driven，使用JmsListenerConfigurer还可以实现完全自定义编程的注册。</li>
+<li>由于<strong>spring-messaging</strong>模块的抽象定义，消息监听可以变得更灵活。另外像@Payload、@Header、@Headers、@SendTo这样的注解的引入使得代码编写更加清晰；</li>
+<li>JmsMessageOperations的引入使得JmsTemplate调用更加便捷；</li>
+<li>JmsTemplate支持同步的请求应答；</li>
+<li>可以给多个<jms:listener>设置优先级；</jms:listener></li>
+<li>支持JMS 2.0的共享消费者；</li>
+</ul>
+<h3 id="4-2-缓存改进"><a href="#4-2-缓存改进" class="headerlink" title="4.2 缓存改进"></a>4.2 缓存改进</h3><ul>
+<li>在无须更改现有的缓存配置下支持JCache (JSR-107)；</li>
+<li>使用CacheResolver支持运行期的缓存，从而缓存的value参数不是必须的了；</li>
+<li>支持更多操作级的定制，如缓存使用、缓存管理、缓存key生成；</li>
+<li>通过类级别的@CacheConfig注解允许一些配置在类级别共享，而不需要任何额外的缓存操作；</li>
+<li>通过CacheErrorHandler更好的异常处理；</li>
+<li>Cache接口增加了新的方法putIfAbsent；</li>
+</ul>
+<h3 id="4-3-Web开发改进"><a href="#4-3-Web开发改进" class="headerlink" title="4.3 Web开发改进"></a>4.3 Web开发改进</h3><ul>
+<li>基于资源处理现有的支持ResourceHttpRequestHandler 已经扩展了新的抽象ResourceResolver，ResourceTransformer和ResourceUrlProvider；许多内置的实现支持多版本的URL资源、定位gzip压缩资源、生成HTML 5声明等能力。</li>
+<li>@RequestParam、@RequestHeader和@MatrixVariable这些控制器的方法参数支持Java 8的java.util.Optional;</li>
+<li>当一个服务已经返回ListenableFuture时，可以使用其作为返回来替代原本采用的DeferredResult；</li>
+<li>按照相互依赖的顺序关系来调用@ModelAttribute；</li>
+<li>Jackson的@JsonView注解可以直接在带有@ResponseBody和ResponseEntity的控制器方法上使用；</li>
+<li>Jackson支持JSONP；</li>
+<li>声明一个@ControllerAdvice的Bean可以在控制器方法已经结束但响应写入之前的时机被调用；</li>
+<li>HttpMessageConverter支持三个新的选项：Gson、Protobuf以及Jackson基于XML的序列化；</li>
+<li>JSP这样的视图文件可以通过名字定义指向控制器方法的链接；</li>
+<li>ResponseEntity提供了一个内建风格的API来声明服务器端的响应，例如方法ResponseEntity.ok()；</li>
+<li>RequestEntity提供了一个内置风格的API来声明客户端REST代码对HTTP请求；</li>
+<li>MVC方面：视图解析器现在可以配置内容negotiation、默认已支持视图控制器重定向和设置响应状态、默认已支持自定义的路由；</li>
+<li>支持Groovy的标记模板；</li>
+</ul>
+<h3 id="4-4-WebSocket通信改进"><a href="#4-4-WebSocket通信改进" class="headerlink" title="4.4 WebSocket通信改进"></a>4.4 WebSocket通信改进</h3><ul>
+<li>支持SockJS客户端；</li>
+<li>当STOMP客户端订阅和取消订阅时会发布新的上下文事件SessionSubscribeEvent和SessionUnsubscribeEvent；</li>
+<li>@SendToUser只针对单一会话不需要身份验证；</li>
+<li>@MessageMapping方法使用“.”替换原来的“/”作为路径分隔符；</li>
+</ul>
+<h3 id="4-5-测试方面的改进"><a href="#4-5-测试方面的改进" class="headerlink" title="4.5 测试方面的改进"></a>4.5 测试方面的改进</h3><ul>
+<li>通过TestTransaction API可以测试事务；</li>
+<li>通过@Sql和@SqlConfig注解为每个类或方法执行SQL脚本；</li>
+<li>通过@TestPropertySource注解实现测试属性值覆盖应用和系统的属性值；</li>
+</ul>
+<h2 id="5-Spring-4-2版本新特性与改进"><a href="#5-Spring-4-2版本新特性与改进" class="headerlink" title="5. Spring 4.2版本新特性与改进"></a>5. Spring 4.2版本新特性与改进</h2><h3 id="5-1-核心容器的改进"><a href="#5-1-核心容器的改进" class="headerlink" title="5.1 核心容器的改进"></a>5.1 核心容器的改进</h3><ul>
+<li>支持Java 8接口默认方法上的@Bean注解解析；</li>
+<li>Configration类可以在普通的组件类上使用@Import注解；</li>
+<li>Confugration类可以通过@Order注解实现排序；</li>
+<li>@Resource注入点支持@Lazy声明；</li>
+<li>事件处理机制引入了基于注解模型的能力；</li>
+<li>对注释的属性别名的声明和查找提供了先天的支持；</li>
+<li>元注解的查找进行了多项优化；</li>
+<li>DefaultConversionService和DefaultFormattingConversionService提供了对字符、金额、时区的转换能力；</li>
+</ul>
+<h3 id="5-2-数据访问的改进"><a href="#5-2-数据访问的改进" class="headerlink" title="5.2 数据访问的改进"></a>5.2 数据访问的改进</h3><ul>
+<li>通过AspectJ支持javax.transaction.Transactional；</li>
+<li>支持Hibernate ORM 5.0；</li>
+<li>内置的数据库可以自动分配唯一的名称；</li>
+</ul>
+<h3 id="5-3-JMS的改进"><a href="#5-3-JMS的改进" class="headerlink" title="5.3 JMS的改进"></a>5.3 JMS的改进</h3><ul>
+<li>通过JmsListenerContainerFactory可以控制autoStartup属性；</li>
+<li>可以给每个监听的容器配置回复的Destination；</li>
+<li>在同一方法上可以配置多个@JmsListener；</li>
+</ul>
+<h3 id="5-4-Web开发的改进"><a href="#5-4-Web开发的改进" class="headerlink" title="5.4 Web开发的改进"></a>5.4 Web开发的改进</h3><ul>
+<li>支持HTTP流和服务器发送事件；</li>
+<li>内置支持CORS，包括全局和本地的配置；</li>
+<li>HTTP缓存机制优化包括新的CacheControl构造器、ETag/Last-Modified改进；</li>
+<li>支持自定义的Mapping注解；</li>
+<li>通过AbstractHandlerMethodMapping在运行时注册和取消注册请求Mapping；</li>
+<li>@Controller方法返回类型支持java.util.concurrent.CompletableFuture；</li>
+<li>RestTemplate集成okhttp；</li>
+</ul>
+<h3 id="5-5-WebSocket通信改进"><a href="#5-5-WebSocket通信改进" class="headerlink" title="5.5 WebSocket通信改进"></a>5.5 WebSocket通信改进</h3><ul>
+<li>暴露有关连接用户和订阅状态的信息；</li>
+<li>解决跨服务器的集群用户destinations；</li>
+<li>StompSubProtocolErrorHandler来自定义STOMP错误处理；</li>
+</ul>
+<h3 id="5-6-测试方面的改进"><a href="#5-6-测试方面的改进" class="headerlink" title="5.6 测试方面的改进"></a>5.6 测试方面的改进</h3><ul>
+<li>基于JUnit的集成测试，现在可以使用JUnit的规则，而不是执行 SpringJUnit4ClassRunner。这使得基于Spring集成测试可以通过JUnit的执行器或第三方执行器（如MockitoJUnitRunner）来执行；</li>
+<li>为HtmlUnit提供先天支持；</li>
+<li>AopTestUtils是一种新的测试工具类，它允许开发者获得隐藏着一个或多个Spring代理基础目标对象的引用；</li>
+<li>ReflectionTestUtils现在支持设置和获取static属性，包括常量；</li>
+<li>@Commit替换原来的 @Rollback(false)；</li>
+</ul>
+<h2 id="6-Spring-4-3版本新特性与改进"><a href="#6-Spring-4-3版本新特性与改进" class="headerlink" title="6. Spring 4.3版本新特性与改进"></a>6. Spring 4.3版本新特性与改进</h2><h3 id="6-1-核心容器改进"><a href="#6-1-核心容器改进" class="headerlink" title="6.1 核心容器改进"></a>6.1 核心容器改进</h3><ul>
+<li>核心容器异常时提供更丰富的元数据信息；</li>
+<li>Bean属性的getters/setters支持Java 8的默认方法；</li>
+<li>当注入一个Primary的Bean时，懒加载的候选Bean不会被立即创建；</li>
+<li>@Configuration 类支持构造函数注入；</li>
+<li>@Scheduled适用于任何范围的Bean；</li>
+</ul>
+<h3 id="6-2-数据访问的改进"><a href="#6-2-数据访问的改进" class="headerlink" title="6.2 数据访问的改进"></a>6.2 数据访问的改进</h3><p>jdbc:initialize-database和jdbc:embedded-database可以给每个脚本应用单独的可配置separator；</p>
+<h3 id="6-3-缓存方面的改进"><a href="#6-3-缓存方面的改进" class="headerlink" title="6.3 缓存方面的改进"></a>6.3 缓存方面的改进</h3><ul>
+<li>在指定Key上面的并发调用变成同步的，使得缓存值只会被计算一次；该特性需要通过@Cacheable的sync属性开启；</li>
+<li>Cache接口增加了get(Object key, Callable<t> valueLoader)方法；</t></li>
+<li>ConcurrentMapCacheManager和ConcurrentMapCache现在可以通过storeByValue属性进行缓存的序列化；</li>
+</ul>
+<h3 id="6-4-JMS的改进"><a href="#6-4-JMS的改进" class="headerlink" title="6.4 JMS的改进"></a>6.4 JMS的改进</h3><ul>
+<li>@SendTo现在可以在类级别指定共用的一个回复destination。</li>
+<li>@JmsListener和@JmsListeners现在可以用作元注解来创建自定义的支持属性覆盖的复合注解；</li>
+</ul>
+<h3 id="6-5-Web开发的改进"><a href="#6-5-Web开发的改进" class="headerlink" title="6.5 Web开发的改进"></a>6.5 Web开发的改进</h3><ul>
+<li>内置支持HTTP HEAD和HTTP OPTIONS；</li>
+<li>新的注解：@GetMapping、@PostMapping、@PutMapping、@DeleteMapping和@PatchMapping；</li>
+<li>新的注解：@RequestScope、@SessionScope和@ApplicationScope；</li>
+<li>@ResponseStatus支持类级别并被所有方法继承；</li>
+<li>在HTTP消息转换时采用一致的字符集处理；</li>
+<li>AsyncRestTemplate 支持请求拦截；</li>
+</ul>
+<h3 id="6-6-WebSocket通信改进"><a href="#6-6-WebSocket通信改进" class="headerlink" title="6.6 WebSocket通信改进"></a>6.6 WebSocket通信改进</h3><p>@SendTo现在可以在类级别指定共用的一个回复destination。</p>
+<h3 id="6-7-测试方面的改进"><a href="#6-7-测试方面的改进" class="headerlink" title="6.7 测试方面的改进"></a>6.7 测试方面的改进</h3><ul>
+<li>Spring测试上下文需要Junit 4.12以上的版本；</li>
+<li>SpringJUnit4ClassRunner增加新的别名SpringRunner；</li>
+<li>测试的有关注解现在可以在接口中声明；</li>
+</ul>
+<h3 id="6-8-第三方框架版本更新"><a href="#6-8-第三方框架版本更新" class="headerlink" title="6.8 第三方框架版本更新"></a>6.8 第三方框架版本更新</h3><ul>
+<li>Hibernate ORM 5.2</li>
+<li>Hibernate Validator 5.3</li>
+<li>Jackson 2.8</li>
+<li>OkHttp 3.x</li>
+<li>Tomcat 8.5</li>
+<li>Netty 4.1</li>
+<li>Undertow 1.4</li>
+<li>WildFly 10.1</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+            <a href="/tags/Spring-Framework/" rel="tag"># Spring Framework</a>
+          
+            <a href="/tags/一起读文档/" rel="tag"># 一起读文档</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/summary_for_2016/" rel="next" title="一个程序员的小结：2016年的进步、收获与成长">
+                <i class="fa fa-chevron-left"></i> 一个程序员的小结：2016年的进步、收获与成长
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/reading_record_201701/" rel="prev" title="阅读随手记 201701">
+                阅读随手记 201701 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/spring_framework_reference_notes_part1_overview_and_newfeature/"
+           data-title="一起读Spring Framework文档（1）：概述与新特性" data-url="http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一部分-Spring概述"><span class="nav-text">第一部分 Spring概述</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-Spring快速入门"><span class="nav-text">1. Spring快速入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Spring介绍"><span class="nav-text">2. Spring介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-依赖注入和控制反转"><span class="nav-text">2.1 依赖注入和控制反转</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Spring的模块"><span class="nav-text">2.2 Spring的模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-1-核心容器"><span class="nav-text">2.2.1 核心容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-2-AOP和类代理（Instrumentation）"><span class="nav-text">2.2.2 AOP和类代理（Instrumentation）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-3-消息"><span class="nav-text">2.2.3 消息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-4-数据访问与集成"><span class="nav-text">2.2.4 数据访问与集成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-5-Web开发"><span class="nav-text">2.2.5 Web开发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-6-测试"><span class="nav-text">2.2.6 测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Spring的使用场景"><span class="nav-text">2.3 Spring的使用场景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-1-依赖管理与命名约定"><span class="nav-text">2.3.1 依赖管理与命名约定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-2-日志框架"><span class="nav-text">2.3.2 日志框架</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二部分-Spring框架4-x版本新特性"><span class="nav-text">第二部分 Spring框架4.x版本新特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-Spring-4-0版本新特性与改进"><span class="nav-text">3. Spring 4.0版本新特性与改进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-改进快速入门体验"><span class="nav-text">3.1 改进快速入门体验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-移除废弃的包和类"><span class="nav-text">3.2 移除废弃的包和类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-对Java-8的支持"><span class="nav-text">3.3 对Java 8的支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-对Java-EE-6和7的支持"><span class="nav-text">3.4 对Java EE 6和7的支持</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-使用Groovy的领域专业语言（DSL）定义Bean"><span class="nav-text">3.5 使用Groovy的领域专业语言（DSL）定义Bean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-核心容器改进"><span class="nav-text">3.6 核心容器改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-Web开发改进"><span class="nav-text">3.7 Web开发改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-WebSocket、SockJS以及STOMP通信"><span class="nav-text">3.8 WebSocket、SockJS以及STOMP通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-9-测试方面的改进"><span class="nav-text">3.9 测试方面的改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Spring-4-1版本新特性与改进"><span class="nav-text">4. Spring 4.1版本新特性与改进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-JMS的改进"><span class="nav-text">4.1 JMS的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-缓存改进"><span class="nav-text">4.2 缓存改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-Web开发改进"><span class="nav-text">4.3 Web开发改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-WebSocket通信改进"><span class="nav-text">4.4 WebSocket通信改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-测试方面的改进"><span class="nav-text">4.5 测试方面的改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-Spring-4-2版本新特性与改进"><span class="nav-text">5. Spring 4.2版本新特性与改进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#5-1-核心容器的改进"><span class="nav-text">5.1 核心容器的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-2-数据访问的改进"><span class="nav-text">5.2 数据访问的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-3-JMS的改进"><span class="nav-text">5.3 JMS的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-4-Web开发的改进"><span class="nav-text">5.4 Web开发的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-5-WebSocket通信改进"><span class="nav-text">5.5 WebSocket通信改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-6-测试方面的改进"><span class="nav-text">5.6 测试方面的改进</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-Spring-4-3版本新特性与改进"><span class="nav-text">6. Spring 4.3版本新特性与改进</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-核心容器改进"><span class="nav-text">6.1 核心容器改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-数据访问的改进"><span class="nav-text">6.2 数据访问的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-缓存方面的改进"><span class="nav-text">6.3 缓存方面的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-JMS的改进"><span class="nav-text">6.4 JMS的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-5-Web开发的改进"><span class="nav-text">6.5 Web开发的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-6-WebSocket通信改进"><span class="nav-text">6.6 WebSocket通信改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-7-测试方面的改进"><span class="nav-text">6.7 测试方面的改进</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-8-第三方框架版本更新"><span class="nav-text">6.8 第三方框架版本更新</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

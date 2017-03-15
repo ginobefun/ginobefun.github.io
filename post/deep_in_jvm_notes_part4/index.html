@@ -1,0 +1,1158 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,读书笔记,JVM,虚拟机,类文件,常量池,字节码," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第四部分对应原书的第六章，主要介绍类文件结构的组成，并通过一个实例一步步了解各个部分的结构。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解Java虚拟机》读书笔记4：类文件结构">
+<meta property="og:url" content="http://ginobefunny.com/post/deep_in_jvm_notes_part4/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第四部分对应原书的第六章，主要介绍类文件结构的组成，并通过一个实例一步步了解各个部分的结构。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_for_other_languages.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_format.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_example1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_example2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_example3.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_constant_pool.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_constant_pool_detail1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_constant_pool_detail2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_fields.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_code.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_exception.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_linenumber.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_localvariable.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_localvariable2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_sourcefile.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_constantvalue.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_innerclass.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_innerclass2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_deprecated.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_stackmaptable.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_signature.png">
+<meta property="og:updated_time" content="2017-01-31T09:51:04.486Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解Java虚拟机》读书笔记4：类文件结构">
+<meta name="twitter:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第四部分对应原书的第六章，主要介绍类文件结构的组成，并通过一个实例一步步了解各个部分的结构。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_for_other_languages.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/deep_in_jvm_notes_part4/"/>
+
+
+
+
+
+  <title> 《深入理解Java虚拟机》读书笔记4：类文件结构 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/deep_in_jvm_notes_part4/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《深入理解Java虚拟机》读书笔记4：类文件结构
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-18T09:24:01+08:00">
+                2017-01-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>国内JVM相关书籍NO.1，Java程序员必读。读书笔记第四部分对应原书的第六章，主要介绍类文件结构的组成，并通过一个实例一步步了解各个部分的结构。<br><a id="more"></a></p>
+<h1 id="第三部分-虚拟机执行子系统"><a href="#第三部分-虚拟机执行子系统" class="headerlink" title="第三部分 虚拟机执行子系统"></a>第三部分 虚拟机执行子系统</h1><h2 id="第六章-类文件结构"><a href="#第六章-类文件结构" class="headerlink" title="第六章 类文件结构"></a>第六章 类文件结构</h2><p>代码编译的结果从本地机器码转变为字节码，是存储格式发展的一小步，却是编程语言发展的一大步。</p>
+<h3 id="6-1-概述"><a href="#6-1-概述" class="headerlink" title="6.1 概述"></a>6.1 概述</h3><p>由于最近十年内虚拟机以及大量建立在虚拟机之上的程序语言如雨后春笋般出现并蓬勃发展，将我们编写的程序编译成二进制本地机器码（Native Code）已不再是唯一的选择，越来越多的程序语言选择了操作系统和机器指令集无关的、平台中立的格式作为程序编译后的存储格式。</p>
+<h3 id="6-2-无关性的基石"><a href="#6-2-无关性的基石" class="headerlink" title="6.2 无关性的基石"></a>6.2 无关性的基石</h3><ul>
+<li>Java刚诞生的宣传口号：一次编写，到处运行（Write Once, Run Anywhere）。其最终实现在操作系统的应用层：Sun公司以及其他虚拟机提供商发布了许多可以运行在各种不同平台的虚拟机，这些虚拟机都可以载入和执行同一种平台无关的字节码。</li>
+<li>字节码（ByteCode）是构成平台无关的基石；</li>
+<li>另外虚拟机的语言无关性也越来越被开发者所重视，JVM设计者在最初就考虑过实现让其他语言运行在Java虚拟机之上的可能性，如今已发展出一大批在JVM上运行的语言，比如Clojure、Groovy、JRuby、Jython、Scala；</li>
+<li>实现语言无关性的基础仍是虚拟机和字节码存储格式，Java虚拟机不和包括Java在内的任何语言绑定，它只与Class文件这种特定的二进制文件格式所关联，这使得任何语言的都可以使用特定的编译器将其源码编译成Class文件，从而在虚拟机上运行。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_for_other_languages.png" alt="Java虚拟机提供的语言无关性"></p>
+<h3 id="6-3-Class类文件的结构"><a href="#6-3-Class类文件的结构" class="headerlink" title="6.3 Class类文件的结构"></a>6.3 Class类文件的结构</h3><ul>
+<li>Class文件是一组以8个字节为基础单位的二进制流（可能是磁盘文件，也可能是类加载器直接生成的），各个数据项目严格按照顺序紧凑地排列，中间没有任何分隔符；</li>
+<li>Class文件格式采用一种类似于C语言结构体的伪结构来存储数据，其中只有两种数据类型：无符号数和表；</li>
+<li>无符号数属于基本的数据类型，以u1、u2、u4和u8来分别代表1个字节、2个字节、4个字节和8个字节的无符号数，可以用来描述数字、索引引用、数量值或者按照UTF-8编码构成字符串值；</li>
+<li>表是由多个无符号数获取其他表作为数据项构成的复合数据类型，习惯以“_info”结尾；</li>
+<li>无论是无符号数还是表，当需要描述同一个类型但数量不定的多个数据时，经常会使用一个前置的容量计数器加若干个连续的数据项的形式，这时称这一系列连续的某一类型的数据未某一类型的集合。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_format.png" alt="Class文件格式"></p>
+<p>下面我以自己本机写的一个简单的Java文件来学习其中各个部分的含义：<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_example1.png" alt="TestClass.java"></p>
+<p>使用javac编译成TestClass.class文件，使用16进制打开：<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_example2.png" alt="TestClass.class"></p>
+<p>使用javap命令输出Class文件信息：<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_example3.png" alt="javap TestClass"></p>
+<h4 id="6-3-1-魔数和版本"><a href="#6-3-1-魔数和版本" class="headerlink" title="6.3.1 魔数和版本"></a>6.3.1 魔数和版本</h4><ul>
+<li>Class文件的头4个字节，唯一作用是确定文件是否为一个可被虚拟机接受的Class文件，固定为“0xCAFEBABE”。</li>
+<li>第5和第6个字节是次版本号，第7和第8个字节是主版本号（0x0034为52，对应JDK版本1.8）；能向下兼容之前的版本，无法运行后续的版本；</li>
+</ul>
+<h4 id="6-3-2-常量池"><a href="#6-3-2-常量池" class="headerlink" title="6.3.2 常量池"></a>6.3.2 常量池</h4><ul>
+<li>常量池可以理解为Class文件之中的资源仓库，是Class文件结构中与其他项目关联最多的数据类型，也是占用Class文件空间最大的数据项之一；</li>
+<li>由于常量池中的常量数量不固定，因此需要在常量池前放置一项u2类型的数据来表示容量，该值是从1开始的，上图的0x0013为十进制的19，代表常量池中有18项常量，索引值范围为1~18；</li>
+<li>常量池主要存放两大类常量：字面量（Literal，笔记接近Java的常量概念，比如文本字符串和final常量等）和符号引用（Symbolic References，主要包括类和接口的全限定名、字段的名称和描述符、方法的名称和描述符）；</li>
+<li>Java代码在javac编译时不会有“连接”这一步骤，而是在虚拟机加载Class文件的时候进行动态连接；所以在Class文件不会保存各个方法、字段和最终内存布局信息；当虚拟机运行时需要从常量池获取对应的符号引用，再在类创建时或运行时解析、翻译到具体的内存地址中；</li>
+<li>JDK 1.7中常量池共有14种不同的表结构数据，这些表结构开始的第一位是一个u1类型的标志位，代表当前常量的类型，具体如下图所示：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_constant_pool.png" alt="常量池的项目类型"></p>
+<ul>
+<li>之所以说常量池是最繁琐的数据就是因为这14种常量类型都有自己的结结构。可以结合下图中各个表结构的说明和之前使用javap解析的文件内容一起看。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_constant_pool_detail1.png" alt="常量池中14种常量项结构说明1"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_constant_pool_detail2.png" alt="常量池中14种常量项结构说明2"></p>
+<ul>
+<li>第1项：0x0A（15标志为方法句柄），0x0004（指向第4项的类描述符），0x000F（指向第15项的名称及类型描述符）；</li>
+<li>第2项：0x09（9标志为字段符号引用），0x0003（指向第3项类描述符），0x0010（指向第16项的名称及类型描述符）；</li>
+<li>第3项：0x07（7标志为类符号引用），0x0011（指向第17项全限定名常量项）；</li>
+<li>第4项：0x07（7标志为类符号引用），0x0012（指向第18项全限定名常量项）；</li>
+<li>第5项：0x01（1标志为UTF-字符串常量），0x0001（字符串占用1个字节），6D（字符“m”）；</li>
+<li>第6项：0x01（1标志为UTF-字符串常量），0x0001（字符串占用1个字节），49（字符“I”）；</li>
+<li>第7项：0x01（1标志为UTF-字符串常量），0x0006（字符串占用6个字节），3C 69 6E 69 74 3E（字符“<init>”）；</init></li>
+<li>第8项：0x01（1标志为UTF-字符串常量），0x0003（字符串占用3个字节），28 29 56（字符“()V”）；</li>
+<li>第9项：0x01（1标志为UTF-字符串常量），0x0004（字符串占用4个字节），43 6F 64 65（字符“Code”）；</li>
+<li>第10项：0x01（1标志为UTF-字符串常量），0x000F（字符串占用15个字节），4C 69 6E 65 4E 75 6D 62 65 72 54 61 62 6C 65（字符“LineNumberTable”）；</li>
+<li>第11项：0x01（1标志为UTF-字符串常量），0x0003（字符串占用3个字节），69 6E 63（字符“inc”）；</li>
+<li>第12项：0x01（1标志为UTF-字符串常量），0x0003（字符串占用3个字节），28 29 49（字符“()I”）；</li>
+<li>第13项：0x01（1标志为UTF-字符串常量），0x000A（字符串占用10个字节），53 6F 75 72 63 65 46 69 6C 65（字符“SourceFile”）；</li>
+<li>第14项：0x01（1标志为UTF-字符串常量），0x000E（字符串占用14个字节），54 65 73 74 43 6C 61 73 73 2E 6A 61 76 61（字符“TestClass.java”）；</li>
+<li>第15项：0x0C（12标志为名称和类型符号引用），0x0007（指向第7项名称常量项）， 0x0008（指向第8项描述符常量项）；</li>
+<li>第16项：0x0C（12标志为名称和类型符号引用），0x0005（指向第5项名称常量项）， 0x0006（指向第6项描述符常量项）；</li>
+<li>第17项：0x01（1标志为UTF-字符串常量），0x001F（字符串占用31个字节），63 6F 6D 2F 67 69 6E 6F 62 65 66 75 6E 6E 79 2F 63 6C 61 7A 7A 2F 54 65 73 74 43 6C 61 73 73（字符“com/ginobefunny/clazz/TestClas”）；</li>
+<li>第18项：0x01（1标志为UTF-字符串常量），0x0010（字符串占用16个字节），6A 61 76 61 2F 6C 61 6E 67 2F 4F 62 6A 65 63 74（字符“java/lang/Object”）；</li>
+</ul>
+<h4 id="6-3-3-访问标志"><a href="#6-3-3-访问标志" class="headerlink" title="6.3.3 访问标志"></a>6.3.3 访问标志</h4><ul>
+<li>紧接在常量池后面的是两个字节的访问标志，用于标识类或接口的访问信息；</li>
+<li>访问标志一个有16个标志位，但目前只采用了其中8位，本例子中的0x0021标识为一个public的普通类；</li>
+</ul>
+<h4 id="6-3-4-类索引、父类索引与接口索引集合"><a href="#6-3-4-类索引、父类索引与接口索引集合" class="headerlink" title="6.3.4 类索引、父类索引与接口索引集合"></a>6.3.4 类索引、父类索引与接口索引集合</h4><ul>
+<li>类索引：u2类型的数据，用于确定类的全限定名。本例子中为0x0003，指向常量池中第3项；</li>
+<li>父类索引：u2类型的数据，用于确定父类的全限定名。本例子中为0x0004，指向常量池中第4项；</li>
+<li>接口索引计算器：u2类型的数据，用于表示索引集合的容量。本例子中为0x0000，说明没有实现接口；</li>
+<li>接口索引集合：一组u2类型的数据的集合，用于确定实现的接口（对于接口来说就是extend的接口）。本例子不存在。</li>
+</ul>
+<h4 id="6-3-5-字段表集合"><a href="#6-3-5-字段表集合" class="headerlink" title="6.3.5 字段表集合"></a>6.3.5 字段表集合</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_fields.png" alt="字段表结构"></p>
+<ul>
+<li>用于描述接口或者类中声明的变量，包括类级变量和实例级变量，但不包括方法内部声明的局部变量；它不会列出从父类和超类继承而来的字段；</li>
+<li>0x0001表示这个类只有一个字段表数据；</li>
+<li>字段修饰符放在access_flag中，是一个u2的数据类型，0x0002表示为private的属性；</li>
+<li>字段名称name_index，是一个u2的数据类型，0x0005表示该属性的名称为常量池的第5项；</li>
+<li>字段描述符descriptor_index，是一个u2的数据类型，0x0006表示该属性的描述符为常量池的第6项，其值“I”表示类型为整形；</li>
+<li>字段属性计算器和属性集合：0x0000表示该例子中不存在；</li>
+</ul>
+<h4 id="6-3-6-方法表集合"><a href="#6-3-6-方法表集合" class="headerlink" title="6.3.6 方法表集合"></a>6.3.6 方法表集合</h4><ul>
+<li>和字段表集合的方式几乎一样；</li>
+<li>方法里面的代码经过编译器编译成字节码指令后，存放在方法属性表集合中一个名为Code的属性里面；</li>
+<li>0x0002表示这个类有两个方法表数据，分别是编译器添加的实例构造器<init>和源码中的方式inc()；</init></li>
+<li>第一个方法的访问标志是0x0001（public方法），名称索引值为0x0007（常量池第7项，“<init>”），描述符索引值为0x0008（常量池第8项，“()V”），属性表计算器为0x0001（有一项属性），属性名称索引为0x0009（常量池第9项，“Code”）；</init></li>
+<li>根据“6.3.7.1 Code属性”说明，属性值的长度为23（0x0000001D表示29，但需要减去属性名称索引和属性长度固定的6个字节长度），操作数栈深度的最大值为1（0x0001，虚拟机运行时根据这个值来分配栈帧中操作栈深度），局部变量表所需要的存储空间为1个Slot（0x0001，Slot是内存分配的最小单位），字节码长度为5（0x00000005），分别为2A（aload_0，将第0个Slot中为reference类型的本地变量推送到操作数栈顶）、B7（invokespecial，以栈顶的reference类型的数据所指向的对象作为方法接收者，调用此对象的实例构造器方法、private方法或者它父类的方法，后面接着一个u2的参数指向常量池的方法引用）、0x0001（表示常量池的第1项，即Object类的<init>方法）、B1（对应的指令为return，返回值为void）；显式异常表为空（0x0000，计数器为0）；该Code属性还内嵌1个属性（0x0001），属性的名称索引为0x000A（即“LineNumberTable”属性，用于记录对应的代码行数），该内嵌属性的长度为6（0x00000006），对应的行数信息为源码的第3行（0x000100000003）；</init></li>
+<li>第二个方法的访问标志是0x0001（public方法），名称索引值为0x000B（常量池第11项，“inc”），描述符索引值为0x000C（常量池第12项，“()I”），属性表计算器为0x0001（有一项属性），属性名称索引为0x0009（常量池第9项，“Code”）；</li>
+<li>根据“6.3.7.1 Code属性”说明，属性值的长度为25（0x0000001F表示31，但需要减去属性名称索引和属性长度固定的6个字节长度），操作数栈深度的最大值为2（0x0002），局部变量表所需要的存储空间为1个Slot（0x0001），字节码长度为7（0x00000007），分别为2A（aload_0）、B4（getfield，后面接着一个u2的参数指向常量池的属性引用）、0x0002（表示常量池的第2项，即TestClass类的m属性）、04（对应的指令为iconst_1）、60（对应的指令为iadd，整形求和）、AC（对应的指令为ireturn，返回值为整形）；显式异常表为空（0x0000，计数器为0）；该Code属性还内嵌1个属性（0x0001），属性的名称索引为0x000A（即“LineNumberTable”属性，用于记录对应的代码行数），该内嵌属性的长度为6（0x00000006），对应的行数信息为源码的第8行（0x000100000008）；</li>
+</ul>
+<h4 id="6-3-7-属性表集合"><a href="#6-3-7-属性表集合" class="headerlink" title="6.3.7 属性表集合"></a>6.3.7 属性表集合</h4><ul>
+<li>在Class文件、字段表、方法表都可以携带自己的属性表集合；</li>
+<li>属性表集合的限制较为宽松，不再要求严格的顺序，只要属性名不重复即可；</li>
+<li>以下是Java虚拟机规范里预定义的虚拟机实现应当能识别的属性：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs1.png" alt="虚拟机规范预定义的属性1"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs2.png" alt="虚拟机规范预定义的属性2"></p>
+<ul>
+<li>接着我们的例子的Class文件还有最后一段：0x0001表示该Class有一个属性，0x000D表示属性名索引为第13项（对应“SourceFile”），0x00000002表示该属性长度为2，0x000E表示该类的SourceFile名称为第14项（对应“TestClass.java”）。</li>
+</ul>
+<h5 id="6-3-7-1-Code属性"><a href="#6-3-7-1-Code属性" class="headerlink" title="6.3.7.1 Code属性"></a>6.3.7.1 Code属性</h5><p>Java程序方法体中的代码经过javac编译后，字节码指令存放在Code属性，其属性表结构如下：</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_code.png" alt="Code属性表的结构"></p>
+<h5 id="6-3-7-2-Exceptions属性"><a href="#6-3-7-2-Exceptions属性" class="headerlink" title="6.3.7.2 Exceptions属性"></a>6.3.7.2 Exceptions属性</h5><p>方法描述时throws关键字后面列举的异常，和Code属性里的异常表不同。其属性表结构如下：</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_exception.png" alt="Exceptions属性表"></p>
+<h5 id="6-3-7-3-LineNumberTable属性"><a href="#6-3-7-3-LineNumberTable属性" class="headerlink" title="6.3.7.3 LineNumberTable属性"></a>6.3.7.3 LineNumberTable属性</h5><p>用于描述Java源码行号与字节码行号之间的对应关系，它不是必须的，可以通过javac -g:none取消该信息。没有该信息的影响是运行时抛异常不会显示出错的行号，在代码调试时无法按照源码行来设置断点。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_linenumber.png" alt="LineNumberTable属性"></p>
+<h5 id="6-3-7-4-LocalVariableTable属性"><a href="#6-3-7-4-LocalVariableTable属性" class="headerlink" title="6.3.7.4 LocalVariableTable属性"></a>6.3.7.4 LocalVariableTable属性</h5><p>用于描述栈帧中局部变量与Java源码中定义的变量之间的关系，它不是运行时必须的，可以通过javac -g:none取消该信息。如果没有这个属性，所有的参数名称都会丢失，取之以arg0、arg1这样的占位符来替代。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_localvariable.png" alt="LocalVariableTable属性"></p>
+<p>其中local_variable_info项代表了一个栈帧与源码中局部变量的关联，如下所示：</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_localvariable2.png" alt="local_variable_info结构"></p>
+<h5 id="6-3-7-5-SourceFile属性"><a href="#6-3-7-5-SourceFile属性" class="headerlink" title="6.3.7.5 SourceFile属性"></a>6.3.7.5 SourceFile属性</h5><p>用于记录生成这个Class的源码文件名称，这个属性也是可选的。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_sourcefile.png" alt="SourceFile属性"></p>
+<h5 id="6-3-7-6-ConstantValue属性"><a href="#6-3-7-6-ConstantValue属性" class="headerlink" title="6.3.7.6 ConstantValue属性"></a>6.3.7.6 ConstantValue属性</h5><p>作用是通知虚拟机自动为静态变量赋值，只有被static关键字修饰的变量才可以用这个属性。对于非static类型的变量的赋值是在实例构造器<init>方法中进行的；而对于类变量有两种方式：在类构造器<clinit>方法中或者使用ConstantValue属性。目前Sun javac编译器的选择是：同时使用final和static修饰的变量且为基本数据类型或String类型使用ConstantValue属性初始化，否则使用<clinit>初始化。</clinit></clinit></init></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_constantvalue.png" alt="ConstantValue属性"></p>
+<h5 id="6-3-7-7-InnerClass属性"><a href="#6-3-7-7-InnerClass属性" class="headerlink" title="6.3.7.7 InnerClass属性"></a>6.3.7.7 InnerClass属性</h5><p>用于记录内部类与宿主类之间的关联。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_innerclass.png" alt="InnerClass属性"></p>
+<p>其中number_of_class代表需要记录多少个内部类信息，每个内部类的信息都由一个inner_class_info表进行描述。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_innerclass2.png" alt="inner_class_info表的结构"></p>
+<h5 id="6-3-7-8-Deprecated及Synthetic属性"><a href="#6-3-7-8-Deprecated及Synthetic属性" class="headerlink" title="6.3.7.8 Deprecated及Synthetic属性"></a>6.3.7.8 Deprecated及Synthetic属性</h5><p>Deprecated（不推荐使用）和Synthetic（不是由Java源码直接产生编译器自行添加的，有两个例外是实例构造器<init>和类构造器<clinit>）这两个属性都属于布尔属性，只存在有和没有的区别，没有属性值的概念。在属性结构中attribute_length的数据值必须为0x00000000。</clinit></init></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_deprecated.png" alt="Deprecated及Synthetic属性"></p>
+<h5 id="6-3-7-9-StackMapTable属性"><a href="#6-3-7-9-StackMapTable属性" class="headerlink" title="6.3.7.9 StackMapTable属性"></a>6.3.7.9 StackMapTable属性</h5><p>这是一个复杂的变长属性，位于Code属性的属性表中。这个属性会在虚拟机类加载的字节码验证阶段被新类型检查验证器使用，目的在于代替以前比较消耗性能的基于数据流分析的类型推导验证器。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_stackmaptable.png" alt="StackMapTable属性"></p>
+<h5 id="6-3-7-10-Signature属性"><a href="#6-3-7-10-Signature属性" class="headerlink" title="6.3.7.10 Signature属性"></a>6.3.7.10 Signature属性</h5><p>一个可选的定长属性，在JDK 1.5发布后增加的，任何类、接口、初始化方法或成员的泛型签名如果包含了类型变量或参数化类型，则Signature属性会为它记录泛型签名信息。这主要是因为Java的泛型采用的是擦除法实现的伪泛型，在字节码中泛型信息编译之后统统被擦除，在运行期无法将泛型类型与用户定义的普通类型同等对待。通过Signature属性，Java的反射API能够获取泛型类型。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/class_file_attrs_signature.png" alt="Signature属性"></p>
+<h5 id="6-3-7-11-BootstrapMethods属性"><a href="#6-3-7-11-BootstrapMethods属性" class="headerlink" title="6.3.7.11 BootstrapMethods属性"></a>6.3.7.11 BootstrapMethods属性</h5><p>一个复杂的变长属性，位于类文件的属性表中，用于保存invokedynamic指令引用的引导方法限定符。</p>
+<h3 id="6-4-字节码指令简介"><a href="#6-4-字节码指令简介" class="headerlink" title="6.4 字节码指令简介"></a>6.4 字节码指令简介</h3><p>Java虚拟机的指令由一个字节长度的、代表着特定操作含义的数字（操作码）以及跟随其后的零至多个代表此操作所需参数（称为操作数）而构成。由于Java虚拟机采用面向操作数栈而不是寄存器的架构，所以大多数的指令都不包含操作数，只有一个操作码。</p>
+<p>在指令集中大多数的指令都包含了其操作所对应的数据类型信息，如iload指令用于从局部变量表中加载int类型的数据到操作数栈中。</p>
+<ul>
+<li>加载和存储指令：iload/iload<em><n>等（加载局部变量到操作栈）、istore/istore</n></em><n>等（从操作数栈存储到局部变量表）、bipush/sipush/ldc/iconst_<n>（加载常量到操作数栈）、wide（扩充局部变量表访问索引）；</n></n></li>
+<li>运算指令：没有直接支持byte、short、char和boolean类型的算术指令而采用int代替；iadd/isub/imul/idiv加减乘除、irem求余、ineg取反、ishl/ishr位移、ior按位或、iand按位与、ixor按位异或、iinc局部变量自增、dcmpg/dcmpl比较；</li>
+<li>类型转换指令：i2b/i2c/i2s/l2i/f2i/f2l/d2i/d2l/d2f；</li>
+<li>对象创建与访问指令：new创建类实例、newarray/anewarray/multianewarray创建数组、getfield/putfield/getstatic/putstatic访问类字段或实例字段、baload/iaload/aaload把一个数组元素加载到操作数栈、bastore/iastore/aastore将一个操作数栈的值存储到数组元素中、arraylength取数组长度、instanceof/checkcast检查类实例类型；</li>
+<li>操作数栈管理指令：pop/pop2一个或两个元素出栈、dup/dup2复制栈顶一个或两个数组并将复制值或双份复制值重新压力栈顶、swap交互栈顶两个数值；</li>
+<li>控制转移指令：ifeq/iflt/ifnull条件分支、tableswitch/lookupswitch复合条件分支、goto/jsr/ret无条件分支；</li>
+<li>方法调用和返回指令：invokevirtual/invokeinterface/invokespecial/invokestatic/invokedynamic方法调用、ireturn/lreturn/areturn/return方法返回；</li>
+<li>异常处理指令：athrow</li>
+<li>同步指令：monitorenter/monitorexit</li>
+</ul>
+<h3 id="6-5-公有设计和私有实现"><a href="#6-5-公有设计和私有实现" class="headerlink" title="6.5 公有设计和私有实现"></a>6.5 公有设计和私有实现</h3><ul>
+<li>Java虚拟机的实现必须能够读取Class文件并精确实现包含在其中的Java虚拟机代码的含义；</li>
+<li>但一个优秀的虚拟机实现，通常会在满足虚拟机规范的约束下具体实现做出修改和优化；</li>
+<li>虚拟机实现的方式主要有两种：将输入的Java虚拟机代码在加载或执行时翻译成另外一种虚拟机的指令集或宿主主机CPU的本地指令集。</li>
+</ul>
+<h3 id="6-6-Class文件结构的发展"><a href="#6-6-Class文件结构的发展" class="headerlink" title="6.6 Class文件结构的发展"></a>6.6 Class文件结构的发展</h3><ul>
+<li>Class文件结构一直比较稳定，主要的改进集中向访问标志、属性表这些可扩展的数据结构中添加内容；</li>
+<li>Class文件格式所具备的平台中立、紧凑、稳定和可扩展的特点，是Java技术体系实现平台无关、语言无关两项特性的重要支柱；</li>
+</ul>
+<h3 id="6-7-本章小结"><a href="#6-7-本章小结" class="headerlink" title="6.7 本章小结"></a>6.7 本章小结</h3><p>本章详细讲解了Class文件结构的各个部分，通过一个实例演示了Class的数据是如何存储和访问的，后面的章节将以动态的、运行时的角度去看看字节码在虚拟机执行引擎是怎样被解析执行的。</p>
+<p><strong>系列读书笔记</strong></p>
+<ul>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part1">《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part2">《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part3">《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part4">《深入理解Java虚拟机》读书笔记4：类文件结构</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part5">《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part6">《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part7">《深入理解Java虚拟机》读书笔记7：高效并发</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+            <a href="/tags/虚拟机/" rel="tag"># 虚拟机</a>
+          
+            <a href="/tags/类文件/" rel="tag"># 类文件</a>
+          
+            <a href="/tags/常量池/" rel="tag"># 常量池</a>
+          
+            <a href="/tags/字节码/" rel="tag"># 字节码</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/learning_guice/" rel="next" title="Guice简明教程">
+                <i class="fa fa-chevron-left"></i> Guice简明教程
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/deep_in_jvm_notes_part5/" rel="prev" title="《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎">
+                《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/deep_in_jvm_notes_part4/"
+           data-title="《深入理解Java虚拟机》读书笔记4：类文件结构" data-url="http://ginobefunny.com/post/deep_in_jvm_notes_part4/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第三部分-虚拟机执行子系统"><span class="nav-text">第三部分 虚拟机执行子系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第六章-类文件结构"><span class="nav-text">第六章 类文件结构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#6-1-概述"><span class="nav-text">6.1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-2-无关性的基石"><span class="nav-text">6.2 无关性的基石</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-3-Class类文件的结构"><span class="nav-text">6.3 Class类文件的结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-1-魔数和版本"><span class="nav-text">6.3.1 魔数和版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-2-常量池"><span class="nav-text">6.3.2 常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-3-访问标志"><span class="nav-text">6.3.3 访问标志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-4-类索引、父类索引与接口索引集合"><span class="nav-text">6.3.4 类索引、父类索引与接口索引集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-5-字段表集合"><span class="nav-text">6.3.5 字段表集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-6-方法表集合"><span class="nav-text">6.3.6 方法表集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-7-属性表集合"><span class="nav-text">6.3.7 属性表集合</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-1-Code属性"><span class="nav-text">6.3.7.1 Code属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-2-Exceptions属性"><span class="nav-text">6.3.7.2 Exceptions属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-3-LineNumberTable属性"><span class="nav-text">6.3.7.3 LineNumberTable属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-4-LocalVariableTable属性"><span class="nav-text">6.3.7.4 LocalVariableTable属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-5-SourceFile属性"><span class="nav-text">6.3.7.5 SourceFile属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-6-ConstantValue属性"><span class="nav-text">6.3.7.6 ConstantValue属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-7-InnerClass属性"><span class="nav-text">6.3.7.7 InnerClass属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-8-Deprecated及Synthetic属性"><span class="nav-text">6.3.7.8 Deprecated及Synthetic属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-9-StackMapTable属性"><span class="nav-text">6.3.7.9 StackMapTable属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-10-Signature属性"><span class="nav-text">6.3.7.10 Signature属性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-3-7-11-BootstrapMethods属性"><span class="nav-text">6.3.7.11 BootstrapMethods属性</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-4-字节码指令简介"><span class="nav-text">6.4 字节码指令简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-5-公有设计和私有实现"><span class="nav-text">6.5 公有设计和私有实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-6-Class文件结构的发展"><span class="nav-text">6.6 Class文件结构的发展</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-7-本章小结"><span class="nav-text">6.7 本章小结</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

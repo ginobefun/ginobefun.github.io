@@ -1,0 +1,1164 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,读书笔记,性能调优,JVM,虚拟机,性能监控," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第三部分对应原书的第四章和第五章，主要介绍虚拟机的性能监控、故障处理及调优实战。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战">
+<meta property="og:url" content="http://ginobefunny.com/post/deep_in_jvm_notes_part3/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第三部分对应原书的第四章和第五章，主要介绍虚拟机的性能监控、故障处理及调优实战。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_in_sun_jdk.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jps_opt.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jps.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstat_opt.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstat.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jinfo.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jmap_opt.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jmap.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jhat.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jhat_view.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstack_opt.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstack.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_hsdis.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_hsdis_result.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_visualvm_2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_direct_memory_error.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_jvm_coredown.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_incorr_collection1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_incorr_collection2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_virtual_memory.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_eclipse.png">
+<meta property="og:updated_time" content="2017-01-31T09:49:32.478Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战">
+<meta name="twitter:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第三部分对应原书的第四章和第五章，主要介绍虚拟机的性能监控、故障处理及调优实战。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_in_sun_jdk.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/deep_in_jvm_notes_part3/"/>
+
+
+
+
+
+  <title> 《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/deep_in_jvm_notes_part3/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-11T19:30:12+08:00">
+                2017-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>国内JVM相关书籍NO.1，Java程序员必读。读书笔记第三部分对应原书的第四章和第五章，主要介绍虚拟机的性能监控、故障处理及调优实战。<br><a id="more"></a></p>
+<h2 id="第四章-虚拟机性能监控与故障处理工具"><a href="#第四章-虚拟机性能监控与故障处理工具" class="headerlink" title="第四章 虚拟机性能监控与故障处理工具"></a>第四章 虚拟机性能监控与故障处理工具</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>定位问题时，知识和经验是关键基础、数据（运行日志、异常堆栈、GC日志、线程快照、堆转储快照）是依据、工具是运用知识处理数据的手段。</p>
+<h3 id="JDK的命令行工具"><a href="#JDK的命令行工具" class="headerlink" title="JDK的命令行工具"></a>JDK的命令行工具</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_in_sun_jdk.png" alt="Sun JDK工具"></p>
+<h4 id="jps-虚拟机进程状况工具"><a href="#jps-虚拟机进程状况工具" class="headerlink" title="jps: 虚拟机进程状况工具"></a>jps: 虚拟机进程状况工具</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jps_opt.png" alt="jsp options"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jps.png" alt="jsp"></p>
+<ul>
+<li>功能：可以列出正在运行的虚拟机进程，并线上虚拟机执行的主类名称及其本地虚拟机唯一ID（LVMID）；</li>
+<li>对于本地虚拟机来说，LVMID和操作系统的进程ID是一致的；</li>
+<li>其他的工具通常都需要依赖jps获取LVMID；</li>
+<li>主要选项：-q（只输出LVMID）、-m（输出传给main函数的参数）、-l（输出主类的全名）、-v（输出虚拟机启动JVM参数）；</li>
+</ul>
+<h4 id="jstat：虚拟机统计信息监视工具"><a href="#jstat：虚拟机统计信息监视工具" class="headerlink" title="jstat：虚拟机统计信息监视工具"></a>jstat：虚拟机统计信息监视工具</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstat_opt.png" alt="jstat options"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstat.png" alt="jstat"></p>
+<ul>
+<li>功能：监视虚拟机各种运行状态信息，包括类装载、内存、垃圾收集、JIT等；</li>
+<li>纯文本监控首选；</li>
+</ul>
+<h4 id="jinfo：Java配置信息工具"><a href="#jinfo：Java配置信息工具" class="headerlink" title="jinfo：Java配置信息工具"></a>jinfo：Java配置信息工具</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jinfo.png" alt="jinfo"></p>
+<ul>
+<li>功能：实时地查看虚拟机各项参数。虽然jps -v可以查看虚拟机启动参数，但是无法查看一些系统默认的参数。</li>
+<li>支持运行期修改参数的能力，格式为“jinfo -flag name=value pid”；</li>
+</ul>
+<h4 id="jmap：Java内存映像工具"><a href="#jmap：Java内存映像工具" class="headerlink" title="jmap：Java内存映像工具"></a>jmap：Java内存映像工具</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jmap_opt.png" alt="jmap options"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jmap.png" alt="jmap"></p>
+<ul>
+<li>功能：用于生成堆转储快照（一般称为heapdump或dump文件）；</li>
+<li>其他可生成heapdump的方式：使用参数-XX:+HeapDumpOnOutOfMemoryError；使用参数-XX:+HeapDumpOnCtrlBreak然后使用Ctrl+Break生成；Linux系统使用kill -3生成；</li>
+<li>另外它还可以查询finalize执行队列、Java堆和永久代的详细信息；</li>
+</ul>
+<h4 id="jhat：虚拟机堆转储快照分析工具"><a href="#jhat：虚拟机堆转储快照分析工具" class="headerlink" title="jhat：虚拟机堆转储快照分析工具"></a>jhat：虚拟机堆转储快照分析工具</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jhat.png" alt="jhat"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jhat_view.png" alt="jhat效果"></p>
+<ul>
+<li>功能：用于分析jmap生成的heapdump。其内置了一个微型的HTTP服务器，可以在浏览器查看分析结果；</li>
+<li>实际很少用jhat，主要有两个原因：一是分析工程会耗用服务器资源；功能相对BisualVM、IBM HeapAnalyzer较为简陋；</li>
+</ul>
+<h4 id="jstack：Java堆栈跟踪工具"><a href="#jstack：Java堆栈跟踪工具" class="headerlink" title="jstack：Java堆栈跟踪工具"></a>jstack：Java堆栈跟踪工具</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstack_opt.png" alt="jstack options"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_jstack.png" alt="jstack"></p>
+<ul>
+<li>功能：用于生成虚拟机当前时刻的线程快照（一般称为threaddump或javacore文件）。javacore主要目的是定位线程出现长时间停顿的原因，比如死锁、死循环、请求外部资源响应长等；</li>
+<li>另外JDK 1.5后Thread类新增了getAllStackTraces()方法，可以基于此自己增加管理页面来分析；</li>
+</ul>
+<h4 id="HSDIS：JIT生成代码反编译"><a href="#HSDIS：JIT生成代码反编译" class="headerlink" title="HSDIS：JIT生成代码反编译"></a>HSDIS：JIT生成代码反编译</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_hsdis.png" alt="HSDIS"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_hsdis_result.png" alt="HSDIS Output"></p>
+<ul>
+<li>现代虚拟机的实现慢慢地和虚拟机规范产生差距，如果要分析程序如果执行，最常见的就是通过软件调试工具（GDB、Windbg等）断点调试，但是对于Java来说，很多执行代码是通过JIT动态生成到CodeBuffer中的；</li>
+<li>功能：HSDIS是官方推荐的HotSpot虚拟机JIT编译代码的反汇编工具，它包含在HotSpot虚拟机的源码中但没有提供编译后的程序，可以自己下载放到JDK的相关目录里；</li>
+</ul>
+<h3 id="JDK的可视化工具"><a href="#JDK的可视化工具" class="headerlink" title="JDK的可视化工具"></a>JDK的可视化工具</h3><h4 id="JConsole：Java监视与管理控制台"><a href="#JConsole：Java监视与管理控制台" class="headerlink" title="JConsole：Java监视与管理控制台"></a>JConsole：Java监视与管理控制台</h4><ul>
+<li>是一种基于JMX的可视化监控和管理工具，它管理部分的功能是针对MBean进行管理，由于MBean可以使用代码、中间件服务器或者所有符合JMX规范的软件进行访问，因此这里着重介绍JConsole的监控功能；</li>
+<li>通过jconsole命令启动JConsole后，会自动搜索本机所有虚拟机进程。另外还支持远程进程的监控；</li>
+<li>进入主界面，支持查看以下标签页：概述、内存、线程、类、VM摘要和MBean；</li>
+</ul>
+<h4 id="VisualVM：多合一故障处理工具"><a href="#VisualVM：多合一故障处理工具" class="headerlink" title="VisualVM：多合一故障处理工具"></a>VisualVM：多合一故障处理工具</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/tools_visualvm_2.png" alt="VisualVM"></p>
+<ul>
+<li>目前为止JDK发布的功能最强调的运行监控和故障处理程序，另外还支持性能分析；</li>
+<li>VisualVM还有一个很大的优点：不需要被监视的程序基于特殊Agent运行，对应用程序的实际性能影响很小，可直接应用在生成环境中；</li>
+<li>VisualVM基于NetBeans平台开发，具备插件扩展功能的特性，基于插件可以做到：显示虚拟机进程以及进程配置、环境信息（jps、jinfo）、监视应用程序的CPU、GC、堆、方法区以及线程的信息（jstat、jstack）、dump以及分析堆转储快照（jmap、jhat）、方法级的程序运行性能分析，找出被调用最多运行时间最长的方法、离线程序快照（收集运行时配置、线程dump、内存dump等信息建立快照）、其他plugins的无限可能。</li>
+<li>使用jvisualvm首次启动时需要在线自动安装插件（也可手工安装）；</li>
+<li>特色功能：生成浏览堆转储快照（摘要、类、实例标签页、OQL控制台）、分析程序性能（Profiler页签可以录制一段时间程序每个方法执行次数和耗时）、BTrace动态日志跟踪（不停止目标程序运行的前提下通过HotSwap技术动态加入调试代码）；</li>
+</ul>
+<h3 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h3><p>本章介绍了随JDK发布的6个命令行工具以及两个可视化的故障处理工具，灵活运行这些工具可以给问题处理带来很多便利。我的总体感觉是可视化工具虽然强大，但是加载速度相比命令行工具慢很多，这个时候专注于某个功能的命令行工具是更优的选择。</p>
+<h2 id="第五章-调优案例分析与实战"><a href="#第五章-调优案例分析与实战" class="headerlink" title="第五章 调优案例分析与实战"></a>第五章 调优案例分析与实战</h2><h3 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h3><p>除了第四章介绍的知识和工具外，在处理实际问题时，经验同样很重要。</p>
+<h3 id="案例分析"><a href="#案例分析" class="headerlink" title="案例分析"></a>案例分析</h3><p>以下的案例大部分来源作者处理过的一些问题，还有小部分是网络上笔记有代表的案例总结。</p>
+<h4 id="高性能硬件上的程序部署策略"><a href="#高性能硬件上的程序部署策略" class="headerlink" title="高性能硬件上的程序部署策略"></a>高性能硬件上的程序部署策略</h4><h5 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h5><ul>
+<li>一个每天15万PV左右的在线文档网站升级了硬件，4个CPU，16GB物理内存，操作系统为64位CentOS 5.4，使用Resin作为Web服务器，没有部署其他的应用。</li>
+<li>管理员选用了64位的JDK 1.5，并通过-Xmx和-Xms参数将Java堆固定在12GB。</li>
+<li>使用一段时间不定期出现长时间失去响应的情况；</li>
+</ul>
+<h5 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h5><ul>
+<li>升级前使用32位系统，Java堆设置为1.5GB，只是感觉运行缓慢没有明显的卡顿；</li>
+<li>通过监控发现是由于GC停顿导致的，虚拟机运行在Server模式，默认使用吞吐量优先收集器，回收12GB的堆，一次Full GC的停顿时间高达14秒；</li>
+<li>并且由于程序设计的原因，很多文档从磁盘加载到内存中，导致内存中出现很多由文档序列化生成的大对象，这些大对象进入了老年代，没有在Minor GC中清理掉；</li>
+</ul>
+<h5 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h5><ul>
+<li>在虚拟机上建立5个32位的JDK逻辑集群，每个进程按2GB内存计算（其中堆固定为1.5GB），另外建议一个Apache服务作为前端均衡代理访问门户；</li>
+<li>另外考虑服务压力主要在磁盘和内存访问，CPU资源敏感度较低，因此改为CMS收集器；</li>
+<li>最终服务没有再出现长时间停顿，速度比硬件升级前有较大提升；</li>
+</ul>
+<h4 id="集群间同步导致的内存溢出"><a href="#集群间同步导致的内存溢出" class="headerlink" title="集群间同步导致的内存溢出"></a>集群间同步导致的内存溢出</h4><h5 id="问题描述-1"><a href="#问题描述-1" class="headerlink" title="问题描述"></a>问题描述</h5><ul>
+<li>一个基于B/S的MIS系统，硬件为两台2个CPU、8GB内存的HP小型机，服务器为WebLogic 9.2，每台机器启动了3个WebLogic实例，构建一个6台节点的亲和式集群（一个固定的用户请求永远分配到固定的节点处理）。</li>
+<li>由于有部分数据需要共享，原先采用数据库，后因为读写性能问题使用了JBossCache构建了一个全局缓存；</li>
+<li>正常使用一段较长的时间，最近不定期出现了多次的内存溢出问题；</li>
+</ul>
+<h5 id="问题分析-1"><a href="#问题分析-1" class="headerlink" title="问题分析"></a>问题分析</h5><ul>
+<li>监控发现，服务内存回收状况一直正常，每次内存回收后都能恢复到一个稳定的可用空间</li>
+<li>此次未升级业务代码，排除新修改代码引入的内存泄漏问题；</li>
+<li>服务增加-XX:+HeapDumpOnOutOfMemoryError参数，在最近一次内存溢出时，分析heapdump文件发现存在大量的org.jgroups.protocols.pbcast,NAKACK对象；</li>
+<li>最终分析发现是由于JBossCache的NAKACK栈在页面产生大量请求时，有个负责安全校验的全局Filter导致集群各个节点之间网络交互非常频繁，当网络情况不能满足传输要求时，大量的需要失败重发的数据在内存中不断堆积导致内存溢出。</li>
+</ul>
+<h5 id="解决办法-1"><a href="#解决办法-1" class="headerlink" title="解决办法"></a>解决办法</h5><ul>
+<li>JBossCache版本改进；</li>
+<li>程序设计优化，JBossCahce集群缓存同步，不大适合有频繁写操作的情况；</li>
+</ul>
+<h4 id="堆外内存导致的溢出错误"><a href="#堆外内存导致的溢出错误" class="headerlink" title="堆外内存导致的溢出错误"></a>堆外内存导致的溢出错误</h4><h5 id="问题描述-2"><a href="#问题描述-2" class="headerlink" title="问题描述"></a>问题描述</h5><ul>
+<li>一个学校的小型项目，基于B/S的电子考试系统，服务器是Jetty 7.1.4，硬件是一台普通PC机，Core i5 CPU，4GB内存，运行32位Windows操作系统；</li>
+<li>为了实现客户端能实时地从服务器端接收考试数据，使用了逆向AJAX技术（也称为Comet或Server Side Push），选用CometD 1.1.1作为服务端推送框架；</li>
+<li>测试期间发现服务端不定期抛出内存溢出；加入-XX:+HeapDumpOnOutOfMemoryError后抛出内存溢出时什么问题都没有，采用jstat观察GC并不频繁且GC回收正常；最后在内存溢出后从系统日志发现如下异常堆栈：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_direct_memory_error.png" alt="堆外内存溢出日志"></p>
+<h5 id="问题分析-2"><a href="#问题分析-2" class="headerlink" title="问题分析"></a>问题分析</h5><ul>
+<li>在第二章里曾经说过直接内存溢出的场景，垃圾收集时，虚拟机虽然会对直接内存进行回收，但它只能等老年代满了触发Full GC时顺便清理，否则只能等内存溢出时catch住然后调用System.gc()，如果虚拟机还是不听（比如打开了-XX:+DisableExplictGC）则只能看着堆中还有许多空闲内存而溢出；</li>
+<li>本案例中的CometD框架正好有大量的NIO操作需要使用直接内存；</li>
+</ul>
+<h4 id="外部命令导致系统缓慢"><a href="#外部命令导致系统缓慢" class="headerlink" title="外部命令导致系统缓慢"></a>外部命令导致系统缓慢</h4><h5 id="问题描述-3"><a href="#问题描述-3" class="headerlink" title="问题描述"></a>问题描述</h5><ul>
+<li>一个数字校园应用系统，运行在一个4个CPU的Solaris 10操作系统上，中间件为GlassFish服务器；</li>
+<li>系统在做大并发压力测试时，发现请求响应时间比较慢，通过监控工具发现CPU使用率很高，并且系统占用绝大多数的CPU资源的程序并不是应用系统本身；</li>
+<li>通过Dtrace脚本发现最消耗CPU的竟然是fork系统调用（Linux用来产生新进程的）；</li>
+</ul>
+<h5 id="问题分析-3"><a href="#问题分析-3" class="headerlink" title="问题分析"></a>问题分析</h5><ul>
+<li>最终发现是每个用户请求需要执行一个外部的shell脚本来获取一些系统信息，是通过Runtime.getRuntime().exec()方法调用的；</li>
+<li>Java虚拟机在执行这个命令时先克隆一个和当前虚拟机拥有一样环境变量的进程，再用这个新进程去执行外部命令，如果频繁地执行这个操作，系统消耗会很大；</li>
+<li>最终修改时改用Java的API去获取这些信息，系统恢复了正常；</li>
+</ul>
+<h4 id="服务器JVM进程奔溃"><a href="#服务器JVM进程奔溃" class="headerlink" title="服务器JVM进程奔溃"></a>服务器JVM进程奔溃</h4><h5 id="问题描述-4"><a href="#问题描述-4" class="headerlink" title="问题描述"></a>问题描述</h5><ul>
+<li>一个基于B/S的MIS系统，硬件为两台2个CPU、8GB内存的HP系统，服务器是WebLogic 9.2（和案例”集群间同步导致的内存溢出”相同的系统）；</li>
+<li>正常运行一段时间后发现运行期间频繁出现集群节点的虚拟机进程自动关闭的现象，留下一个hs_err_pid###.log，奔溃前不久都发生大量相同的异常，日志如下所示：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_jvm_coredown.png" alt="JVM进程奔溃日志"></p>
+<h5 id="问题分析-4"><a href="#问题分析-4" class="headerlink" title="问题分析"></a>问题分析</h5><ul>
+<li>这是一个远端断开连接的异常，得知在MIS系统工作流的待办事项变化时需要通过Web服务通知OA门户系统；</li>
+<li>通过SoapUI测试发现调用后竟然需要长达3分钟才能返回，并且返回结果都是连接中断；</li>
+<li>由于MIS使用异步方式调用，两边处理速度不对等，导致在等待的线程和Socket连接越来越多，最终在超过虚拟机承受能力后进场奔溃；</li>
+<li>解决方法：将异步调用修改为生产者/消费者模型的消息队列处理，系统恢复正常；</li>
+</ul>
+<h4 id="不恰当数据结构导致内存占用过大"><a href="#不恰当数据结构导致内存占用过大" class="headerlink" title="不恰当数据结构导致内存占用过大"></a>不恰当数据结构导致内存占用过大</h4><h5 id="问题描述-5"><a href="#问题描述-5" class="headerlink" title="问题描述"></a>问题描述</h5><ul>
+<li>有一个后台RPC服务器，使用64位虚拟机，内存配置为-Xms4g -Xmx8g -Xmn1g，使用ParNew + CMS的收集器组合；</li>
+<li>平时Minor GC时间约在20毫秒内，但业务需要每10分钟加载一个约80MB的数据文件到内存进行数据分析，这些数据会在内存中形成超过100万个HashMap<long, long=""> Entry，在这段时间里Minor GC会超过500毫秒，这个时间过长，GC日志如下：</long,></li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_incorr_collection1.png" alt="不恰当数据结构GC日志1"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_incorr_collection2.png" alt="不恰当数据结构GC日志2"></p>
+<h5 id="问题分析-5"><a href="#问题分析-5" class="headerlink" title="问题分析"></a>问题分析</h5><ul>
+<li>在分析数据文件期间，800M的Eden空间在Minor GC后对象还是存活的，而ParNew垃圾收集器使用的是复制算法，把这些对象复制到Survivor并维持这些对象引用成为沉重的负担，导致GC时间变长；</li>
+<li>从GC可以将Survivor空间去掉（加入参数-XX:SurvivorRatio=65536、-XX:MaxTenuringThreshold=0或者-XX:AlwaysTenure），让新生代存活的对象第一次Minor GC后立即进入老年代，等到Major GC再清理。这种方式可以治标，但也有很大的副作用。</li>
+<li>另外一种是从程序设计的角度看，HashMap<long, long="">结构中，只有key和value所存放的两个长整形数据是有效数据，共16B（2 * 8B），而实际耗费的内存位88B（长整形包装为Long对象需要多8B的MarkWord、8B的Klass指针，Map.Entry多了16B的对象头、8B的next字段和4B的int型hash字段、为对齐添加的4B空白填充，另外还有8B的Entry引用），内存空间效率（18%）太低。</long,></li>
+</ul>
+<h4 id="由Windows虚拟内存导致的长时间停顿"><a href="#由Windows虚拟内存导致的长时间停顿" class="headerlink" title="由Windows虚拟内存导致的长时间停顿"></a>由Windows虚拟内存导致的长时间停顿</h4><h5 id="问题描述-6"><a href="#问题描述-6" class="headerlink" title="问题描述"></a>问题描述</h5><ul>
+<li>有一个带心跳检测功能的GUI桌面程序，每15秒发送一次心跳检查信号，如果对方30秒内都没有信信号返回，则认为和对方已断开连接；</li>
+<li>程序上线后发现有误报，查询日志发现误报是因为程序会偶尔出现间隔约1分钟左右的时间完全无日志输出，处于停顿状态；</li>
+<li>另外观察到GUI程序最小化时，资源管理中显示的占用内存大幅减小，但虚拟内存没变化；</li>
+<li>因为是桌面程序，所需内存不大（-Xmx256m），加入参数-XX:+PrintGCApplicationStoppedTime -XX：PrintGCDateStamps -Xloggc:gclog.log后，从日志文件确认是GC导致的，大部分的GC时间在100ms以内，但偶尔会出现一次接近1min的GC；</li>
+<li>加入参数-XX：PrintReferenceGC参数查看GC的具体日志信息，发现执行GC动作的时间并不长，但从准备开始GC到真正GC直接却消耗了大部分时间，如下所示：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_virtual_memory.png" alt="虚拟内存案例日志"></p>
+<h5 id="问题分析-6"><a href="#问题分析-6" class="headerlink" title="问题分析"></a>问题分析</h5><ul>
+<li>初步怀疑是最小化时工作内存被自动交换到磁盘的页面文件中，这样发生GC时就有可能因为恢复页面文件的操作而导致不正常的GC停顿；</li>
+<li>在MSDN查证确认了这种猜想，加入参数-Dsun.awt.keepWorkingSetOnMinimize=true来解决；这个参数在很多AWT程序如VisualVM都有应用。</li>
+</ul>
+<h3 id="实战：Eclipse运行速度调优"><a href="#实战：Eclipse运行速度调优" class="headerlink" title="实战：Eclipse运行速度调优"></a>实战：Eclipse运行速度调优</h3><ul>
+<li>升级JDK；</li>
+<li>设置-XX:MaxPermSize=256M解决Eclipse判断虚拟机版本的bug；</li>
+<li>加入参数-Xverfify:none禁止字节码验证；</li>
+<li>虚拟机运行在client模式，采用C1轻量级编译器；</li>
+<li>把-Xms和-XX：PermSize参数设置为-Xmx和-XX:MaxPermSize一样，这样强制虚拟机启动时把老年代和永久代的容量固定下来，避免运行时自动扩展；</li>
+<li>增加参数-XX：DisableExplicitGC屏蔽掉显式GC触发；</li>
+<li>采用ParNew+CMS的垃圾收集器组合；</li>
+<li>最终从Eclipse启动耗时15秒到7秒左右， eclipse.ini配置如下：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/example_eclipse.png" alt="Eclipse调优"></p>
+<h3 id="本章小结-1"><a href="#本章小结-1" class="headerlink" title="本章小结"></a>本章小结</h3><p>Java虚拟机的内存管理和垃圾收集是虚拟机结构体系最重要的组成部分，对程序的性能和稳定性有非常大的影响。通过案例和实战部分，加深了对前面理论知识和工具的理解。</p>
+<p><strong>系列读书笔记</strong></p>
+<ul>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part1">《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part2">《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part3">《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part4">《深入理解Java虚拟机》读书笔记4：类文件结构</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part5">《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part6">《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part7">《深入理解Java虚拟机》读书笔记7：高效并发</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/性能调优/" rel="tag"># 性能调优</a>
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+            <a href="/tags/虚拟机/" rel="tag"># 虚拟机</a>
+          
+            <a href="/tags/性能监控/" rel="tag"># 性能监控</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/deep_in_jvm_notes_part2/" rel="next" title="《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略">
+                <i class="fa fa-chevron-left"></i> 《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/elasticsearch_plugins_and_integrations/" rel="prev" title="Elasticsearch插件与集成介绍">
+                Elasticsearch插件与集成介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/deep_in_jvm_notes_part3/"
+           data-title="《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战" data-url="http://ginobefunny.com/post/deep_in_jvm_notes_part3/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第四章-虚拟机性能监控与故障处理工具"><span class="nav-text">第四章 虚拟机性能监控与故障处理工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK的命令行工具"><span class="nav-text">JDK的命令行工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#jps-虚拟机进程状况工具"><span class="nav-text">jps: 虚拟机进程状况工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jstat：虚拟机统计信息监视工具"><span class="nav-text">jstat：虚拟机统计信息监视工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jinfo：Java配置信息工具"><span class="nav-text">jinfo：Java配置信息工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jmap：Java内存映像工具"><span class="nav-text">jmap：Java内存映像工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jhat：虚拟机堆转储快照分析工具"><span class="nav-text">jhat：虚拟机堆转储快照分析工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#jstack：Java堆栈跟踪工具"><span class="nav-text">jstack：Java堆栈跟踪工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#HSDIS：JIT生成代码反编译"><span class="nav-text">HSDIS：JIT生成代码反编译</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK的可视化工具"><span class="nav-text">JDK的可视化工具</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JConsole：Java监视与管理控制台"><span class="nav-text">JConsole：Java监视与管理控制台</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VisualVM：多合一故障处理工具"><span class="nav-text">VisualVM：多合一故障处理工具</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本章小结"><span class="nav-text">本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第五章-调优案例分析与实战"><span class="nav-text">第五章 调优案例分析与实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述-1"><span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#案例分析"><span class="nav-text">案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#高性能硬件上的程序部署策略"><span class="nav-text">高性能硬件上的程序部署策略</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题描述"><span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分析"><span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解决办法"><span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#集群间同步导致的内存溢出"><span class="nav-text">集群间同步导致的内存溢出</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题描述-1"><span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分析-1"><span class="nav-text">问题分析</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解决办法-1"><span class="nav-text">解决办法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#堆外内存导致的溢出错误"><span class="nav-text">堆外内存导致的溢出错误</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题描述-2"><span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分析-2"><span class="nav-text">问题分析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外部命令导致系统缓慢"><span class="nav-text">外部命令导致系统缓慢</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题描述-3"><span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分析-3"><span class="nav-text">问题分析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器JVM进程奔溃"><span class="nav-text">服务器JVM进程奔溃</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题描述-4"><span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分析-4"><span class="nav-text">问题分析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不恰当数据结构导致内存占用过大"><span class="nav-text">不恰当数据结构导致内存占用过大</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题描述-5"><span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分析-5"><span class="nav-text">问题分析</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#由Windows虚拟内存导致的长时间停顿"><span class="nav-text">由Windows虚拟内存导致的长时间停顿</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题描述-6"><span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#问题分析-6"><span class="nav-text">问题分析</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实战：Eclipse运行速度调优"><span class="nav-text">实战：Eclipse运行速度调优</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#本章小结-1"><span class="nav-text">本章小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,1196 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,读书笔记,JVM,虚拟机,字节码,类加载器,双亲委派,执行引擎,编译器,解释器," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第五部分对应原书的第七章至第九章，主要介绍虚拟机的类加载机制、字节码执行引擎，并通过实例和实战加深对虚拟机执行子系统这一部分的理解。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎">
+<meta property="og:url" content="http://ginobefunny.com/post/deep_in_jvm_notes_part5/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第五部分对应原书的第七章至第九章，主要介绍虚拟机的类加载机制、字节码执行引擎，并通过实例和实战加深对虚拟机执行子系统这一部分的理解。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/classloader_extend.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_stackframe.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_3.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_4.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_5.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_6.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_7.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_tomcat_classloader.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_osgi_classloader.png">
+<meta property="og:updated_time" content="2017-01-31T09:49:55.824Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎">
+<meta name="twitter:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第五部分对应原书的第七章至第九章，主要介绍虚拟机的类加载机制、字节码执行引擎，并通过实例和实战加深对虚拟机执行子系统这一部分的理解。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/classloader_extend.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/deep_in_jvm_notes_part5/"/>
+
+
+
+
+
+  <title> 《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/deep_in_jvm_notes_part5/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-22T14:57:08+08:00">
+                2017-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/JVM/" itemprop="url" rel="index">
+                    <span itemprop="name">JVM</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>国内JVM相关书籍NO.1，Java程序员必读。读书笔记第五部分对应原书的第七章至第九章，主要介绍虚拟机的类加载机制、字节码执行引擎，并通过实例和实战加深对虚拟机执行子系统这一部分的理解。<br><a id="more"></a></p>
+<h2 id="第七章-虚拟机类加载机制"><a href="#第七章-虚拟机类加载机制" class="headerlink" title="第七章 虚拟机类加载机制"></a>第七章 虚拟机类加载机制</h2><h3 id="7-1-概述"><a href="#7-1-概述" class="headerlink" title="7.1 概述"></a>7.1 概述</h3><ul>
+<li>虚拟机把描述类的数据从Class文件加载到内存，并对数据进行校验、转换解析和初始化，最终形成可以被虚拟机直接使用的Java类型，这就是虚拟机的类加载机制。</li>
+<li>在Java语言里面，类型的加载、连接和初始化过程都是在程序运行期间完成，这虽然增量一些性能开销，但是会为Java应用程序提供高度的灵活性。</li>
+</ul>
+<h3 id="7-2-类加载的时机"><a href="#7-2-类加载的时机" class="headerlink" title="7.2 类加载的时机"></a>7.2 类加载的时机</h3><ul>
+<li>类的整个生命周期：加载、验证、准备、解析、初始化、使用和卸载；其中验证、准备和解析统称为连接；</li>
+<li>虚拟机规范没有强制约束类加载的时机，但严格规定了有且只有5种情况必须立即对类进行初始化：遇到new、getstatic、putstatic和invokestatic指令；对类进行反射调用时如果类没有进行过初始化；初始化时发现父类还没有进行初始化；虚拟机启动指定的主类；动态语言中MethodHandle实例最后解析结果REF_getStatic等的方法句柄对应的类没有初始化时；</li>
+</ul>
+<h3 id="7-3-类加载的过程"><a href="#7-3-类加载的过程" class="headerlink" title="7.3 类加载的过程"></a>7.3 类加载的过程</h3><h4 id="7-3-1-加载"><a href="#7-3-1-加载" class="headerlink" title="7.3.1 加载"></a>7.3.1 加载</h4><ul>
+<li>通过一个类的全限定名来获取定义此类的二进制字节流；</li>
+<li>将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构；</li>
+<li>在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口；</li>
+</ul>
+<h4 id="7-3-2-验证"><a href="#7-3-2-验证" class="headerlink" title="7.3.2 验证"></a>7.3.2 验证</h4><ul>
+<li>验证是连接阶段的第一步，其目的是确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并且不会危害虚拟机自身的安全；</li>
+<li>验证阶段是非常重要的，这个阶段是否严谨决定了Java虚拟机是否能承受恶意代码的攻击；</li>
+<li>校验动作：文件格式验证（基于二进制字节流）、元数据验证（对类的元数据语义分析）、字节码验证（对方法体语义分析）、符号引用验证（对类自身以外的信息进行匹配性校验）；</li>
+</ul>
+<h4 id="7-3-3-准备"><a href="#7-3-3-准备" class="headerlink" title="7.3.3 准备"></a>7.3.3 准备</h4><ul>
+<li>正式为变量分配内存并设置类变量初始值的阶段，这些变量所使用的内存都将在这个方法区中进行分配；</li>
+<li>需要强调两点：这时候内存分配的仅包括类变量，而不包括类实例变量；这里所说的初始化通常情况下是数据类型的零值，真正的赋值是在初始化阶段，如果是static final的则是直接赋值；</li>
+</ul>
+<h4 id="7-3-4-解析"><a href="#7-3-4-解析" class="headerlink" title="7.3.4 解析"></a>7.3.4 解析</h4><ul>
+<li>解析阶段是虚拟机将常量池内的符号引用（如CONSTANT_Class_info、CONSTANT_Fieldref_info、CONSTANT_Methodref_info等7种）替换为直接引用的过程；</li>
+<li>符号引用可以是任何形式的字面量，与虚拟机实现的内存布局无关，引用的目标并不一定已经加载到内存中；而直接引用是直接指向目标的指针、相对偏移量或是一个能间接定位到目标的句柄，它和虚拟机实现的内存布局相关，引用的目标必定以及在内存中存在；</li>
+<li>对同一个符号引用进行多次解析请求是很常见的事情，虚拟机实现可以对第一次解析的结果进行缓存；</li>
+</ul>
+<h4 id="7-3-5-初始化"><a href="#7-3-5-初始化" class="headerlink" title="7.3.5 初始化"></a>7.3.5 初始化</h4><ul>
+<li>是类加载过程的最后一步，真正开始执行类中定义的Java程序代码（或者说是字节码）；</li>
+<li>初始化阶段是执行类构造器<clinit>方法的过程，该方法是由编译器自动收集类中的所有类变量的赋值动作和静态语句块中的语句合并产生的；</clinit></li>
+<li><clinit>方法与类的构造函数（或者说是实例构造器<init>方法）不同，它不需要显式地调用父类构造器，虚拟机会保证在子类的<clinit>方法执行之前，父类的<clinit>方法已执行完毕；</clinit></clinit></init></clinit></li>
+<li>执行接口的<clinit>方法不需要先执行父接口的<clinit>方法，只有当父接口中定义的变量使用时父接口才会初始化，接口的实现类在初始化时也一样不会执行接口的<clinit>方法；</clinit></clinit></clinit></li>
+<li><clinit>方法初始化是加锁阻塞等待的，应当避免在<clinit>方法中有耗时很长的操作；</clinit></clinit></li>
+</ul>
+<h3 id="7-4-类加载器"><a href="#7-4-类加载器" class="headerlink" title="7.4 类加载器"></a>7.4 类加载器</h3><ul>
+<li>虚拟机设计团队把类加载阶段的“通过一个类的全限定名来获取描述此类的二进制字节流”这个动作放到虚拟机外部去实现，实现这个动作的代码模块称为类加载器；</li>
+<li>这时Java语言的一项创新，也是Java语言流行的重要原因，在类层次划分、OSGI、热部署、代码加密等领域大放异彩；</li>
+</ul>
+<h4 id="7-4-1-类与类加载器"><a href="#7-4-1-类与类加载器" class="headerlink" title="7.4.1 类与类加载器"></a>7.4.1 类与类加载器</h4><ul>
+<li>对于任意一个类，都需要由加载它的类加载器和这个类本身一同确立其在Java虚拟机的唯一性，每一个类加载器都拥有一个独立的类名称空间；</li>
+<li>比较两个类是否相等（如Class对象的equals方法、isAssignableFrom方法、isInstance方法），只有在这两个类是由同一个类加载器加载的前提下才有意义；</li>
+</ul>
+<h4 id="7-4-2-双亲委派模型"><a href="#7-4-2-双亲委派模型" class="headerlink" title="7.4.2 双亲委派模型"></a>7.4.2 双亲委派模型</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/classloader_extend.png" alt="双亲委派模型"></p>
+<ul>
+<li>三种系统提供的类加载器：启动类加载器（Bootstrap ClassLoader）、扩展类加载器（Extension ClassLoader）、应用程序类加载器（Application ClassLoader）；</li>
+<li>双亲委派模型要求除了顶层的启动类加载器外，其他的类加载器都应当有自己的父类加载器，这里一般不会以继承的关系来实现，而是使用组合的关系来复用父加载器的代码；</li>
+<li>其工作过程是：如果一个类加载器收到了类加载的请求，它首先不会自己去尝试加载这个类，而是把这个请求委派给父类加载器去完成，只有父类加载器反馈自己无法完成这个加载请求时（它的搜索范围中没有找到所需的类），子加载器才会尝试自己去加载；</li>
+<li>这样的好处是Java类随着它的类加载器具备了一种带有优先级的层次关系，对保证Java程序的稳定运作很重要；</li>
+<li>实现双亲委派的代码都集中在java.lang.ClassLoader的loadClass方法中，逻辑清晰易懂；</li>
+</ul>
+<h4 id="7-4-3-破坏双亲委派模型"><a href="#7-4-3-破坏双亲委派模型" class="headerlink" title="7.4.3 破坏双亲委派模型"></a>7.4.3 破坏双亲委派模型</h4><ul>
+<li>上一小节的双亲委派模型是Java设计者推荐给开发者的类加载器实现方法，但不是一个强制性的约束模型；</li>
+<li>典型的两种情况：为了解决JNI接口提供者（SPI）引入的线程上下文类加载器；为了程序动态性加强的OSGI的Bundle类加载器；</li>
+</ul>
+<h3 id="7-5-本章小结"><a href="#7-5-本章小结" class="headerlink" title="7.5 本章小结"></a>7.5 本章小结</h3><p>本章介绍了类加载过程的加载、验证、准备、解析和初始化五个阶段中虚拟机进行了哪些动作，还介绍了类加载器的工作原理及其对虚拟机的意义。下一章将一起看看虚拟机如果执行定义在Class文件里的字节码。</p>
+<h2 id="第八章-虚拟机字节码执行引擎"><a href="#第八章-虚拟机字节码执行引擎" class="headerlink" title="第八章 虚拟机字节码执行引擎"></a>第八章 虚拟机字节码执行引擎</h2><h3 id="8-1-概述"><a href="#8-1-概述" class="headerlink" title="8.1 概述"></a>8.1 概述</h3><ul>
+<li>执行引擎是Java虚拟机最核心的组成部分之一，区别于物理机的执行引擎是直接建立在处理器、硬件、指令集和操作系统层面上的，虚拟机的执行引擎是自己实现的，可以自行制定指令集与执行引擎的结构体系，并且能够执行哪些不被硬件直接支持的指令集格式；</li>
+<li>在虚拟机规范中制定了虚拟机字节码执行引擎的概念模型，该模型成为各种虚拟机执行引擎的统一外观；</li>
+<li>在不同的虚拟机实现里面，执行引擎在执行Java代码时可能会有解释执行和编译执行两种选择，也可能两者兼备，甚至还可能会包含几个不同级别的编译器执行引擎，但从外观来说是一致的：输入的都是字节码文件，处理过程是字节码解析的等效过程，输出的是执行结果。</li>
+</ul>
+<h3 id="8-2-运行时栈帧结构"><a href="#8-2-运行时栈帧结构" class="headerlink" title="8.2 运行时栈帧结构"></a>8.2 运行时栈帧结构</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_stackframe.png" alt="运行时栈帧结构"></p>
+<ul>
+<li>栈帧是用于支持虚拟机进行方法调用和方法执行的数据结构，它是虚拟机运行时数据区中的虚拟机栈的栈元素；</li>
+<li>栈帧存储了方法的局部变量表、操作数栈、动态连接和方法返回地址等信息，每一个方法从调用开始至执行完成的过程，都对应着一个栈帧在虚拟机里面从入栈到出栈的过程；</li>
+<li>栈帧需要分配多少内存在编译时就完全确定并写入到方法表的Code属性之中了，不会受到程序运行期变量数据的影响；</li>
+<li>对于执行引擎来说，在活动线程中只有位于栈顶的栈帧才算有效的，称为当前栈帧，与这个栈帧相关联的方法称为当前方法，执行引擎运行的所有字节码指令都只针对当前栈帧进行操作。</li>
+</ul>
+<h4 id="8-2-1-局部变量表"><a href="#8-2-1-局部变量表" class="headerlink" title="8.2.1 局部变量表"></a>8.2.1 局部变量表</h4><ul>
+<li>是一组变量值存储空间，用于存放方法参数和方法内部定义的局部变量，Code属性的max_locals确定了该方法所需要分配的局部变量表的最大容量；</li>
+<li>其容量以变量槽（Variable Slot）为最小单位，虚拟机规范允许Slot的长度随处理器、操作系统或虚拟机的不同而发生变化；</li>
+<li>一个Slot可以存放一个32位以内的数据类型，包括boolean、byte、char。short、int、float、reference和returnAddress这八种类型；对于64位的数据类型（long和double），虚拟机会以高位对齐的方式为其分配两个连续的Slot空间；</li>
+</ul>
+<h4 id="8-2-2-操作数栈"><a href="#8-2-2-操作数栈" class="headerlink" title="8.2.2 操作数栈"></a>8.2.2 操作数栈</h4><ul>
+<li>也常称为操作栈，它是一个后入先出栈；Code属性的max_stacks确定了其最大深度；</li>
+<li>比如整数加法的字节码指令iadd在运行的时候操作数栈中最接近栈顶的两个元素已经存入了两个int型的数值，当执行这个指令时，会将这两个int值出栈并相加，然后将相加的结果入栈；</li>
+<li>操作数栈中元素的类型必须与字节码指令的序列严格匹配；</li>
+<li>Java虚拟机的解释执行引擎称为“基于栈的执行引擎”，其中所指的栈就是操作数栈；</li>
+</ul>
+<h4 id="8-2-3-动态连接"><a href="#8-2-3-动态连接" class="headerlink" title="8.2.3 动态连接"></a>8.2.3 动态连接</h4><ul>
+<li>每个栈帧都包含一个执行运行时常量池中该栈帧所属方法引用，持有这个引用是为了支持方法调用过程中的动态连接（Dynamic Linking）；</li>
+<li>Class文件的常量池的符号引用，有一部分在类加载阶段或者第一次使用时就转换为直接引用，这种称为静态解析，而另外一部分在每一次运行期间转换为直接引用，这部分称为动态连接；</li>
+</ul>
+<h4 id="8-2-4-方法返回地址"><a href="#8-2-4-方法返回地址" class="headerlink" title="8.2.4 方法返回地址"></a>8.2.4 方法返回地址</h4><ul>
+<li>退出方法的方式：正常完成出口和异常完成出口；</li>
+<li>方法退出的过程实际上就等同于把当前栈帧出栈，因此退出时可能只需的操作有：恢复上层方法的局部变量表和操作数栈，把返回值压入调用者栈帧的操作数中，调整PC计数器的值以只需方法调用指令后面的一套指令等；</li>
+</ul>
+<h4 id="8-2-5-附加信息"><a href="#8-2-5-附加信息" class="headerlink" title="8.2.5 附加信息"></a>8.2.5 附加信息</h4><ul>
+<li>虚拟机规范允许具体的虚拟机实现增加一些规范里没有描述的信息到栈帧中，例如与调试相关的信息，这部分完成取决于具体的虚拟机实现；</li>
+</ul>
+<h3 id="方法调用"><a href="#方法调用" class="headerlink" title="方法调用"></a>方法调用</h3><ul>
+<li>方法调用并不等同于方法执行，方法调用阶段唯一的任务就是确定被调用方法的版本即调用哪一个方法，暂时还不涉及方法内部的具体运行过程；</li>
+<li>Class文件的编译过程中不报警传统编译的连接步骤，一切方法调用在Class文件里面存储的都只是符号引用，而不是方法在实际运行时内存布局的入口地址。这个特性给Java带来了更强大的动态扩展能力，但也使得Java方法调用过程变得相对复杂；</li>
+</ul>
+<h4 id="8-3-1-解析"><a href="#8-3-1-解析" class="headerlink" title="8.3.1 解析"></a>8.3.1 解析</h4><ul>
+<li>方法在程序真正运行之前就有一个可确定的调用版本，并且这个方法的调用版本在运行期是不可改变的，这类方法的调用称为解析；</li>
+<li>在Java语言中符合编译器可知、运行期不可变这个要求的方法，主要包括静态方法和私有方法两大类；</li>
+<li>五条方法调用字节码指令：invokestatic、invokespecial、invokevirtual、invokeinterface、invokedynamic；</li>
+<li>解析调用是一个静态的过程，在编译期间就完全确定，在类加载的解析阶段就会把涉及的符号引用全部转变为可确定的直接引用；而分派调用则可能是静态的也可能是动态的；</li>
+</ul>
+<h4 id="8-3-2-分派"><a href="#8-3-2-分派" class="headerlink" title="8.3.2 分派"></a>8.3.2 分派</h4><ul>
+<li>静态分派：“Human man = new Man();”语句中Human称为变量的静态类型，后面的Man称为变量的实际类型；静态类型和实际类型在程序中都可以发生一些变化，区别是静态类型的变化仅仅在使用时发生，变量本身的静态类型不会被改变，并且最终的静态类型是在编译器可知的；而实际类型的变化在运行期才确定，编译器在编译程序的时候并不知道一个对象的实际类型是什么；编译器在重载时是通过参数的静态类型而不是实际类型作为判定依据的；所有根据静态类型来定位方法执行版本的分派动作称为静态分派，其典型应用是方法重载；</li>
+<li>动态分派：invokevirtual指令执行的第一步就是在运行期间确定接收者的实际类型，所以两次调用中invokevirtual指令把常量池中的类方法符号引用解析到了不同的直接引用上，这个过程就是Java语言中方法重写的本质；我们把这种在运行期根据实际类型确定方法执行版本的分派过程称为动态分派；</li>
+<li>单分派与多分派：方法的接收者与方法的参数统称为方法的宗量，根据分派基于多少种宗量，可以将分派分为单分派（根据一个宗量对目标方法进行选择）与多分派（根据多于一个宗量对目标方法进行选择）两种；今天的Java语言是一门静态多分派、动态单分派的语言；</li>
+<li>虚拟机动态分派的实现：在方法区中建立一个虚方法表（Virtual Method Table），使用虚方法表索引来代替元数据查找以提高性能；方法表一般在类加载的连接阶段进行初始化，准备了类的变量初始化值后，虚拟机会把该类的方法表也初始化完毕；</li>
+</ul>
+<h4 id="8-3-3-动态类型语言支持"><a href="#8-3-3-动态类型语言支持" class="headerlink" title="8.3.3 动态类型语言支持"></a>8.3.3 动态类型语言支持</h4><ul>
+<li>JDK 1.7发布增加的invokedynamic指令实现了“动态类型语言”支持，也是为JDK 1.8顺利实现Lambda表达式做技术准备；</li>
+<li>动态类型语言的关键特征是它的类型检查的主体过程是在运行期而不是编译器，比如JavaScript、Python等；</li>
+<li>Java语言在编译期间就将方法完整的符号引用生成出来，作为方法调用指令的参数存储到Class文件中；这个符号引用包含了此方法定义在哪个具体类型之中、方法的名字以及参数顺序、参数类型和方法返回值等信息；而在ECMAScript等动态语言中，变量本身是没有类型的，变量的值才具有类型，编译时最多只能确定方法名称、参数、返回值这些信息，而不会去确定方法所在的具体类型；变量无类型而变量值才有类型，这个特点也是动态类型语言的一个重要特征；</li>
+<li>JDK 1.7实现了JSR-292，新加入的java.lang.invoke包的主要目的是在之前单纯依靠符号引用来确定调用的目标方法外，提供一种新的动态确定目标方法的机制，称为MethodHandle；</li>
+<li>从本质上讲，Reflection（反射）和MethodHandle机制都是在模拟方法调用，但Reflection是在模拟Java代码层次的方法调用，而MethodHandle是在模拟字节码层次的方法调用，前者是重量级，而后者是轻量级；另外前者只为Java语言服务，后者可服务于所有Java虚拟机之上的语言；</li>
+<li>每一处含有invokedynamic指令的位置都称为“动态调用点(Dynamic Call Site)”，这条指令的第一个参数不再是代表符号引用的CONSTANT_Methodref_info常量，而是CONSTANT_InvokeDynamic_info常量（可以得到引导方法、方法类型和名称）；</li>
+<li>invokedynamic指令与其他invoke指令的最大差别就是它的分派逻辑不是由虚拟机决定的，而是由程序员决定的；</li>
+</ul>
+<h3 id="8-4-基于栈的字节码解释执行引擎"><a href="#8-4-基于栈的字节码解释执行引擎" class="headerlink" title="8.4 基于栈的字节码解释执行引擎"></a>8.4 基于栈的字节码解释执行引擎</h3><p>上节主要讲虚拟机是如何调用方法的，这节探讨虚拟机是如何执行方法中的字节码指令的。</p>
+<h4 id="8-4-1-解释执行"><a href="#8-4-1-解释执行" class="headerlink" title="8.4.1 解释执行"></a>8.4.1 解释执行</h4><ul>
+<li>只有确定了谈论对象是某种具体的Java实现版本和执行引擎运行模式时，谈解释执行还是编译执行才比较确切；</li>
+<li>Java语言中，javac编译器完成了程序代码经过词法分析、语法分析到抽象语法树，再遍历语法树生成线性的字节码指令流的过程；因为这一部分动作是在Java虚拟机之外进行的，而解释器在虚拟机的内部，所以Java程序的编译就是半独立的实现；</li>
+</ul>
+<h4 id="8-4-2-基于栈的指令集与基于寄存器的指令集"><a href="#8-4-2-基于栈的指令集与基于寄存器的指令集" class="headerlink" title="8.4.2 基于栈的指令集与基于寄存器的指令集"></a>8.4.2 基于栈的指令集与基于寄存器的指令集</h4><ul>
+<li>Java编译器输出的指令集，基本上是一种基于栈的指令集架构，指令流中的指令大部分是零地址指令，它们依赖操作数栈进行工作；</li>
+<li>基于栈的指令集主要的优点是可移植性，寄存器由硬件直接提供，程序直接依赖这些硬件寄存器则不可避免地要受到硬件的约束；主要缺点是执行速度相对来说会稍慢一点；</li>
+</ul>
+<h4 id="8-4-3-基于栈的解释器执行过程"><a href="#8-4-3-基于栈的解释器执行过程" class="headerlink" title="8.4.3 基于栈的解释器执行过程"></a>8.4.3 基于栈的解释器执行过程</h4><p>一段简单的算法代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">calc</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="keyword">int</span> a = <span class="number">100</span>;</div><div class="line">    <span class="keyword">int</span> b = <span class="number">200</span>;</div><div class="line">    <span class="keyword">int</span> c = <span class="number">300</span>;</div><div class="line">    <span class="keyword">return</span> (a + b) * c;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上述代码的字节码表示</p>
+<pre><code>public int calc();
+Code:
+Stack=2, Locals=4, Args_size=1
+0:bipush 100
+2:istore_1
+3:sipush 200
+6:istore_2
+7:sipush 300
+10:istore_3
+11:iload_1
+12:iload_2
+13:iadd
+14:iload_3
+15:imul
+16:ireturn
+</code></pre><p>javap提示这段代码需要深度为2的操作数栈和4个Slot的局部变量空间，作者根据这些信息画了示意图来说明执行过程中的变化情况：</p>
+<p>执行偏移地址为0的指令<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_1.png" alt="执行偏移地址为0的指令"></p>
+<p>执行偏移地址为2的指令<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_2.png" alt="执行偏移地址为2的指令"></p>
+<p>执行偏移地址为11的指令<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_3.png" alt="执行偏移地址为11的指令"></p>
+<p>执行偏移地址为12的指令<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_4.png" alt="执行偏移地址为12的指令"></p>
+<p>执行偏移地址为13的指令<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_5.png" alt="执行偏移地址为13的指令"></p>
+<p>执行偏移地址为14的指令<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_6.png" alt="执行偏移地址为14的指令"></p>
+<p>执行偏移地址为16的指令<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_7.png" alt="执行偏移地址为16的指令"></p>
+<p>注：上面的执行过程仅仅是一种概念模型，虚拟机中解析器和即时编译器会对输入的字节码进行优化。</p>
+<h3 id="8-5-本章小结"><a href="#8-5-本章小结" class="headerlink" title="8.5 本章小结"></a>8.5 本章小结</h3><p>本章分析了虚拟机在执行代码时，如何找到正确的方法、如何执行方法内的字节码以及执行代码时涉及的内存结构。这第六、七、八三章中，我们针对Java程序是如何存储的、如何载入的以及如何执行的问题进行了讲解，下一章一起看看这些理论知识在具体开发中的经典应用。</p>
+<h2 id="第九章-类加载及执行子系统的案例与实战"><a href="#第九章-类加载及执行子系统的案例与实战" class="headerlink" title="第九章 类加载及执行子系统的案例与实战"></a>第九章 类加载及执行子系统的案例与实战</h2><h3 id="9-1-概述"><a href="#9-1-概述" class="headerlink" title="9.1 概述"></a>9.1 概述</h3><ul>
+<li>在Class文件格式与执行引擎这部分中，用户的程序能直接影响的内容并不多；</li>
+<li>能通过程序进行操作的，主要是字节码生成与类加载器这两部分的功能，但仅仅在如何处理这两点上，就已经出现了许多值得欣赏和借鉴的思路；</li>
+</ul>
+<h3 id="9-2-案例分析"><a href="#9-2-案例分析" class="headerlink" title="9.2 案例分析"></a>9.2 案例分析</h3><h4 id="9-2-1-Tomcat：正统的类加载器架构"><a href="#9-2-1-Tomcat：正统的类加载器架构" class="headerlink" title="9.2.1 Tomcat：正统的类加载器架构"></a>9.2.1 Tomcat：正统的类加载器架构</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_tomcat_classloader.png" alt="Tomcat服务器的类加载架构"></p>
+<ul>
+<li>Java Web服务器：部署在同一个服务器上的两个Web应用程序所使用的Java类库可以实现相互隔离又要可以互相共享；尽可能保证自身的安全不受部署的Web应用程序影响；要支持JSP生成类的热替换；</li>
+<li>上图中，灰色背景的三个类加载器是JDK默认提供的类加载器，而CommonClassLoader、CatalinaClassLoader、SharedClassLoader和WebappClassLoader是Tomcat自己定义的类加载器，分别加载/common/<em>（可被Tomcat和Web应用共用）、/server/</em>（可被Tomcat使用）、/shared/<em>（可被Web应用使用）和/WebApp/WEB-INF/</em>（可被当前Web应用使用）中的Java类库，Tomcat 6.x把前面三个目录默认合并到一起变成一个/lib目录（作用同原先的common目录）；</li>
+</ul>
+<h4 id="9-2-2-OSGI：灵活的类加载架构"><a href="#9-2-2-OSGI：灵活的类加载架构" class="headerlink" title="9.2.2 OSGI：灵活的类加载架构"></a>9.2.2 OSGI：灵活的类加载架构</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/execution_osgi_classloader.png" alt="OSGI的类加载架构"></p>
+<ul>
+<li>OSGI的每个模块称为Bundle，可以声明它所依赖的Java Package（通过Import-Package描述），也可以声明它允许导出发布的Java Package（通过Export-Package描述）；</li>
+<li>除了更精确的模块划分和可见性控制外，引入OSGI的另外一个重要理由是基于OSGI的程序很可能可以实现模块级的热插拔功能；</li>
+<li>OSGI的类加载器之间只有规则，没有固定的委派关系；加载器之间的关系更为复杂、运行时才能确定的网状结构，提供灵活性的同时，可能会产生许多的隐患；</li>
+</ul>
+<h4 id="9-2-3-字节码生成技术与动态代理的实现"><a href="#9-2-3-字节码生成技术与动态代理的实现" class="headerlink" title="9.2.3 字节码生成技术与动态代理的实现"></a>9.2.3 字节码生成技术与动态代理的实现</h4><ul>
+<li>在Java里面除了javac和字节码类库外，使用字节码生成的例子还有Web服务器中的JSP编译器、编译时植入的AOP框架和很常用的动态代理技术等，这里选择其中相对简单的动态代理来看看字节码生成技术是如何影响程序运作的；</li>
+<li>动态代理的优势在于实现了在原始类和接口还未知的时候就确定类的代理行为，可以很灵活地重用于不同的应用场景之中；</li>
+<li>以下的例子中生成的代理类“$Proxy0.class”文件可以看到代理为传入接口的每一个方法统一调用了InvocationHandler对象的invoke方法；其生成代理类的字节码大致过程其实就是根据Class文件的格式规范去拼接字节码；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicProxyTest</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="class"><span class="keyword">interface</span> <span class="title">IHello</span> </span>&#123;</div><div class="line">        <span class="function"><span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span></span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Hello</span> <span class="keyword">implements</span> <span class="title">IHello</span> </span>&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sayHello</span><span class="params">()</span> </span>&#123;</div><div class="line">            System.out.println(<span class="string">"Hello world"</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">DynamicProxy</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</div><div class="line">        Object originalObj;</div><div class="line"></div><div class="line">        <span class="function">Object <span class="title">bind</span><span class="params">(Object originalObj)</span> </span>&#123;</div><div class="line">            <span class="keyword">this</span>.originalObj = originalObj;</div><div class="line">            <span class="keyword">return</span> Proxy.newProxyInstance(originalObj.getClass().getClassLoader(), originalObj.getClass().getInterfaces(), <span class="keyword">this</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</div><div class="line">            System.out.println(<span class="string">"Welcome"</span>);</div><div class="line">            <span class="keyword">return</span> method.invoke(originalObj, args);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="comment">// add this property to generate proxy class file</span></div><div class="line">        System.getProperties().put(<span class="string">"sun.misc.ProxyGenerator.saveGeneratedFiles"</span>, <span class="string">"true"</span>);</div><div class="line"></div><div class="line">        IHello hello = (IHello) <span class="keyword">new</span> DynamicProxy().bind(<span class="keyword">new</span> Hello());</div><div class="line">        hello.sayHello();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="9-2-4-Retrotranslator：跨越JDK版本"><a href="#9-2-4-Retrotranslator：跨越JDK版本" class="headerlink" title="9.2.4 Retrotranslator：跨越JDK版本"></a>9.2.4 Retrotranslator：跨越JDK版本</h4><ul>
+<li>Retrotranslator的作用是将JDK 1.5编译出来的Class文件转变为可以在JDK 1.4或JDK 1.3部署的版本，它可以很好地支持自动装箱、泛型、动态注解、枚举、变长参数、遍历循环、静态导入这些语法特性，甚至还可以支持JDK 1.5中新增的集合改进、并发包以及对泛型、注解等的反射操作；</li>
+<li>JDK升级通常包括四种类型：编译器层面的做的改进、Java API的代码增强、需要再字节码中进行支持的活动以及虚拟机内部的改进，Retrotranslator只能模拟前两类，第二类通过独立类库实现，第一类则通过ASM框架直接对字节码进行处理；</li>
+</ul>
+<h3 id="9-3-实战：自己动手实现远程执行功能"><a href="#9-3-实战：自己动手实现远程执行功能" class="headerlink" title="9.3 实战：自己动手实现远程执行功能"></a>9.3 实战：自己动手实现远程执行功能</h3><ul>
+<li>目标：不依赖JDK版本、不改变原有服务端程序的部署，不依赖任何第三方类库、不侵入原有程序、临时代码的执行结果能返回到客户端；</li>
+<li>思路：如何编译提交到服务器的Java代码（客户端编译好上传Class文件而不是Java代码）、如何执行编译之后的Java代码（要能访问其他类库，要能卸载）、如何收集Java代码的执行结果（在执行的类中把System.out的符号引用替换为我们准备的PrintStream的符号引用）；</li>
+<li>具体实现：HotSwapClassLoader用于实现同一个类的代码可以被多次加载，通过公开父类ClassLoader的defineClass实现；HackSystem是为了替换java.lang.System，它直接修改Class文件格式的byte[]数组中的常量池部分，将常量池中指定内容的CONSTANT_Utf8_info常量替换为新的字符串；ClassModifier涉及对byte[]数组操作的部分，主要是将byte[]与int和String互相转换，以及把对byte[]数据的替换操作封装在ByteUtils类中；经过ClassModifier处理过的byte[]数组才会传给HotSwapClassLoader.loadByte方法进行类加载；而JavaClassExecutor是提供给外部调用的入口；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaClassExecutor</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">execute</span><span class="params">(<span class="keyword">byte</span>[] classByte)</span> </span>&#123;</div><div class="line">        HackSystem.clearBuffer();</div><div class="line">        ClassModifier cm = <span class="keyword">new</span> ClassModifier(classByte);</div><div class="line">        <span class="keyword">byte</span>[] modifiedBytes = cm.modifyUTF8Constant(<span class="string">"java/lang/System"</span>, <span class="string">"org/fenixsoft/classloading/execute/HackSystem"</span>);</div><div class="line">        HotSwapClassLoader hotSwapClassLoader = <span class="keyword">new</span> HotSwapClassLoader();</div><div class="line">        Class clazz = hotSwapClassLoader.loadByte(modifiedBytes);</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            Method method = clazz.getMethod(<span class="string">"main"</span>, <span class="keyword">new</span> Class[]&#123;String[].class&#125;);</div><div class="line">            method.invoke(<span class="keyword">null</span>, <span class="keyword">new</span> String[]&#123;<span class="keyword">null</span>&#125;);</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">            t.printStackTrace(HackSystem.out);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> HackSystem.getBufferString();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>用于测试的JSP</p>
+<figure class="highlight jsp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"java.lang.*"</span> %&gt;</div><div class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"java.io.*"</span> %&gt;</div><div class="line">&lt;%<span class="meta">@page</span> <span class="keyword">import</span>=<span class="string">"org.fenixsoft.classloading.execute.*"</span> %&gt;</div><div class="line"></div><div class="line">&lt;%</div><div class="line">InputStream is = <span class="keyword">new</span> FileInputStream(<span class="string">"c:/TestClass.class"</span>);</div><div class="line"><span class="keyword">byte</span>[] b = <span class="keyword">new</span> <span class="keyword">byte</span>[is.available()];</div><div class="line">is.read(b);</div><div class="line">is.close();</div><div class="line"></div><div class="line">out.println(JavaClassExecutor.execute(b));</div><div class="line"></div><div class="line">%&gt;</div></pre></td></tr></table></figure>
+<h3 id="9-4-本章小结"><a href="#9-4-本章小结" class="headerlink" title="9.4 本章小结"></a>9.4 本章小结</h3><p>只有了解虚拟机如何执行程序，才能更好地理解怎样写出优秀的代码。</p>
+<p><strong>系列读书笔记</strong></p>
+<ul>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part1">《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part2">《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part3">《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part4">《深入理解Java虚拟机》读书笔记4：类文件结构</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part5">《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part6">《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</a></li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part7">《深入理解Java虚拟机》读书笔记7：高效并发</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/JVM/" rel="tag"># JVM</a>
+          
+            <a href="/tags/虚拟机/" rel="tag"># 虚拟机</a>
+          
+            <a href="/tags/字节码/" rel="tag"># 字节码</a>
+          
+            <a href="/tags/类加载器/" rel="tag"># 类加载器</a>
+          
+            <a href="/tags/双亲委派/" rel="tag"># 双亲委派</a>
+          
+            <a href="/tags/执行引擎/" rel="tag"># 执行引擎</a>
+          
+            <a href="/tags/编译器/" rel="tag"># 编译器</a>
+          
+            <a href="/tags/解释器/" rel="tag"># 解释器</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/deep_in_jvm_notes_part4/" rel="next" title="《深入理解Java虚拟机》读书笔记4：类文件结构">
+                <i class="fa fa-chevron-left"></i> 《深入理解Java虚拟机》读书笔记4：类文件结构
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/search_suggestion_implemention_based_elasticsearch/" rel="prev" title="基于Elasticsearch实现搜索建议">
+                基于Elasticsearch实现搜索建议 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/deep_in_jvm_notes_part5/"
+           data-title="《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎" data-url="http://ginobefunny.com/post/deep_in_jvm_notes_part5/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第七章-虚拟机类加载机制"><span class="nav-text">第七章 虚拟机类加载机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-概述"><span class="nav-text">7.1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-类加载的时机"><span class="nav-text">7.2 类加载的时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-类加载的过程"><span class="nav-text">7.3 类加载的过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-1-加载"><span class="nav-text">7.3.1 加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-验证"><span class="nav-text">7.3.2 验证</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-3-准备"><span class="nav-text">7.3.3 准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-4-解析"><span class="nav-text">7.3.4 解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-5-初始化"><span class="nav-text">7.3.5 初始化</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-4-类加载器"><span class="nav-text">7.4 类加载器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-1-类与类加载器"><span class="nav-text">7.4.1 类与类加载器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-2-双亲委派模型"><span class="nav-text">7.4.2 双亲委派模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-3-破坏双亲委派模型"><span class="nav-text">7.4.3 破坏双亲委派模型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-5-本章小结"><span class="nav-text">7.5 本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第八章-虚拟机字节码执行引擎"><span class="nav-text">第八章 虚拟机字节码执行引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#8-1-概述"><span class="nav-text">8.1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-2-运行时栈帧结构"><span class="nav-text">8.2 运行时栈帧结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-1-局部变量表"><span class="nav-text">8.2.1 局部变量表</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-2-操作数栈"><span class="nav-text">8.2.2 操作数栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-3-动态连接"><span class="nav-text">8.2.3 动态连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-4-方法返回地址"><span class="nav-text">8.2.4 方法返回地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-5-附加信息"><span class="nav-text">8.2.5 附加信息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方法调用"><span class="nav-text">方法调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3-1-解析"><span class="nav-text">8.3.1 解析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3-2-分派"><span class="nav-text">8.3.2 分派</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3-3-动态类型语言支持"><span class="nav-text">8.3.3 动态类型语言支持</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-4-基于栈的字节码解释执行引擎"><span class="nav-text">8.4 基于栈的字节码解释执行引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-1-解释执行"><span class="nav-text">8.4.1 解释执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-2-基于栈的指令集与基于寄存器的指令集"><span class="nav-text">8.4.2 基于栈的指令集与基于寄存器的指令集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-3-基于栈的解释器执行过程"><span class="nav-text">8.4.3 基于栈的解释器执行过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-5-本章小结"><span class="nav-text">8.5 本章小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第九章-类加载及执行子系统的案例与实战"><span class="nav-text">第九章 类加载及执行子系统的案例与实战</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#9-1-概述"><span class="nav-text">9.1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-2-案例分析"><span class="nav-text">9.2 案例分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#9-2-1-Tomcat：正统的类加载器架构"><span class="nav-text">9.2.1 Tomcat：正统的类加载器架构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-2-2-OSGI：灵活的类加载架构"><span class="nav-text">9.2.2 OSGI：灵活的类加载架构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-2-3-字节码生成技术与动态代理的实现"><span class="nav-text">9.2.3 字节码生成技术与动态代理的实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-2-4-Retrotranslator：跨越JDK版本"><span class="nav-text">9.2.4 Retrotranslator：跨越JDK版本</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-3-实战：自己动手实现远程执行功能"><span class="nav-text">9.3 实战：自己动手实现远程执行功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-4-本章小结"><span class="nav-text">9.4 本章小结</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

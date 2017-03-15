@@ -1,0 +1,899 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="GinoBeFunny, Elasticsearch, Java, 虚拟机, 开源软件, 软件架构" />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="B9 《数学之美》
+阅读时间：2017.03
+简评：【★★★★★】
+
+这本书很早就买了，在之前逛知乎找NLP相关的书的时候，不少人推荐了这本书，于是在上个周末就拿出来看，基本上两个晚上四五个小时就读完了；
+吴军博士的文字功能很深，对搜索领域的了解非常深厚，但是却用简单明了的语言给大家阐述简单的数学之美。让我这个爱数学的孩子又再次领略到数学的那种简洁的力量。
+书中对NLP和搜索的介绍是我最感兴趣的，">
+<meta property="og:type" content="website">
+<meta property="og:title" content="趣读书">
+<meta property="og:url" content="http://ginobefunny.com/joy_of_reading/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="B9 《数学之美》
+阅读时间：2017.03
+简评：【★★★★★】
+
+这本书很早就买了，在之前逛知乎找NLP相关的书的时候，不少人推荐了这本书，于是在上个周末就拿出来看，基本上两个晚上四五个小时就读完了；
+吴军博士的文字功能很深，对搜索领域的了解非常深厚，但是却用简单明了的语言给大家阐述简单的数学之美。让我这个爱数学的孩子又再次领略到数学的那种简洁的力量。
+书中对NLP和搜索的介绍是我最感兴趣的，">
+<meta property="og:image" content="https://img3.doubanio.com/lpic/s9114855.jpg">
+<meta property="og:image" content="https://img3.doubanio.com/lpic/s28055322.jpg">
+<meta property="og:image" content="https://img1.doubanio.com/lpic/s29343267.jpg">
+<meta property="og:image" content="https://img3.doubanio.com/lpic/s7663093.jpg">
+<meta property="og:image" content="https://img3.doubanio.com/lpic/s28339364.jpg">
+<meta property="og:image" content="https://img5.doubanio.com/lpic/s28889106.jpg">
+<meta property="og:image" content="https://img3.doubanio.com/lpic/s28518751.jpg">
+<meta property="og:image" content="https://img5.doubanio.com/lpic/s28926306.jpg">
+<meta property="og:image" content="https://img5.doubanio.com/lpic/s27458236.jpg">
+<meta property="og:updated_time" content="2017-03-03T09:24:24.846Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="趣读书">
+<meta name="twitter:description" content="B9 《数学之美》
+阅读时间：2017.03
+简评：【★★★★★】
+
+这本书很早就买了，在之前逛知乎找NLP相关的书的时候，不少人推荐了这本书，于是在上个周末就拿出来看，基本上两个晚上四五个小时就读完了；
+吴军博士的文字功能很深，对搜索领域的了解非常深厚，但是却用简单明了的语言给大家阐述简单的数学之美。让我这个爱数学的孩子又再次领略到数学的那种简洁的力量。
+书中对NLP和搜索的介绍是我最感兴趣的，">
+<meta name="twitter:image" content="https://img3.doubanio.com/lpic/s9114855.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/joy_of_reading/"/>
+
+
+
+
+
+  <title>
+  
+
+  
+    趣读书 | GinoBeFunny
+  
+</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left  ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+  <header class="post-header">
+
+	<h2 class="post-title" itemprop="name headline">趣读书</h2>
+
+
+
+</header>
+
+    
+    
+      <h2 id="B9-《数学之美》"><a href="#B9-《数学之美》" class="headerlink" title="B9 《数学之美》"></a>B9 《数学之美》</h2><p><img src="https://img3.doubanio.com/lpic/s9114855.jpg" alt="数学之美"></p>
+<p><strong>阅读时间</strong>：2017.03</p>
+<p><strong>简评</strong>：【★★★★★】</p>
+<ol>
+<li>这本书很早就买了，在之前逛知乎找NLP相关的书的时候，不少人推荐了这本书，于是在上个周末就拿出来看，基本上两个晚上四五个小时就读完了；</li>
+<li>吴军博士的文字功能很深，对搜索领域的了解非常深厚，但是却用简单明了的语言给大家阐述简单的数学之美。让我这个爱数学的孩子又再次领略到数学的那种简洁的力量。</li>
+<li>书中对NLP和搜索的介绍是我最感兴趣的，这个也和最近的工作相关，也许过不久我还会在读一遍，然后写一篇读书笔记。</li>
+</ol>
+<h2 id="B8-《Netty权威指南（第2版）》"><a href="#B8-《Netty权威指南（第2版）》" class="headerlink" title="B8 《Netty权威指南（第2版）》"></a>B8 《Netty权威指南（第2版）》</h2><p><img src="https://img3.doubanio.com/lpic/s28055322.jpg" alt="Netty权威指南"></p>
+<p><strong>阅读时间</strong>：2017.02</p>
+<p><strong>简评</strong>：【★★★】</p>
+<ol>
+<li>这本书给人的感觉就是想全面覆盖Netty的各个方面，出发点是好的，但是确实太过繁琐；</li>
+<li>书中随时可见大段大篇幅的代码，这个对于阅读体验来说确实很差，建议在后面的再版中优化一下，保留关键的代码片段，并通过其他的方式比如github开放完整的源码来参考；</li>
+<li>不知道为什么在第二版里面还是看见各种风格的代码示意，有的地方直接截图贴上，或者各种字体大小、各种样式，阅读体验再次很差；</li>
+<li>书中有很多深入代码细节的部分，我想使用过一段时间Netty再回来看一定优势收获，也可以体现出作者对Netty的实现和机制非常的了解；</li>
+<li>另外，书中采用的是未发布的Netty 5.0版本，这一点我觉得非常的诧异，如果给人介绍的版本是官方未正式发布的版本，即时各种特性更牛逼，也不敢在生产环境使用啊。</li>
+</ol>
+<h2 id="B7-《Java-8实战》"><a href="#B7-《Java-8实战》" class="headerlink" title="B7 《Java 8实战》"></a>B7 《Java 8实战》</h2><p><img src="https://img1.doubanio.com/lpic/s29343267.jpg" alt="Java 8实战"></p>
+<p><strong>阅读时间</strong>：2017.02</p>
+<p><strong>简评</strong>：【★★★★★】</p>
+<p>我是先读的《Java 8函数式编程》再读该书，总体是两本书的质量都非常高，五星推荐！</p>
+<ol>
+<li>相比于《Java 8函数式编程》注重于介绍函数式编程相关，该本覆盖的Java 8特性更全面，在书中能看到对Optional、CompletableFuture、新的日期API的介绍；</li>
+<li>该书对Stream的收集器介绍得更为全面和具体；</li>
+<li>Java 8的函数式编程一定是未来Java编程的方向，它所带来的改变能和Java 5相提并论，哪怕你的项目组采用的不是Java 8版本，也推荐一读。Java 8带来的编程体验的提升，只有你试过了才知道。</li>
+</ol>
+<h2 id="B6-《Java并发编程实战》"><a href="#B6-《Java并发编程实战》" class="headerlink" title="B6 《Java并发编程实战》"></a>B6 《Java并发编程实战》</h2><p><img src="https://img3.doubanio.com/lpic/s7663093.jpg" alt="Java并发编程实战"></p>
+<p><strong>阅读时间</strong>：2017.02</p>
+<p><strong>简评</strong>：【★★★★】</p>
+<ol>
+<li>虽然书名说的是实战，但我感觉这本书更多的是介绍并发的理论，不少的篇幅需要有一定编程经验才能更好体会，不然读起来会有点吃力；</li>
+<li>翻译的质量不是很好，很多翻译很生硬，比如“发布与逸出”；</li>
+<li>Java 8的发布带来了很多实用的并发工具，希望在后续的版本中增加；</li>
+<li>整体是一本好书，后面会再找时间再读一遍；</li>
+</ol>
+<p><strong>读书笔记</strong></p>
+<ul>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part1/">Java并发之旅第一站：显式锁</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part2/">Java并发之旅第二站：原子类与并发容器</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part3/">Java并发之旅第三站：线程池与Future模式</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part4/">Java并发之旅第四站：并行流</a></li>
+</ul>
+<h2 id="B5-《实战Java高并发程序设计》"><a href="#B5-《实战Java高并发程序设计》" class="headerlink" title="B5 《实战Java高并发程序设计》"></a>B5 《实战Java高并发程序设计》</h2><p><img src="https://img3.doubanio.com/lpic/s28339364.jpg" alt="实战Java高并发程序设计"></p>
+<p><strong>阅读时间</strong>：2017.02</p>
+<p><strong>简评</strong>：【★★★★】</p>
+<ol>
+<li>这本书的章节编排是比较清晰的，而且是由浅入深、由理论到实战，阅读的时候感觉特别流畅；</li>
+<li>如果你翻过这本书，你一定会对书中的插图印象“深刻”，很难想象现代出版的书里的插图是这种质量；</li>
+<li>关于Java并发的知识可以说是介绍得比较全面了，当前全面的话可能就没法真正的深入，比如ConcurrentHashMap基本上并发编程中最常用最经典的设计，但是书上介绍的非常少；同样的，Java 8中引入的CompletableFuture也是一个很重要的工具但是介绍的篇幅也非常有限；</li>
+<li>对于Akka这一块，说实话我读了两遍，还是没有看得很懂，通过阅读官方的文档才比较清晰，感觉这一块写得有点混乱，条理不够清晰；</li>
+<li>最终我还是给这本书四星，因为读后自己确实对并发这一块有了比较完整的认识，读后结合《深入理解Java虚拟机（第2版）》，从项目中的代码找到并相关部分并予以改进，梳理并发重点的知识（显式锁控制、并发容器、并发流），收获还是挺多的。</li>
+</ol>
+<p><strong>读书笔记</strong></p>
+<ul>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part1/">Java并发之旅第一站：显式锁</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part2/">Java并发之旅第二站：原子类与并发容器</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part3/">Java并发之旅第三站：线程池与Future模式</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrency_trip_part4/">Java并发之旅第四站：并行流</a></li>
+</ul>
+<h2 id="B4-《软技能-代码之外的生存指南》"><a href="#B4-《软技能-代码之外的生存指南》" class="headerlink" title="B4 《软技能 : 代码之外的生存指南》"></a>B4 《软技能 : 代码之外的生存指南》</h2><p><img src="https://img5.doubanio.com/lpic/s28889106.jpg" alt="软技能"></p>
+<p><strong>阅读时间</strong>：2017.01</p>
+<p><strong>简评</strong>：【★★★★】</p>
+<p>对于这本书有点相见恨晚的感觉，如果能在我刚工作的时候就看到也许我就不会走这么多弯路。印象深刻的几点：打造个人品牌、尽早写技术博客、学会理财和自由职业。</p>
+<p><strong>读书笔记</strong></p>
+<p><a href="http://ginobefunny.com/post/soft_skills/">代码之外的生存指南</a></p>
+<h2 id="B3-《深入理解ElasticSearch》"><a href="#B3-《深入理解ElasticSearch》" class="headerlink" title="B3 《深入理解ElasticSearch》"></a>B3 《深入理解ElasticSearch》</h2><p><img src="https://img3.doubanio.com/lpic/s28518751.jpg" alt="深入理解ElasticSearch"></p>
+<p><strong>阅读时间</strong>：2017.01</p>
+<p><strong>简评</strong>：【★★★】</p>
+<ol>
+<li>这本书应该是比较早的中文Elasticsearch书籍，现在的ES已经到了5.1版本，而书中讲解的版本则是0.9，所以阅读时经常会检查下这个特性是否废弃过改进过。</li>
+<li>除此之外，本书应该来说是一本比较优秀的书籍，书中介绍的内容适合我这种对ES有一定了解又想深入理解其中机制的读者。</li>
+<li>如果要学习ES代码的框架，我们通常都是从最早的版本代码提交记录不断地往新版本上看，从这个思路来看这本书，我们发现ES从最初的设计上就很优秀，很多很核心的特性在0.9这个版本上就已经有了；</li>
+</ol>
+<h2 id="B2-《自己动手写Java虚拟机》"><a href="#B2-《自己动手写Java虚拟机》" class="headerlink" title="B2 《自己动手写Java虚拟机》"></a>B2 《自己动手写Java虚拟机》</h2><p><img src="https://img5.doubanio.com/lpic/s28926306.jpg" alt="自己动手写Java虚拟机"></p>
+<p><strong>阅读时间</strong>：2017.01</p>
+<p><strong>简评</strong>：【★★★】</p>
+<ol>
+<li>这本书的立意不错，我是结合着《深入理解Java虚拟机》一书来看的，能够从编码的角度去理解虚拟机的工作原理。</li>
+<li>行文笔记流程，而且代码的注释和排版都不错，阅读不是很吃力；</li>
+<li>不过就实用性和个人收获上不是很多，书的定价相对来说高了点，而且采用的是大家都不是很熟悉的Go语言，因此评分给三星。</li>
+</ol>
+<h2 id="B1-《深入理解Java虚拟机（第2版）-JVM高级特性与最佳实践》"><a href="#B1-《深入理解Java虚拟机（第2版）-JVM高级特性与最佳实践》" class="headerlink" title="B1 《深入理解Java虚拟机（第2版） : JVM高级特性与最佳实践》"></a>B1 《深入理解Java虚拟机（第2版） : JVM高级特性与最佳实践》</h2><p><img src="https://img5.doubanio.com/lpic/s27458236.jpg" alt="深入理解Java虚拟机"></p>
+<p><strong>阅读时间</strong>：2017.01 </p>
+<p><strong>简评</strong>：【★★★★★】</p>
+<p>本书从Java虚拟机的内存管理（内存区域划分、垃圾收集的算法和实现、性能监控和调优实战）讲起，接着介绍虚拟机如何执行（类文件的结构、类加载机制、字节码执行引擎介绍），最后还介绍了编译优化和高效并发部分。显然这本书站在一个更高的高度去介绍Java开发，使得我们对虚拟机如何执行和高效执行我们所写的代码有所认识，在发生内存溢出或者性能相关问题时能提供很好的理论基础。总之，是难得的一本中文技术好书。</p>
+<p><strong>读书笔记</strong></p>
+<ul>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part1">1. Java技术体系、Java内存区域和内存溢出异常</a> </li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part2">2. 垃圾收集器与内存分配策略</a> </li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part3">3. 虚拟机性能监控与调优实战</a>  </li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part4">4. 类文件结构</a>  </li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part5">5. 类加载机制与字节码执行引擎</a>  </li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part6">6. 程序编译与代码优化</a>  </li>
+<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part7">7. 高效并发</a></li>
+</ul>
+
+    
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="joy_of_reading/index.html"
+           data-title="趣读书" data-url="http://ginobefunny.com/joy_of_reading/index.html">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

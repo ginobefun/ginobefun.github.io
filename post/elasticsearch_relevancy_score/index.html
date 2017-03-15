@@ -1,0 +1,1379 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Elasticsearch,相关性评分,TFIDF,搜索引擎,function_score," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Elasticsearch全文搜索默认采用的是相关性打分TFIDF，在实际的运用中，我们采用Multi-Match给各个字段设置权重、使用should给特定文档权重或使用更高级的Function_Score来自定义打分，借助于Elasticsearch的explain功能，我们可以深入地学习一下其中的机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elasticsearch相关性打分机制学习">
+<meta property="og:url" content="http://ginobefunny.com/post/elasticsearch_relevancy_score/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="Elasticsearch全文搜索默认采用的是相关性打分TFIDF，在实际的运用中，我们采用Multi-Match给各个字段设置权重、使用should给特定文档权重或使用更高级的Function_Score来自定义打分，借助于Elasticsearch的explain功能，我们可以深入地学习一下其中的机制。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_simple.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_simple_tfidf.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_should.jpg">
+<meta property="og:updated_time" content="2017-01-16T07:44:03.229Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Elasticsearch相关性打分机制学习">
+<meta name="twitter:description" content="Elasticsearch全文搜索默认采用的是相关性打分TFIDF，在实际的运用中，我们采用Multi-Match给各个字段设置权重、使用should给特定文档权重或使用更高级的Function_Score来自定义打分，借助于Elasticsearch的explain功能，我们可以深入地学习一下其中的机制。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_simple.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/elasticsearch_relevancy_score/"/>
+
+
+
+
+
+  <title> Elasticsearch相关性打分机制学习 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/elasticsearch_relevancy_score/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Elasticsearch相关性打分机制学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-14T11:21:33+08:00">
+                2016-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Elasticsearch全文搜索默认采用的是相关性打分TFIDF，在实际的运用中，我们采用Multi-Match给各个字段设置权重、使用should给特定文档权重或使用更高级的Function_Score来自定义打分，借助于Elasticsearch的explain功能，我们可以深入地学习一下其中的机制。<br><a id="more"></a></p>
+<h3 id="创建一个索引"><a href="#创建一个索引" class="headerlink" title="创建一个索引"></a>创建一个索引</h3><pre><code>curl -s -XPUT &apos;http://localhost:9200/gino_test/&apos; -d &apos;{
+  &quot;mappings&quot;: {
+    &quot;tweet&quot;: {
+      &quot;properties&quot;: {
+        &quot;text&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;term_vector&quot;: &quot;with_positions_offsets_payloads&quot;,
+          &quot;store&quot; : true,
+          &quot;analyzer&quot; : &quot;fulltext_analyzer&quot;
+         },
+         &quot;fullname&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;term_vector&quot;: &quot;with_positions_offsets_payloads&quot;,
+          &quot;analyzer&quot; : &quot;fulltext_analyzer&quot;
+        }
+      }
+    }
+  },
+  &quot;settings&quot; : {
+    &quot;index&quot; : {
+      &quot;number_of_shards&quot; : 1,
+      &quot;number_of_replicas&quot; : 0
+    },
+    &quot;analysis&quot;: {
+      &quot;analyzer&quot;: {
+        &quot;fulltext_analyzer&quot;: {
+          &quot;type&quot;: &quot;custom&quot;,
+          &quot;tokenizer&quot;: &quot;whitespace&quot;,
+          &quot;filter&quot;: [
+            &quot;lowercase&quot;,
+            &quot;type_as_payload&quot;
+          ]
+        }
+      }
+    }
+  }
+}&apos;
+</code></pre><p>插入测试数据：</p>
+<table>
+<thead>
+<tr>
+<th>_index</th>
+<th>_type</th>
+<th>_id</th>
+<th>text</th>
+<th>fullname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>1</td>
+<td>hello world</td>
+<td>gino zhang</td>
+</tr>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>2</td>
+<td>gino like world cup</td>
+<td>gino li</td>
+</tr>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>3</td>
+<td>my cup</td>
+<td>jsper li</td>
+</tr>
+</tbody>
+</table>
+<h3 id="简单情况：单字段匹配打分"><a href="#简单情况：单字段匹配打分" class="headerlink" title="简单情况：单字段匹配打分"></a>简单情况：单字段匹配打分</h3><pre><code>POST http://192.168.102.216:9200/gino_test/_search
+{
+  &quot;explain&quot;: true,
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;text&quot;: &quot;my cup&quot;
+    }
+  }
+}
+</code></pre><p>查询结果： <a href="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_simple.json" target="_blank" rel="external">score_simple.json</a></p>
+<p>打分分析:<br><img src="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_simple.jpg" alt="score_simple"></p>
+<p>Elasticsearch目前采用的默认相关性打分采用的是Lucene的TF-IDF技术。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_simple_tfidf.jpg" alt="TF-IDF"></p>
+<p>我们来深入地分析一下这个公式：</p>
+<pre><code>score(q,d)  =  queryNorm(q)  · coord(q,d)  · ∑ (tf(t,d) · idf(t)² · t.getBoost() · norm(t,d))    
+</code></pre><ul>
+<li>score(q,d) 是指查询输入Q和当前文档D的相关性得分；</li>
+<li>queryNorm(q) 是查询输入归一化因子，其作用是使最终的得分不至于太大，从而具有一定的可比性；</li>
+<li>coord(q,d) 是协调因子，表示输入的Token被文档匹配到的比例；</li>
+<li>tf(t,d) 表示输入的一个Token在文档中出现的频率，频率越高，得分越高；</li>
+<li>idf(t) 表示输入的一个Token的频率级别，它具体的计算与当前文档无关，而是与索引中出现的频率相关，出现频率越低，说明这个词是个稀缺词，得分会越高；</li>
+<li>t.getBoost() 是查询时指定的权重.</li>
+<li>norm(t,d) 是指当前文档的Term数量的一个权重，它在索引阶段就已经计算好，由于存储的关系，它最终值是0.125的倍数。</li>
+</ul>
+<p><em>注意：在计算过程中，涉及的变量应该考虑的是document所在的分片而不是整个index。</em></p>
+<pre><code>score(q,d) = _score(q,d.f)                                               --------- ①
+= queryNorm(q) · coord(q,d) · ∑ (tf(t,d) · idf(t)² · t.getBoost() · norm(t,d))
+= coord(q,d) · ∑ (tf(t,d) · idf(t)² · t.getBoost() · norm(t,d) · queryNorm(q))
+= coord(q,d.f) · ∑ _score(q.ti, d.f) [ti in q]                           --------- ②
+= coord(q,d.f) · (_score(q.t1, d.f) + _score(q.t2, d.f))
+</code></pre><ul>
+<li>① 相关性打分其实是查询与某个文档的某个字段之间的相关性打分，而不是与文档的相关性；</li>
+<li>② 根据公式转换，就变成了查询的所有Term与文档中字段的相关性求和，如果某个Term不相关，则需要处理coord系数；</li>
+</ul>
+<h3 id="multi-match多字段匹配打分（best-fields模式）"><a href="#multi-match多字段匹配打分（best-fields模式）" class="headerlink" title="multi-match多字段匹配打分（best_fields模式）"></a>multi-match多字段匹配打分（best_fields模式）</h3><pre><code>POST http://192.168.102.216:9200/gino_test/_search
+{
+  &quot;explain&quot;: true,
+  &quot;query&quot;: {
+    &quot;multi_match&quot;: {
+      &quot;query&quot;: &quot;gino cup&quot;,
+      &quot;fields&quot;: [
+        &quot;text^8&quot;,
+        &quot;fullname^5&quot;
+      ]
+    }
+  }
+}
+</code></pre><p>查询结果：<a href="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_best_fields.json" target="_blank" rel="external">score_bestfields.json</a></p>
+<p>打分分析：</p>
+<pre><code>score(q,d) = max(_score(q, d.fi)) = max(_score(q, d.f1), _score(q, d.f2))
+= max(coord(q,d.f1) · (_score(q.t1, d.f1) + _score(q.t2, d.f1)), coord(q,d.f2) · (_score(q.t1, d.f2) + _score(q.t2, d.f2)))
+</code></pre><ul>
+<li>对于multi-field的best_fields模式来说，相当于是对每个字段对查询分别进行打分，然后执行max运算获取打分最高的。</li>
+<li>在计算query weight的过程需要乘上字段的权重，在计算fieldNorm的时候也需要乘上字段的权重。</li>
+<li>默认operator为or，如果使用and，打分机制也是一样的，但是搜索结果会不一样。</li>
+</ul>
+<h3 id="multi-match多字段匹配打分（cross-fields模式）"><a href="#multi-match多字段匹配打分（cross-fields模式）" class="headerlink" title="multi-match多字段匹配打分（cross_fields模式）"></a>multi-match多字段匹配打分（cross_fields模式）</h3><pre><code>POST http://192.168.102.216:9200/gino_test/_search
+{
+  &quot;explain&quot;: true,
+  &quot;query&quot;: {
+    &quot;multi_match&quot;: {
+      &quot;query&quot;: &quot;gino cup&quot;,
+      &quot;type&quot;: &quot;cross_fields&quot;,
+      &quot;fields&quot;: [
+        &quot;text^8&quot;,
+        &quot;fullname^5&quot;
+      ]
+    }
+  }
+}
+</code></pre><p>查询结果：<a href="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_cross_fields.json" target="_blank" rel="external">score_crossfields.json</a></p>
+<p>打分分析：</p>
+<pre><code>score(q, d) = ∑ (_score(q.ti, d.f)) = ∑ (_score(q.t1, d.f), _score(q.t1, d.f))
+= ∑ (max(coord(q.t1,d.f) · _score(q.t1, d.f1), coord(q.t1,d.f) · _score(q.t1, d.f2)), max(coord(q.t2,d.f) · _score(q.t2, d.f1), coord(q.t2,d.f) · _score(q.t2, d.f2)))
+</code></pre><ul>
+<li>coord(q.t1,d.f)函数表示搜索的Term(如gino)在multi-field中有多少比率的字段匹配到；best_fields模式中coord(q,d.f1)表示搜索的所以Term(如gino和cup)有多少比率存在与特定的field字段（如text字段）里；</li>
+<li>对于multi-field的cross_fields模式来说，相当于是对每个查询的Term进行打分（每个Term执行best_fields打分，即看下哪个field匹配更高），然后执行sum运算。</li>
+<li>默认operator为or，如果使用and，打分机制也是一样的，但是搜索结果会不一样。这是一个使用operator为or的报文：<a href="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_cross_fields_or.json" target="_blank" rel="external">score_crossfields_or.json</a></li>
+</ul>
+<h3 id="should增加权重打分"><a href="#should增加权重打分" class="headerlink" title="should增加权重打分"></a>should增加权重打分</h3><p>为了增加filter的测试，给gino_test/tweet增加一个tags的字段。</p>
+<pre><code>PUT /gino_test/_mapping/tweet
+{
+  &quot;properties&quot;: {
+    &quot;tags&quot;: {
+      &quot;type&quot;: &quot;string&quot;,
+      &quot;analyzer&quot;: &quot;fulltext_analyzer&quot;
+    }
+  }
+}
+</code></pre><p>增加tags的标签</p>
+<table>
+<thead>
+<tr>
+<th>_index</th>
+<th>_type</th>
+<th>_id</th>
+<th>text</th>
+<th>fullname</th>
+<th>tags</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>1</td>
+<td>hello world</td>
+<td>gino zhang</td>
+<td>new, gino</td>
+</tr>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>2</td>
+<td>gino like world cup</td>
+<td>gino li</td>
+<td>hobby, gino</td>
+</tr>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>3</td>
+<td>my cup</td>
+<td>jsper li</td>
+<td>goods, jasper</td>
+</tr>
+</tbody>
+</table>
+<pre><code>POST http://192.168.102.216:9200/gino_test/_search
+{
+  &quot;explain&quot;: true,
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: {
+        &quot;bool&quot;: {
+          &quot;must&quot;: {
+            &quot;multi_match&quot;: {
+              &quot;query&quot;: &quot;gino cup&quot;,
+              &quot;fields&quot;: [
+                &quot;text^8&quot;,
+                &quot;fullname^5&quot;
+              ],
+              &quot;type&quot;: &quot;best_fields&quot;,
+              &quot;operator&quot;: &quot;or&quot;
+            }
+          },
+          &quot;should&quot;: [
+            {
+              &quot;term&quot;: {
+                &quot;tags&quot;: {
+                  &quot;value&quot;: &quot;goods&quot;,
+                  &quot;boost&quot;: 6
+                }
+              }
+            },
+            {
+              &quot;term&quot;: {
+                &quot;tags&quot;: {
+                  &quot;value&quot;: &quot;hobby&quot;,
+                  &quot;boost&quot;: 3
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}
+</code></pre><p>查询结果：<a href="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_should.json" target="_blank" rel="external">score_should.json</a></p>
+<p>打分分析：<br><img src="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_should.jpg" alt="score_should"></p>
+<p>增加了should的权重之后，相当于多了一个打分参考项，打分的过程见上面的计算过程。</p>
+<h3 id="function-score高级打分机制"><a href="#function-score高级打分机制" class="headerlink" title="function_score高级打分机制"></a>function_score高级打分机制</h3><p>DSL格式：</p>
+<pre><code>{
+    &quot;function_score&quot;: {
+        &quot;query&quot;: {},
+        &quot;boost&quot;: &quot;boost for the whole query&quot;,
+        &quot;functions&quot;: [
+            {
+                &quot;filter&quot;: {},
+                &quot;FUNCTION&quot;: {}, 
+                &quot;weight&quot;: number
+            },
+            {
+                &quot;FUNCTION&quot;: {} 
+            },
+            {
+                &quot;filter&quot;: {},
+                &quot;weight&quot;: number
+            }
+        ],
+        &quot;max_boost&quot;: number,
+        &quot;score_mode&quot;: &quot;(multiply|max|...)&quot;,
+        &quot;boost_mode&quot;: &quot;(multiply|replace|...)&quot;,
+        &quot;min_score&quot; : number
+    }
+}
+</code></pre><p>支持四种类型发FUNCTION:</p>
+<ul>
+<li>script_score: 自定义的高级打分机制，涉及的字段只能是数值类型的</li>
+<li>weight: 权重打分，一般结合filter一起使用，表示满足某种条件加多少倍的分</li>
+<li>random_score： 生成一个随机分数，比如应该uid随机打乱排序</li>
+<li>field_value_factor： 根据index里的某个字段值影响打分，比如销量（涉及的字段只能是数值类型的）</li>
+<li>decay functions: 衰减函数打分，比如越靠近市中心的打分越高</li>
+</ul>
+<p>来做一个实验。先给index增加一个查看数的字段：</p>
+<pre><code>PUT /gino_test/_mapping/tweet
+{
+  &quot;properties&quot;: {
+    &quot;views&quot;: {
+      &quot;type&quot;: &quot;long&quot;,
+      &quot;doc_values&quot;: true,
+      &quot;fielddata&quot;: {
+        &quot;format&quot;: &quot;doc_values&quot;
+    }
+  }
+}
+</code></pre><p>给三条数据分别加上查看数的值：</p>
+<pre><code>POST gino_test/tweet/1/_update
+{
+    &quot;doc&quot; : {
+        &quot;views&quot; : 56
+    }
+}
+</code></pre><p>最终数据的样子：</p>
+<table>
+<thead>
+<tr>
+<th>_index</th>
+<th>_type</th>
+<th>_id</th>
+<th>text</th>
+<th>fullname</th>
+<th>tags</th>
+<th>views</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>1</td>
+<td>hello world</td>
+<td>gino zhang</td>
+<td>new, gino</td>
+<td>56</td>
+</tr>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>2</td>
+<td>gino like world cup</td>
+<td>gino li</td>
+<td>hobby, gino</td>
+<td>21</td>
+</tr>
+<tr>
+<td>gino_test</td>
+<td>tweet</td>
+<td>3</td>
+<td>my cup</td>
+<td>jsper li</td>
+<td>goods, jasper</td>
+<td>68</td>
+</tr>
+</tbody>
+</table>
+<p>执行一个查询：</p>
+<pre><code>{
+  &quot;explain&quot;: true,
+  &quot;query&quot;: {
+    &quot;function_score&quot;: {
+      &quot;query&quot;: {
+        &quot;multi_match&quot;: {
+          &quot;query&quot;: &quot;gino cup&quot;,
+          &quot;type&quot;: &quot;cross_fields&quot;,
+          &quot;fields&quot;: [
+            &quot;text^8&quot;,
+            &quot;fullname^5&quot;
+          ]
+        }
+      },
+      &quot;boost&quot;: 2,
+      &quot;functions&quot;: [
+        {
+          &quot;field_value_factor&quot;: {
+            &quot;field&quot;: &quot;views&quot;,
+            &quot;factor&quot;: 1.2,
+            &quot;modifier&quot;: &quot;sqrt&quot;,
+            &quot;missing&quot;: 1
+          }
+        },
+        {
+          &quot;filter&quot;: {
+            &quot;term&quot;: {
+              &quot;tags&quot;: {
+                &quot;value&quot;: &quot;goods&quot;
+              }
+            }
+          },
+          &quot;weight&quot;: 4
+        }
+      ],
+      &quot;score_mode&quot;: &quot;multiply&quot;,
+      &quot;boost_mode&quot;: &quot;multiply&quot;
+    }
+  }
+}
+</code></pre><p>查询结果：<a href="http://oi46mo3on.bkt.clouddn.com/4_es_score/score_function.json" target="_blank" rel="external">score_function.json</a></p>
+<p>打分分析：</p>
+<pre><code>score(q,d) = score_query(q,d) * (score_fvf(`view`) * score_filter(`tags:goods`))
+</code></pre><ul>
+<li>score_mode表示多个FUNCTION之间打分的运算法则，需要注意不同的FUNCTION的打分的结果级别可能相差很大；</li>
+<li>boost_mode表示function_score和query_score打分的运算法则，也需要注意打分结果的级别；</li>
+</ul>
+<h3 id="rescore重打分机制"><a href="#rescore重打分机制" class="headerlink" title="rescore重打分机制"></a>rescore重打分机制</h3><p>ES官网介绍: <a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-rescore.html" target="_blank" rel="external">https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-request-rescore.html</a></p>
+<p>重打分机制并不会应用到所有的数据中。比如需要查询前10条数据，那么所有的分片先按默认规则查询出前10条数据，然后应用rescore规则进行重打分返回给master节点进行综合排序返回给用户。</p>
+<p>rescore支持多个规则计算，以及与原先的默认打分进行运算（权重求和等）。</p>
+<p>rescore因为计算的打分的document较少，性能应该会更好一点，但是这个涉及到全局排序，实际运用的场景要注意。</p>
+<h3 id="参考材料"><a href="#参考材料" class="headerlink" title="参考材料"></a>参考材料</h3><ol>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.3/index.html" target="_blank" rel="external">Elasticsearch官方文档</a></li>
+<li><a href="https://www.elastic.co/guide/en/elasticsearch/guide/current/index.html" target="_blank" rel="external">ElasticDearch权威指南</a></li>
+<li><a href="https://lucene.apache.org/core/5_5_0/core/org/apache/lucene/search/similarities/TFIDFSimilarity.html" target="_blank" rel="external">Lucene TFIDF算法</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          
+            <a href="/tags/相关性评分/" rel="tag"># 相关性评分</a>
+          
+            <a href="/tags/TFIDF/" rel="tag"># TFIDF</a>
+          
+            <a href="/tags/搜索引擎/" rel="tag"># 搜索引擎</a>
+          
+            <a href="/tags/function-score/" rel="tag"># function_score</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/pomodoro_technique_notes/" rel="next" title="高效工作摆脱拖延的神器 -- 番茄工作法">
+                <i class="fa fa-chevron-left"></i> 高效工作摆脱拖延的神器 -- 番茄工作法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/git_definitive_guide_notes/" rel="prev" title="《Git权威指南》读书笔记">
+                《Git权威指南》读书笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/elasticsearch_relevancy_score/"
+           data-title="Elasticsearch相关性打分机制学习" data-url="http://ginobefunny.com/post/elasticsearch_relevancy_score/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建一个索引"><span class="nav-number">1.</span> <span class="nav-text">创建一个索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单情况：单字段匹配打分"><span class="nav-number">2.</span> <span class="nav-text">简单情况：单字段匹配打分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-match多字段匹配打分（best-fields模式）"><span class="nav-number">3.</span> <span class="nav-text">multi-match多字段匹配打分（best_fields模式）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#multi-match多字段匹配打分（cross-fields模式）"><span class="nav-number">4.</span> <span class="nav-text">multi-match多字段匹配打分（cross_fields模式）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#should增加权重打分"><span class="nav-number">5.</span> <span class="nav-text">should增加权重打分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#function-score高级打分机制"><span class="nav-number">6.</span> <span class="nav-text">function_score高级打分机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rescore重打分机制"><span class="nav-number">7.</span> <span class="nav-text">rescore重打分机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考材料"><span class="nav-number">8.</span> <span class="nav-text">参考材料</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

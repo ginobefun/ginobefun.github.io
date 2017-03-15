@@ -1,0 +1,1240 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="读书笔记,Git," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Git是现在最流行的版本控制工具，其开创性的分布式版本控制特性使其快速拥有一大群粉丝，是Linus Torvalds的又一大作。除了常见的命令，学习其设计理念和原理机制也很有必要。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Git权威指南》读书笔记">
+<meta property="og:url" content="http://ginobefunny.com/post/git_definitive_guide_notes/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="Git是现在最流行的版本控制工具，其开创性的分布式版本控制特性使其快速拥有一大群粉丝，是Linus Torvalds的又一大作。除了常见的命令，学习其设计理念和原理机制也很有必要。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/5_tools_git/git_index_relation.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/5_tools_git/git_diff.png">
+<meta property="og:updated_time" content="2017-01-03T08:25:14.337Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Git权威指南》读书笔记">
+<meta name="twitter:description" content="Git是现在最流行的版本控制工具，其开创性的分布式版本控制特性使其快速拥有一大群粉丝，是Linus Torvalds的又一大作。除了常见的命令，学习其设计理念和原理机制也很有必要。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/5_tools_git/git_index_relation.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/git_definitive_guide_notes/"/>
+
+
+
+
+
+  <title> 《Git权威指南》读书笔记 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/git_definitive_guide_notes/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《Git权威指南》读书笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-14T17:47:58+08:00">
+                2016-12-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Reading/" itemprop="url" rel="index">
+                    <span itemprop="name">Reading</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Git是现在最流行的版本控制工具，其开创性的分布式版本控制特性使其快速拥有一大群粉丝，是Linus Torvalds的又一大作。除了常见的命令，学习其设计理念和原理机制也很有必要。<br><a id="more"></a></p>
+<h1 id="版本控制的前世和今生"><a href="#版本控制的前世和今生" class="headerlink" title="版本控制的前世和今生"></a>版本控制的前世和今生</h1><p>略。</p>
+<h1 id="爱上Git的理由"><a href="#爱上Git的理由" class="headerlink" title="爱上Git的理由"></a>爱上Git的理由</h1><p>略。</p>
+<h1 id="Git的安装和使用"><a href="#Git的安装和使用" class="headerlink" title="Git的安装和使用"></a>Git的安装和使用</h1><p>略。</p>
+<h1 id="Git初始化"><a href="#Git初始化" class="headerlink" title="Git初始化"></a>Git初始化</h1><h2 id="创建版本库及第一次提交"><a href="#创建版本库及第一次提交" class="headerlink" title="创建版本库及第一次提交"></a>创建版本库及第一次提交</h2><p>配置用户名和Email</p>
+<pre><code>git config --global user.name &quot;Gino Zhang&quot;
+git config --global user.email &quot;zf_zmc@163.com&quot;
+</code></pre><p>设置常用的一些命令别名</p>
+<pre><code>git config --global alias.st status
+git config --global alias.ci commit
+git config --global alias.co checkout
+git config --global alias.br branch
+</code></pre><p>开启颜色显示</p>
+<pre><code>git config --global color.ui true
+</code></pre><p>初始化版本库</p>
+<pre><code>git init demo
+Initialized empty Git repository in D:/git_learning/demo/.git/
+</code></pre><p>创建第一个文件welcome.txt</p>
+<pre><code>echo &quot;Hello.&quot; &gt; welcome.txt
+</code></pre><p>将新建的文件添加到暂存区中</p>
+<pre><code>git add welcome.txt
+</code></pre><p>将新建的文件添加到版本库中</p>
+<pre><code>git ci -m &quot;initialized.&quot;
+[master (root-commit) 0e2185a] initialized.
+ 1 file changed, 1 insertion(+)
+ create mode 100644 welcome.txt
+</code></pre><h2 id="为什么工作区跟目录下有一个-git目录"><a href="#为什么工作区跟目录下有一个-git目录" class="headerlink" title="为什么工作区跟目录下有一个.git目录"></a>为什么工作区跟目录下有一个.git目录</h2><ul>
+<li>对于Git来说，.git目录即为本地的版本库，子目录下不存在其他跟踪文件或目录；</li>
+<li>这样设计可以使得大部分的操作（除了远程版本库操作外）都可以在本地完成；</li>
+<li>当在子目录执行git命令时会递归查找到根目录的.git目录；</li>
+</ul>
+<h2 id="git-config命令的各个参数"><a href="#git-config命令的各个参数" class="headerlink" title="git config命令的各个参数"></a>git config命令的各个参数</h2><h3 id="版本库级别的配置文件"><a href="#版本库级别的配置文件" class="headerlink" title="版本库级别的配置文件"></a>版本库级别的配置文件</h3><pre><code>git config -e
+/d/git_learning/demo/.git/config 
+[core]
+        repositoryformatversion = 0
+        filemode = false
+        bare = false
+        logallrefupdates = true
+        symlinks = false
+        ignorecase = true
+</code></pre><h3 id="全局配置文件"><a href="#全局配置文件" class="headerlink" title="全局配置文件"></a>全局配置文件</h3><pre><code>git config -e --global
+~/.gitconfig
+[user]
+        name = Gino Zhang
+        email = zf_zmc@163.com
+[alias]
+        st = status
+        ci = commit
+        co = checkout
+        br = branch
+[color]
+        ui = true
+</code></pre><h3 id="系统级配置文件"><a href="#系统级配置文件" class="headerlink" title="系统级配置文件"></a>系统级配置文件</h3><pre><code>git config -e --system
+/mingw64/etc/gitconfig
+[credential]
+        helper = manager
+</code></pre><h2 id="备份本章的工作成果"><a href="#备份本章的工作成果" class="headerlink" title="备份本章的工作成果"></a>备份本章的工作成果</h2><pre><code>/d/git_learning
+$ git clone demo demo-step-1
+Cloning into &apos;demo-step-1&apos;...
+done.
+</code></pre><h1 id="暂存区"><a href="#暂存区" class="headerlink" title="暂存区"></a>暂存区</h1><h2 id="修改不能直接提交吗"><a href="#修改不能直接提交吗" class="headerlink" title="修改不能直接提交吗"></a>修改不能直接提交吗</h2><p>给welcome.txt追加一行</p>
+<pre><code>echo &quot;Nice to meet you.&quot; &gt;&gt; welcome.txt
+</code></pre><p>使用git diff命令比较下差别</p>
+<pre><code>git diff
+diff --git a/welcome.txt b/welcome.txt
+index 18832d3..fd3c069 100644
+--- a/welcome.txt
++++ b/welcome.txt
+@@ -1 +1,2 @@
+ Hello.
++Nice to meet you.
+</code></pre><p>试试直接提交到版本库</p>
+<pre><code>$ git ci -m &quot;Append a new line.&quot;
+On branch master
+Changes not staged for commit:
+        modified:   welcome.txt
+no changes added to commit
+</code></pre><p>提示告诉我们修改的文件也必须先使用git add添加之后才能使用git commit提交。<br>那就将修改“提交”到提交任务中去。</p>
+<pre><code>git add welcome.txt
+git diff
+</code></pre><p>但是执行git diff时没有输出，难道是提交成功了？试试git status和git diff HEAD呢。</p>
+<pre><code>git status
+On branch master
+Changes to be committed:
+  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
+        modified:   welcome.txt
+
+
+git diff HEAD
+diff --git a/welcome.txt b/welcome.txt
+index 18832d3..fd3c069 100644
+--- a/welcome.txt
++++ b/welcome.txt
+@@ -1 +1,2 @@
+ Hello.
++Nice to meet you.
+</code></pre><p>说明当前与HEAD（或MASTER分支）是存在差别的。这时如果使用git commit就可以提交入库了，但是为了试验，我们继续修改welcome.txt文件试试看。</p>
+<pre><code>echo &quot;Bye-Bye.&quot; &gt;&gt; welcome.txt
+git status
+On branch master
+Changes to be committed:
+  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
+        modified:   welcome.txt
+
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+        modified:   welcome.txt
+</code></pre><p>这就说明不但版本库的最新提交与暂存区存在差别，当前工作区与暂存区也存在差别。即存在三个版本的文件：一个在工作区、一个在等待提交的暂存区、一个是版本库中最新提交的。那三者之间如何比较呢？</p>
+<pre><code>git diff      //比较的是工作区与暂存区的差别
+git diff HEAD //比较的是工作区和版本库最新提交的差别
+git diff --cached //比较的是暂存区和版本库最新提交的差别
+</code></pre><p>这时候使用git commit提交会怎么样呢？试试看</p>
+<pre><code>git ci -m &quot;Which version checked in?&quot;
+[master 3231bdc] Which version checked in?
+ 1 file changed, 1 insertion(+)
+</code></pre><p>这时候提交到版本库的会是哪个版本呢？使用上面的diff命令可以看出来，真正提交的是暂存区中的版本。</p>
+<h2 id="理解Git暂存区"><a href="#理解Git暂存区" class="headerlink" title="理解Git暂存区"></a>理解Git暂存区</h2><p>暂存区的设计是Git最成功的设计之一，也是最难理解的。</p>
+<p>.git目录下有一个index文件，我们来玩一个和它有关的小实验。</p>
+<p>先把之前未提交的welcome.txt撤销掉。</p>
+<pre><code>git co -- welcome.txt
+</code></pre><p>然后查看下.git/index文件的时间戳</p>
+<pre><code>ls --full-time .git/index
+-rw-r--r-- 1 35360 197609 145 2016-12-14 17:30:32.674746800 +0800 .git/index //注意这个时间17:30:32
+</code></pre><p>我们使用touch命令但是不改变它的内容，然后使用git status -s查看状态，再观察时间戳</p>
+<pre><code>touch welcome.txt
+git status -s
+ls --full-time .git/index
+-rw-r--r-- 1 35360 197609 145 2016-12-14 17:35:24.975946900 +0800 .git/index //注意时间戳改变了
+</code></pre><p>这说明执行git status命令扫描工作区变动时，先根据.git/index文件中记录的时间戳、长度等信息来判断工作区文件是否变动，如果有变动则打开文件对比原始文件，否则则将该文件新的时间戳记录到.git/index中。这种方式使得Git的扫描能更加快速高效。</p>
+<p>文件.git/index实际上就是一个包含文件索引的目录树，其记录了文件和文件状态而非内容。文件的内容尽量在Git对象库.git/objects目录中，文件索引建立了文件和对象实体之间的关系。</p>
+<h3 id="工作区、版本库、暂存区原理图"><a href="#工作区、版本库、暂存区原理图" class="headerlink" title="工作区、版本库、暂存区原理图"></a>工作区、版本库、暂存区原理图</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/5_tools_git/git_index_relation.png" alt="工作区、版本库、暂存区原理图"></p>
+<ul>
+<li>HEAD实际是指向master分支的一个“游标”；</li>
+<li>执行git add时，暂存区目录树会被更新，文件内容被写入到对象库，对象的ID记录在文件索引中；</li>
+<li>执行git commit时，暂存区的目录树写到版本库，master分支做相应的更新；</li>
+<li>执行git reset HEAD时，暂存区的目录树被master分支指向的目录树替换，工作区不受影响；</li>
+<li>执行git rm –cached时，会直接从暂存区删除，工作区不受影响；</li>
+<li>执行git checkout .时，工作区的目录树被暂存区的替换；</li>
+<li>执行git checkout HEAD . 或git checkout HEAD时，会用HEAD指向的master分支替换工作区和暂存区的文件；</li>
+</ul>
+<h2 id="Git-Diff魔法"><a href="#Git-Diff魔法" class="headerlink" title="Git Diff魔法"></a>Git Diff魔法</h2><p>先清理暂存区和工作区，使其和master分支保存一致。</p>
+<pre><code>git clean -fd
+git checkout .
+</code></pre><p>添加一个文件目录和文件，并修改welcome.txt的内容，然后添加到暂存区</p>
+<pre><code>echo &quot;Bye-Bye.&quot; &gt;&gt; welcome.txt
+mkdir subdir
+echo &quot;Hello.&quot; &gt; subdir/hello.txt
+git add .
+</code></pre><p>然后再次修改hello.txt文件的内容，是的工作区、暂存区和版本库的目录树均不同</p>
+<pre><code>echo &quot;Bye-bye.&quot; &gt;&gt; subdir/hello.txt
+git status -s
+AM subdir/hello.txt
+M  welcome.txt
+</code></pre><p>下面来看如果用git diff比较他们之间的区别</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/5_tools_git/git_diff.png" alt="Git diff"></p>
+<ul>
+<li>git diff：工作区和暂存区的比较；</li>
+<li>git diff –cached：暂存区和HEAD比较；</li>
+<li>git diff HEAD：工作区和HEAD比较；</li>
+</ul>
+<h2 id="不用使用git-commit-a"><a href="#不用使用git-commit-a" class="headerlink" title="不用使用git commit -a"></a>不用使用git commit -a</h2><p>这个命令可以直接将工作区的修改和删除文件直接提交版本库，但是会有两个问题：一个是没有包括未被版本库跟踪的文件；另外一个是丢掉了暂存区带来的好处（对提交内容进行控制的能力）。</p>
+<h2 id="搁置问题，暂存状态"><a href="#搁置问题，暂存状态" class="headerlink" title="搁置问题，暂存状态"></a>搁置问题，暂存状态</h2><pre><code>git status
+On branch master
+Changes to be committed:
+  (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage)
+
+        new file:   subdir/hello.txt
+        modified:   welcome.txt
+
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git checkout -- &lt;file&gt;...&quot; to discard changes in working directory)
+
+        modified:   subdir/hello.txt
+
+git stash
+Saved working directory and index state WIP on master: 3231bdc Which version checked in?
+HEAD is now at 3231bdc Which version checked in?
+
+git status
+On branch master
+nothing to commit, working tree clean
+</code></pre><h1 id="Git对象"><a href="#Git对象" class="headerlink" title="Git对象"></a>Git对象</h1><h2 id="Git对象库探秘"><a href="#Git对象库探秘" class="headerlink" title="Git对象库探秘"></a>Git对象库探秘</h2><p>为什么一个提交里有三个SHA1的对象ID：</p>
+<pre><code>git log -1 --pretty=raw
+commit 3231bdcee2336b13684a283960c0bba366519dfa      #本次提交标识
+tree f58da9a820e3fd9d84ab2ca2f1b467ac265038f9        #本次提交对应的目录树
+parent 0e2185a617f030d147e7092d34c478125da861b1      #本次提交的父提交（上一次提交）
+author Gino Zhang &lt;zf_zmc@163.com&gt; 1481706190 +0800
+committer Gino Zhang &lt;zf_zmc@163.com&gt; 1481706190 +0800
+    Which version checked in?
+</code></pre><p>研究Git对象ID的一个重量级武器就是git cat-file命令。</p>
+<pre><code>git cat-file -p 3231
+tree f58da9a820e3fd9d84ab2ca2f1b467ac265038f9
+parent 0e2185a617f030d147e7092d34c478125da861b1
+author Gino Zhang &lt;zf_zmc@163.com&gt; 1481706190 +0800
+committer Gino Zhang &lt;zf_zmc@163.com&gt; 1481706190 +0800
+Which version checked in?
+
+git cat-file -p f58d
+100644 blob fd3c069c1de4f4bc9b15940f490aeb48852f3c42    welcome.txt  #blob对应的文件继续看
+
+git cat-file -p fd3c    # 对应的是welcome.txt的文件内容
+Hello.
+Nice to meet you.
+
+git cat-file -p 0e21
+tree 190d840dd3d8fa319bdec6b8112b0957be7ee769
+author Gino Zhang &lt;zf_zmc@163.com&gt; 1481703025 +0800
+committer Gino Zhang &lt;zf_zmc@163.com&gt; 1481703025 +0800
+initialized.
+</code></pre><p>这些对象保存在.git/object目录下（ID的前2位是目录，后38位是文件名）。<br>这些对象之间形成了一条跟踪链，可以通过git log查看。</p>
+<pre><code>git log --pretty=raw --graph 3231
+* commit 3231bdcee2336b13684a283960c0bba366519dfa
+| tree f58da9a820e3fd9d84ab2ca2f1b467ac265038f9
+| parent 0e2185a617f030d147e7092d34c478125da861b1
+| author Gino Zhang &lt;zf_zmc@163.com&gt; 1481706190 +0800
+| committer Gino Zhang &lt;zf_zmc@163.com&gt; 1481706190 +0800
+|
+|     Which version checked in?
+|
+* commit 0e2185a617f030d147e7092d34c478125da861b1
+  tree 190d840dd3d8fa319bdec6b8112b0957be7ee769
+  author Gino Zhang &lt;zf_zmc@163.com&gt; 1481703025 +0800
+  committer Gino Zhang &lt;zf_zmc@163.com&gt; 1481703025 +0800
+
+      initialized.
+</code></pre><h2 id="SHA1哈希值到底是什么，如何生成的？"><a href="#SHA1哈希值到底是什么，如何生成的？" class="headerlink" title="SHA1哈希值到底是什么，如何生成的？"></a>SHA1哈希值到底是什么，如何生成的？</h2><p>可以总结为综合了“对象类型（commit, blob, tree）、对象大小（提交说明字符长度、文件大小、目录树内容大小）、对象内容（提交说明、文件内容、目录树内容）”因素生成的一个标识，冲突概率很低很低。</p>
+<h2 id="为什么不用顺序的数字来表示提交？"><a href="#为什么不用顺序的数字来表示提交？" class="headerlink" title="为什么不用顺序的数字来表示提交？"></a>为什么不用顺序的数字来表示提交？</h2><p>主要是由于Git是分布式的版本库，如果采用顺序的数字来标识提交，不可避免会造成冲突。</p>
+<h1 id="Git重置"><a href="#Git重置" class="headerlink" title="Git重置"></a>Git重置</h1><h2 id="分支游标master探秘"><a href="#分支游标master探秘" class="headerlink" title="分支游标master探秘"></a>分支游标master探秘</h2><p>新增一个文件，观察文件.git/ref/heads/master的内容如何改变</p>
+<pre><code>$ cat .git/refs/heads/master
+3231bdcee2336b13684a283960c0bba366519dfa
+
+$ touch new-commit.txt
+$ git add new-commit.txt
+
+$ git commit -m &quot;does master follow this new commit?&quot;
+[master cfa86f4] does master follow this new commit?
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 new-commit.txt
+
+$ cat .git/refs/heads/master
+cfa86f4465926576eb3a9e0bc77e115af0467551   #指向了新的提交
+
+$ git log --graph --oneline
+* cfa86f4 does master follow this new commit?
+* 3231bdc Which version checked in?
+* 0e2185a initialized.
+</code></pre><p>重置版本库（<strong>危险动作</strong>）</p>
+<pre><code>$ git reset --hard HEAD^
+HEAD is now at 3231bdc Which version checked in?
+
+$ git reset --hard 0e2185a
+HEAD is now at 0e2185a initialized.
+
+$ cat welcome.txt
+Hello.
+</code></pre><p>重置命令很危险，会彻底底丢弃历史。还能通过浏览历史的办法找回历史的提交ID然后再恢复吗？不能！因为提交历史也没了。</p>
+<h2 id="用reflog挽救错误的重置"><a href="#用reflog挽救错误的重置" class="headerlink" title="用reflog挽救错误的重置"></a>用reflog挽救错误的重置</h2><pre><code>$ tail -10 .git/logs/refs/heads/master
+0000000000000000000000000000000000000000 0e2185a617f030d147e7092d34c478125da861b1 Gino Zhang &lt;zf_zmc@163.com&gt; 1481703025 +0800  commit (initial): initialized.
+0e2185a617f030d147e7092d34c478125da861b1 3231bdcee2336b13684a283960c0bba366519dfa Gino Zhang &lt;zf_zmc@163.com&gt; 1481706190 +0800  commit: Which version checked in?
+3231bdcee2336b13684a283960c0bba366519dfa cfa86f4465926576eb3a9e0bc77e115af0467551 Gino Zhang &lt;zf_zmc@163.com&gt; 1482915083 +0800  commit: does master follow this new commit?
+cfa86f4465926576eb3a9e0bc77e115af0467551 3231bdcee2336b13684a283960c0bba366519dfa Gino Zhang &lt;zf_zmc@163.com&gt; 1482915422 +0800  reset: moving to HEAD^
+3231bdcee2336b13684a283960c0bba366519dfa 0e2185a617f030d147e7092d34c478125da861b1 Gino Zhang &lt;zf_zmc@163.com&gt; 1482915443 +0800  reset: moving to 0e2185a
+</code></pre><p><strong>To be continued…</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/elasticsearch_relevancy_score/" rel="next" title="Elasticsearch相关性打分机制学习">
+                <i class="fa fa-chevron-left"></i> Elasticsearch相关性打分机制学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/reading_record_201612/" rel="prev" title="阅读随手记 201612">
+                阅读随手记 201612 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/git_definitive_guide_notes/"
+           data-title="《Git权威指南》读书笔记" data-url="http://ginobefunny.com/post/git_definitive_guide_notes/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#版本控制的前世和今生"><span class="nav-number">1.</span> <span class="nav-text">版本控制的前世和今生</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#爱上Git的理由"><span class="nav-number">2.</span> <span class="nav-text">爱上Git的理由</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git的安装和使用"><span class="nav-number">3.</span> <span class="nav-text">Git的安装和使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git初始化"><span class="nav-number">4.</span> <span class="nav-text">Git初始化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建版本库及第一次提交"><span class="nav-number">4.1.</span> <span class="nav-text">创建版本库及第一次提交</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么工作区跟目录下有一个-git目录"><span class="nav-number">4.2.</span> <span class="nav-text">为什么工作区跟目录下有一个.git目录</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git-config命令的各个参数"><span class="nav-number">4.3.</span> <span class="nav-text">git config命令的各个参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#版本库级别的配置文件"><span class="nav-number">4.3.1.</span> <span class="nav-text">版本库级别的配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#全局配置文件"><span class="nav-number">4.3.2.</span> <span class="nav-text">全局配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#系统级配置文件"><span class="nav-number">4.3.3.</span> <span class="nav-text">系统级配置文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#备份本章的工作成果"><span class="nav-number">4.4.</span> <span class="nav-text">备份本章的工作成果</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#暂存区"><span class="nav-number">5.</span> <span class="nav-text">暂存区</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#修改不能直接提交吗"><span class="nav-number">5.1.</span> <span class="nav-text">修改不能直接提交吗</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#理解Git暂存区"><span class="nav-number">5.2.</span> <span class="nav-text">理解Git暂存区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#工作区、版本库、暂存区原理图"><span class="nav-number">5.2.1.</span> <span class="nav-text">工作区、版本库、暂存区原理图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-Diff魔法"><span class="nav-number">5.3.</span> <span class="nav-text">Git Diff魔法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#不用使用git-commit-a"><span class="nav-number">5.4.</span> <span class="nav-text">不用使用git commit -a</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搁置问题，暂存状态"><span class="nav-number">5.5.</span> <span class="nav-text">搁置问题，暂存状态</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git对象"><span class="nav-number">6.</span> <span class="nav-text">Git对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git对象库探秘"><span class="nav-number">6.1.</span> <span class="nav-text">Git对象库探秘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SHA1哈希值到底是什么，如何生成的？"><span class="nav-number">6.2.</span> <span class="nav-text">SHA1哈希值到底是什么，如何生成的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么不用顺序的数字来表示提交？"><span class="nav-number">6.3.</span> <span class="nav-text">为什么不用顺序的数字来表示提交？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Git重置"><span class="nav-number">7.</span> <span class="nav-text">Git重置</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#分支游标master探秘"><span class="nav-number">7.1.</span> <span class="nav-text">分支游标master探秘</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用reflog挽救错误的重置"><span class="nav-number">7.2.</span> <span class="nav-text">用reflog挽救错误的重置</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

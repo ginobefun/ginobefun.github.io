@@ -1,0 +1,1543 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="函数式编程,读书笔记,Git,数据库中间件,推荐系统,分布式队列,分布式定时任务,微服务,系统架构,Kafka,DistributedLog,分布式缓存,分布式数据库,Motan,RPC,IDEA,机器学习,深度学习,微信小程序,性能调优,自我提升,服务化,高性能,高并发,高可用," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="关键字：Ctrip DAL、推荐系统、分布式队列、分布式定时任务、微服务、系统架构、Kafka、DistributedLog、分布式缓存、分布式数据库、Motan、RPC、IDEA、机器学习、深度学习、微信小程序、性能调优、Git、函数式编程、服务化、高性能、高并发、高可用；">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阅读随手记 201612">
+<meta property="og:url" content="http://ginobefunny.com/post/reading_record_201612/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="关键字：Ctrip DAL、推荐系统、分布式队列、分布式定时任务、微服务、系统架构、Kafka、DistributedLog、分布式缓存、分布式数据库、Motan、RPC、IDEA、机器学习、深度学习、微信小程序、性能调优、Git、函数式编程、服务化、高性能、高并发、高可用；">
+<meta property="og:image" content="http://cdn2.infoqstatic.com/statics_s2_20161214-0550/resource/news/2016/09/Mesos-Elastic-Job-Cloud/zh/resources/13.png">
+<meta property="og:image" content="http://cdn2.infoqstatic.com/statics_s2_20161214-0550/resource/news/2016/09/Mesos-Elastic-Job-Cloud/zh/resources/17.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/kafka_differ_distributedlog.png">
+<meta property="og:image" content="http://tech.meituan.com/img/mtddl/%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84.png">
+<meta property="og:image" content="http://ww3.sinaimg.cn/large/006xCINIjw1f8wnrffp78j31280qq0x3.jpg">
+<meta property="og:image" content="http://ww2.sinaimg.cn/large/006xCINIjw1f8088o2jzsj30ho0djtat.jpg">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/006kbv1Jgw1f79w5ces7xj30rl0bxgpy.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/a466bf91jw1euyur3mmo4j20bj07agm5.jpg">
+<meta property="og:image" content="http://ww4.sinaimg.cn/large/a466bf91jw1euyuvw58yjj20bj07ct95.jpg">
+<meta property="og:image" content="http://static.leiphone.com/uploads/new/article/740_740/201610/58098c88d09f1.jpg?imageMogr2/format/jpg/quality/90">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/JVM-Architecture.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/rpc_compare.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/registry_center_compare.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/service_framework.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/JSF.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/JSF_RPC.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/metric.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/high_performacnce_review.png">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1158202-481a42f6d299528e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1158202-cf7de8f472d6a147.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/jdk_modules_example1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/jdk_modules_example2.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/jdk_modules_compare.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/js_search_1.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/6_reading/js_search_2.png">
+<meta property="og:updated_time" content="2017-01-12T01:56:47.284Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阅读随手记 201612">
+<meta name="twitter:description" content="关键字：Ctrip DAL、推荐系统、分布式队列、分布式定时任务、微服务、系统架构、Kafka、DistributedLog、分布式缓存、分布式数据库、Motan、RPC、IDEA、机器学习、深度学习、微信小程序、性能调优、Git、函数式编程、服务化、高性能、高并发、高可用；">
+<meta name="twitter:image" content="http://cdn2.infoqstatic.com/statics_s2_20161214-0550/resource/news/2016/09/Mesos-Elastic-Job-Cloud/zh/resources/13.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/reading_record_201612/"/>
+
+
+
+
+
+  <title> 阅读随手记 201612 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/reading_record_201612/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                阅读随手记 201612
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-16T17:03:55+08:00">
+                2016-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Reading-Record/" itemprop="url" rel="index">
+                    <span itemprop="name">Reading Record</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关键字：Ctrip DAL、推荐系统、分布式队列、分布式定时任务、微服务、系统架构、Kafka、DistributedLog、分布式缓存、分布式数据库、Motan、RPC、IDEA、机器学习、深度学习、微信小程序、性能调优、Git、函数式编程、服务化、高性能、高并发、高可用；<br><a id="more"></a></p>
+<h2 id="携程开源数据库访问框架Ctrip-DAL"><a href="#携程开源数据库访问框架Ctrip-DAL" class="headerlink" title="携程开源数据库访问框架Ctrip DAL"></a>携程开源数据库访问框架Ctrip DAL</h2><p><a href="http://www.infoq.com/cn/news/2016/09/Ctrip-DAL" target="_blank" rel="external">http://www.infoq.com/cn/news/2016/09/Ctrip-DAL</a></p>
+<ul>
+<li>支持分表分库；</li>
+<li>支持多种数据库和多种语言；</li>
+<li>有一套管理DAO的界面（Code Gen），但感觉这个很繁琐；</li>
+</ul>
+<h2 id="Recommender-systems-explained"><a href="#Recommender-systems-explained" class="headerlink" title="Recommender systems explained"></a>Recommender systems explained</h2><p><a href="https://medium.com/recombee-blog/recommender-systems-explained-d98e8221f468#.6vi5y036t" target="_blank" rel="external">https://medium.com/recombee-blog/recommender-systems-explained-d98e8221f468#.6vi5y036t</a><br><a href="http://www.infoq.com/cn/articles/three-recommendation-systems-principle" target="_blank" rel="external">http://www.infoq.com/cn/articles/three-recommendation-systems-principle</a></p>
+<ul>
+<li>Knowledge based recommender systems：基于属性（物品和用户都具备一些属性），通过这些属性的相关性进行推荐；</li>
+<li>Content based recommender systems： 基于用户的行为（显式反馈和隐式反馈）推荐类似的物品；</li>
+<li>Collaborative filtering： 基于近邻算法，考虑最相似的一组用户进行检查，获取最终推荐最多的物品；</li>
+</ul>
+<h2 id="分布式队列编程：从模型、实战到优化"><a href="#分布式队列编程：从模型、实战到优化" class="headerlink" title="分布式队列编程：从模型、实战到优化"></a>分布式队列编程：从模型、实战到优化</h2><p><a href="http://www.infoq.com/cn/articles/distributed-queue-programme-model-actual-combat-optimization" target="_blank" rel="external">http://www.infoq.com/cn/articles/distributed-queue-programme-model-actual-combat-optimization</a></p>
+<ul>
+<li>When：同步VS异步；Who：发送者接收者解耦；Where：消息暂存机制；How：如何传递；</li>
+<li>抽象模型：点对点模型、生产者消费者模型、发布订阅模型；</li>
+<li>挑战：高吞吐量、高可用性、高一致性要求、完整性约束、持久化要求；</li>
+<li>生产者优化：内存缓存请求、内存持久化策略（定期、定量写入）、批量写入队列；</li>
+</ul>
+<h2 id="基于Mesos的当当作业云Elastic-Job-Cloud"><a href="#基于Mesos的当当作业云Elastic-Job-Cloud" class="headerlink" title="基于Mesos的当当作业云Elastic Job Cloud"></a>基于Mesos的当当作业云Elastic Job Cloud</h2><p><a href="http://www.infoq.com/cn/news/2016/09/Mesos-Elastic-Job-Cloud" target="_blank" rel="external">http://www.infoq.com/cn/news/2016/09/Mesos-Elastic-Job-Cloud</a></p>
+<h3 id="Mesos的核心概念"><a href="#Mesos的核心概念" class="headerlink" title="Mesos的核心概念"></a>Mesos的核心概念</h3><p><img src="http://cdn2.infoqstatic.com/statics_s2_20161214-0550/resource/news/2016/09/Mesos-Elastic-Job-Cloud/zh/resources/13.png" alt="Mesos的核心概念"></p>
+<ul>
+<li>蓝色是Mesos的基础组件，由Mesos Master、Mesos Agent和运维界面/API组成;</li>
+<li>紫色是Mesos Framework的组成部分。Mesos只有基础组件并不能独立使用，需要注册Framework接收Mesos Master分配的资源并决定如何执行，目前常见的Marathon和Chronos都是Mesos Framework。Framework的两个重要组成是Scheduler和Executor;</li>
+<li>红色是Scheduler中两个最重要的回调方法，resourceOffers用于将资源转化为任务并调用Executor执行，statusUpdate用于处理Executor回传的状态；</li>
+</ul>
+<h3 id="Mesos带来的好处"><a href="#Mesos带来的好处" class="headerlink" title="Mesos带来的好处"></a>Mesos带来的好处</h3><ul>
+<li>作为部署平台，Mesos可以做到应用分发自动化，省去人工部署成本；</li>
+<li>Mesos可以将资源收集至统一资源池，做到硬件资源与应用一体化，按需分配资源，自动资源回收，减少资源闲置和浪费；</li>
+</ul>
+<h3 id="弃用内置Framework，自研Elastic-Job-Cloud"><a href="#弃用内置Framework，自研Elastic-Job-Cloud" class="headerlink" title="弃用内置Framework，自研Elastic Job Cloud"></a>弃用内置Framework，自研Elastic Job Cloud</h3><p><img src="http://cdn2.infoqstatic.com/statics_s2_20161214-0550/resource/news/2016/09/Mesos-Elastic-Job-Cloud/zh/resources/17.png" alt="Elastic Job Cloud"></p>
+<ul>
+<li>实现应用分发和资源分配，并且是高可用的解决方案;</li>
+<li>资源分配静态与动态相结合，常驻与瞬时作业分离处理；</li>
+<li>Elastic Job 1.X的核心理念仍可沿用，包括分片，以及之前未提及的功能，如多种作业类型，事件统计等；</li>
+<li>易于定制化需求开发；</li>
+</ul>
+<h2 id="The-Hardest-Part-About-Microservices-Your-Data"><a href="#The-Hardest-Part-About-Microservices-Your-Data" class="headerlink" title="The Hardest Part About Microservices: Your Data"></a>The Hardest Part About Microservices: Your Data</h2><p><a href="http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/" target="_blank" rel="external">http://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/</a><br><a href="http://www.infoq.com/cn/news/2016/09/Christian-Posta-Micro-service-da" target="_blank" rel="external">http://www.infoq.com/cn/news/2016/09/Christian-Posta-Micro-service-da</a></p>
+<ul>
+<li>What is the domain? What is reality? –理解上下文，使用DDD建立数据模型、画出边界；</li>
+<li>Where are the transactional boundaries? – 事务边界是业务不可变性的最小原子单元，要让事务边界尽可能小；</li>
+<li>How should microservices communicate across boundaries? – 事件机制；</li>
+<li>What if we just turn the database inside out? – 通过Apache Samza构建事件流处理系统；</li>
+</ul>
+<h2 id="美团外卖系统架构演进与稳定性的探索"><a href="#美团外卖系统架构演进与稳定性的探索" class="headerlink" title="美团外卖系统架构演进与稳定性的探索"></a>美团外卖系统架构演进与稳定性的探索</h2><p><a href="http://www.infoq.com/cn/articles/evolution-and-stability-of-meituan-waimai-architecture" target="_blank" rel="external">http://www.infoq.com/cn/articles/evolution-and-stability-of-meituan-waimai-architecture</a></p>
+<ul>
+<li>稳定性的架构设计：大系统小做、依赖稳定性原则、设计这个稳定性的时候需要考虑用户的体验；</li>
+<li>事前预警： 分层的监控（系统级监控和业务监控）、日志聚合、监控指标可视化；</li>
+<li>三种限流的策略：防刷、等待+限时、单机的QPS保护；</li>
+<li>总结：你要想稳定性做的非常可靠，灰度、灰度、还是灰度；慢查询往往闯大祸；防御式编程；SOP保平安；你所担心的事一定会发生，而且可能马上会发生；</li>
+</ul>
+<h2 id="A-Technical-Review-of-Kafka-and-DistributedLog"><a href="#A-Technical-Review-of-Kafka-and-DistributedLog" class="headerlink" title="A Technical Review of Kafka and DistributedLog"></a>A Technical Review of Kafka and DistributedLog</h2><p><a href="http://distributedlog.incubator.apache.org/technical-review/2015/09/19/kafka-vs-distributedlog.html" target="_blank" rel="external">http://distributedlog.incubator.apache.org/technical-review/2015/09/19/kafka-vs-distributedlog.html</a><br><a href="http://www.infoq.com/cn/articles/technology-comparison-of-kafka-and-distributedlog" target="_blank" rel="external">http://www.infoq.com/cn/articles/technology-comparison-of-kafka-and-distributedlog</a></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/kafka_differ_distributedlog.png" alt="Kafka and DistributedLog"></p>
+<h2 id="MTDDL——美团点评分布式数据访问层中间件"><a href="#MTDDL——美团点评分布式数据访问层中间件" class="headerlink" title="MTDDL——美团点评分布式数据访问层中间件"></a>MTDDL——美团点评分布式数据访问层中间件</h2><p><img src="http://tech.meituan.com/img/mtddl/%E9%80%BB%E8%BE%91%E6%9E%B6%E6%9E%84.png" alt="逻辑架构"></p>
+<ul>
+<li>实现了MySQL动态数据源、读写分离、分布式唯一主键生成器、分库分表、连接池及SQL监控、动态化配置等一系列功能，支持分库分表算法、分布式唯一主键生成算法的高可扩展性，而且支持全注解的方式接入，业务方不需要引入任何配置文件。</li>
+<li>分布式ID生成系统Leaf: 基于DB的Ticket服务，通过一张通用的Ticket表来实现分布式ID的持久化，执行update更新语句来获取一批Ticket，这些获取到的Ticket会在内存中进行分配，分配完之后再从DB获取下一批Ticket。</li>
+<li>分库分表目前默认使用的是取模算法，分表算法为 (#shard_key % (group_shard_num <em> table_shard_num))，分库算法为 (#shard_key % (group_shard_num </em> table_shard_num)) / table_shard_num，其中group_shard_num为分库个数，table_shard_num为每个库的分表个数。</li>
+<li>为了尽可能地方便业务方接入，MTDDL采用全注解方式使用分库分表功能，通过ShardInfo、ShardOn、IDGen三个注解实现。</li>
+<li>采用Spring AOP技术对所有DAO方法进行功能增强处理，通过美团点评分布式会话跟踪组件MTrace进行SQL调用数据埋点及上报，进而实现从客户端角度对SQL执行耗时、QPS、调用量、超时率、失败率等指标进行监控。</li>
+<li>动态化配置：在Spring容器启动的时候自动注册数据源及分库分表相关配置到美团点评的统一配置中心MCC，在MCC配置管理页面可以进行动态调整，MCC客户端在感知到变更事件后会刷新本地配置；</li>
+</ul>
+<h2 id="常见性能优化策略的总结"><a href="#常见性能优化策略的总结" class="headerlink" title="常见性能优化策略的总结"></a>常见性能优化策略的总结</h2><p><a href="http://tech.meituan.com/performance_tunning.html" target="_blank" rel="external">http://tech.meituan.com/performance_tunning.html</a></p>
+<ul>
+<li>代码：第一步就应该是分析相关的代码，找出相应的瓶颈，再来考虑具体的优化策略；</li>
+<li>数据库：SQL调优（慢查询、explain、profile）、架构层面的调优（读写分离、多从库负载均衡、水平和垂直分库分表）、连接池调优（结合当前使用连接池的原理、具体的连接池监控数据和当前的业务量作一个综合的判断）；</li>
+<li>缓存：分类（本地和分布式）、场景（读多写少、热点数据）、关键点（更新策略、缓存淘汰、缓存击穿）；</li>
+<li>异步：BlockingQueue+异步线程、消息中间件；</li>
+<li>NoSQL：如果业务数据不需要和其他数据作关联，不需要事务或者外键之类的支持，而且有可能写入会异常频繁，这个时候就比较适合用NoSQL（比如HBase）。</li>
+<li>JVM调优：CPU使用率与Load值偏大（thread count以及gc count）、关键接口响应时间很慢（gc time以及gc log中的stop the world的时间）、发生full gc或者old cms gc非常频繁（内存泄露）；</li>
+<li>多线程与分布式：单机多线程（引入线程池）、多机多线程（调度、拆分和分发）；</li>
+<li>度量系统：确定指标、采集数据、计算数据，存储结果、展现和分析；</li>
+</ul>
+<h2 id="Intellij-IDEA-一些不为人知的技巧"><a href="#Intellij-IDEA-一些不为人知的技巧" class="headerlink" title="Intellij IDEA 一些不为人知的技巧"></a>Intellij IDEA 一些不为人知的技巧</h2><p><a href="http://www.jianshu.com/p/364b94a664ff" target="_blank" rel="external">http://www.jianshu.com/p/364b94a664ff</a></p>
+<ul>
+<li>用 Control + E 来找到最近访问的文件；</li>
+<li>在行中任意位置使用Control + Shift + Enter 来快速补全分号；</li>
+<li>Intellij IDEA 里面内置了一个 Rest Client，大家可以通过 Control + Shift + A，然后搜索 Rest Client 来找到；</li>
+<li>通过 Control + Shift + V 访问历史粘贴板；</li>
+<li>使用Language Injection 的功能（Alt + Enter）将一个字符串标记为JSON、正则。HTML等进行编辑；</li>
+<li>使用Smart Step Into( Shift + F7)可以选择到底要 Debug 进入哪一个方法;</li>
+</ul>
+<h2 id="技术框架与组件使用"><a href="#技术框架与组件使用" class="headerlink" title="技术框架与组件使用"></a>技术框架与组件使用</h2><p><a href="http://weibo.com/ttarticle/p/show?id=2309404038032062872510" target="_blank" rel="external">http://weibo.com/ttarticle/p/show?id=2309404038032062872510</a></p>
+<p><img src="http://ww3.sinaimg.cn/large/006xCINIjw1f8wnrffp78j31280qq0x3.jpg" alt="Motan的模块组成"></p>
+<ul>
+<li>Motan是微博研发的开源RPC服务框架，基于java语言开发，主要特点是轻量级、高性能、高扩展性。Motan提供了实用的服务治理功能，包括服务发现、负载均衡、HA策略、流量控制等。通过SPI机制能够支持不同RPC协议、传输以及序列化协议，并且可以方便的增加不同的filter功能，便于二次开发。</li>
+<li>RPC（Remote Procedure Call）指远程过程调用，是一种通过网络调用远程过程的协议，简单地说就是能使应用像调用本地方法一样的调用远程的过程或服务。</li>
+<li>RPC协议只规定了Client与Server之间的点对点调用流程，包括Stub、通信协议、RPC消息解析等部分, 而RPC框架一般是指能够完成服务调用的解决方案，除了具体通信的RPC协议，还包括服务的发现与注销、提供服务的多台Server的负载均衡、服务的高可用等服务治理的功能。Motan就是这样一个RPC框架。</li>
+<li>Motan中有服务提供方RPC Server，服务调用方RPC Client和服务注册中心Registry三个角色。</li>
+<li>注册中心Vintage是基于Group的，server和client必须在相同group下才能进行访问。</li>
+<li>Motan server：解析配置文件生成对应的protocol信息、打开并监听声明的RPC服务端口、向Vintage(即Registry)注册RPC服务、服务验证通过后打开心跳开关；</li>
+<li>Motan client： 解析配置文件生成对应的protocol信息、向Registry订阅所需的RPC服务、对每个Server建立初始链接；</li>
+</ul>
+<h2 id="分布式缓存架构基础"><a href="#分布式缓存架构基础" class="headerlink" title="分布式缓存架构基础"></a>分布式缓存架构基础</h2><p><a href="http://weibo.com/ttarticle/p/show?id=2309404022116222639373&amp;mod=zwenzhang" target="_blank" rel="external">http://weibo.com/ttarticle/p/show?id=2309404022116222639373&amp;mod=zwenzhang</a></p>
+<p><img src="http://ww2.sinaimg.cn/large/006xCINIjw1f8088o2jzsj30ho0djtat.jpg" alt="微博缓存中间件CacheService"></p>
+<ul>
+<li>Memached Multiget-Hole（在Memcached采用数据分片方式部署的情况下，对于multiget命令来说，部署部署更多的节点，并不能提升multiget的承载量，甚至出现效率反而降低）：使用多副本的方式扩容、multiget的keys尽可能放在同一个节点上；</li>
+<li>反向Cache就是将一个不存在的key放在缓存中，也就是在缓存中存一个空值，减少对DB的穿透。</li>
+<li>缓存Fail-Fast：当出现故障节点时，标识故障节点为不可用节点（策略举例：连续N次请求都出现超时，标识M时间段内为不可用)，读写不可用节点快速返回。</li>
+<li>缓存无过期（缓存中存储全量数据，不存在数据穿透的情况）：适合总体数据量很小，但是访问量巨大的业务场景；</li>
+<li>dog-pile effect狗桩效应 (极热访问的缓存数据失效，大量请求发现没有缓存，进而穿透至DB)：从代码层面就要考虑到并发穿透的情况，保证一个进程只有一次穿透；</li>
+<li>极热点数据场景（缓存资源遇到性能瓶颈）：前端使用local cache, 以缓解后端缓存的压力；考虑引入L1结构，通过部署多组小容量的L1缓存来应对突然的访问量增长；</li>
+<li>避免雪崩（缓存服务器宕机等原因导致命中率降低，大量的请求穿透到数据库）：缓存高可用、降级和流控、清楚后端资源容量；</li>
+<li>数据一致性（CAP）-&gt; 采用数据最终一致性：Master与副本一致性、Cache与Storage一致性、业务各维度缓存数据一致性；</li>
+<li>缓存容量规划：考虑请求量、命中率、网络带宽、存储容量、连接数；</li>
+<li>微博缓存中间件CacheService：代理层/资源层/客户端/配置中心/集群管理系统;</li>
+</ul>
+<h2 id="从优化性能到应对峰值流量：微博缓存服务化的设计与实践"><a href="#从优化性能到应对峰值流量：微博缓存服务化的设计与实践" class="headerlink" title="从优化性能到应对峰值流量：微博缓存服务化的设计与实践"></a>从优化性能到应对峰值流量：微博缓存服务化的设计与实践</h2><p><a href="http://weibo.com/ttarticle/p/show?id=2309404013728432540615" target="_blank" rel="external">http://weibo.com/ttarticle/p/show?id=2309404013728432540615</a></p>
+<p><img src="http://ww1.sinaimg.cn/large/006kbv1Jgw1f79w5ces7xj30rl0bxgpy.jpg" alt="Main-HA 双层架构"></p>
+<ul>
+<li>微博使用的缓存主要是 Memcache 和 Redis，因为 Memcache 的使用场景、容量更大，而且目前推的缓存服务化也是优先基于 Memcache，然后再扩展到 Redis、 ssdcache 等其他缓存；</li>
+<li>如果某个时间点，核心业务的多个缓存节点不可用，大量请求穿透会给 DB 带来巨大的压力，极端情况会导致雪崩场景。于是我们引入 Main-HA 双层架构。</li>
+<li>对于集群内的扩缩，线上操作最多的是增减 L1 组或扩容 main 层。</li>
+<li>S4LRU分成四个子 LRU： LRU0-LRU3。 Key miss 或新写入一个 key 时，把这个 key 放在第一层 LRU0，如果后来被命中则移到 LRU1 ；如果在 LRU1 又一次被命中则移到 LRU2，依此类推，一直升级到 LU3。如果它四次以上命中，就会一直把它放在 LU3。如果发现 LU3 的数据量太多需要 evict，我们先把待 evict 的 key 降级到 LU2 上，如此类推。同时每个 kv 有过期时间，如果发现它过期就清理。</li>
+<li>LS4LRU 是在 S4LRU 的基础上增加一个分级的过期时间，每个 KV 有两个过期时间 exp1 和 exp2。比如说某业务， exp1 是一秒， xep2 是三秒， LS4LRU 被命中的时候，如果发现它是在一秒内的数据，则直接反给客户端的，如果是在 1 秒到 3 秒的时候，则会首先返回到客户端，然后再从异步获取最新的数据并更新。如果是 3 秒以上的，就直接去清理，走 key miss 流程。</li>
+</ul>
+<h2 id="海量数据存储基础"><a href="#海量数据存储基础" class="headerlink" title="海量数据存储基础"></a>海量数据存储基础</h2><p><a href="http://weibo.com/ttarticle/p/show?id=2309404025046866781970&amp;mod=zwenzhang" target="_blank" rel="external">http://weibo.com/ttarticle/p/show?id=2309404025046866781970&amp;mod=zwenzhang</a></p>
+<ul>
+<li>关系型数据库：局限于服务器性能、局限于数据复杂度、常见的SSD磁盘服务器，单机读取性能可达万级/s；</li>
+<li>NoSQL(Not only SQL)数据库：存储非结构化数据、半结构化数据、单机QPS在10万级别；</li>
+<li>微博平台核心业务的数据都存储在MySQL上，目前具备千台规模的集群，单个核心业务数据突破千亿级，单个核心业务QPS峰值可达10万级每秒，写入也是万级每秒。</li>
+<li>从单机到集群的架构变迁：SQL优化，硬件升级-》垂直拆分-》读写分离-》水平拆分</li>
+<li>分布式数据库设计：hash拆分方式、时间拆分方式</li>
+<li>当一台服务器宕机怎么办：Slave宕机（切换、扩容、降级）；Master宕机（快速下线master提升slave为master）；</li>
+<li>redis过期机制：被动过期、主动过期（volatile-lru、volatile-ttl、volatile-random、allkeys-lru、allkeys-random）；</li>
+<li>定制CounterService：修改hash table为增量扩展式的hash tables、废弃expire；</li>
+<li>分布式Redis架构如何实现高可用：采用M-S高可用方案、服务域名化是必要的；</li>
+</ul>
+<p>微博平台采用如下几个层级的组建来进行分布式数据库操作：</p>
+<p><img src="http://ww4.sinaimg.cn/large/a466bf91jw1euyur3mmo4j20bj07agm5.jpg" alt="分布式数据库操作"></p>
+<p>分布式架构下的redis client访问:</p>
+<p><img src="http://ww4.sinaimg.cn/large/a466bf91jw1euyuvw58yjj20bj07ct95.jpg" alt="分布式Redis访问"></p>
+<h2 id="Java性能调优工程的几点建议"><a href="#Java性能调优工程的几点建议" class="headerlink" title="Java性能调优工程的几点建议"></a>Java性能调优工程的几点建议</h2><p><a href="http://www.infoq.com/cn/news/2016/10/javaPerformance-guide-byMonica" target="_blank" rel="external">http://www.infoq.com/cn/news/2016/10/javaPerformance-guide-byMonica</a></p>
+<ul>
+<li>能优化工程由两部分组成：性能需求分析及规划、性能结果分析。两者构成闭环，使得性能得到不断的提升。</li>
+<li>需要站在用户的角度去思考QoS；将QoS标准量化为可测量的指标，即SLA服务等级协议；然后对SLA性能指标进行定义、梳理并排列优先级（吞吐量、响应时间、容量、请求足迹、CPU使用率等）。</li>
+<li>性能调优执行的两种实现方式：自上而下、自下而上。</li>
+<li>不论哪一种方向，均可以分为四步：第一步监控、第二步归纳、第三步分析、第四步调优和应用。</li>
+</ul>
+<h2 id="机器学习：发展与未来-–-周志华"><a href="#机器学习：发展与未来-–-周志华" class="headerlink" title="机器学习：发展与未来 – 周志华"></a>机器学习：发展与未来 – 周志华</h2><p><a href="http://www.leiphone.com/news/201610/rZ9EHIpeSwBv2Tvq.html" target="_blank" rel="external">http://www.leiphone.com/news/201610/rZ9EHIpeSwBv2Tvq.html</a></p>
+<p><img src="http://static.leiphone.com/uploads/new/article/740_740/201610/58098c88d09f1.jpg?imageMogr2/format/jpg/quality/90" alt="机器学习"></p>
+<ul>
+<li>现在是大数据时代，但是大数据不等于大价值。</li>
+<li>人工智能的三个阶段：推理期（自动定理证明系统）、知识器（专家系统）、学习期（机器学习）；</li>
+<li>计算学习理论中最重要的一个理论模型就是概率近似正确模型（PAC）；</li>
+<li>从技术层面来看，深度学习其实就是很多层的神经网络，最著名的深度学习模型叫做卷积神经网络（CNN）；</li>
+<li>提升模型的复杂度可以提升学习能力，增加模型深度比宽度更有效，但提升模型的复杂度并不一定有利，因为存在过拟合和计算开销大的问题。</li>
+<li>深度学习最重要的作用是表示学习；</li>
+<li>传统的机器学习任务大都是在给定参数的封闭静态环境中，而现在正在慢慢转向开放动态环境。</li>
+<li>其实机器学习的形态就是算法 + 数据。</li>
+<li>学件（Learnware）= 模型（model）+规约（specification）；“可重用”的特性能够获取大量不同的样本、“可演进”的特性可以适应环境的变化、“可了解”的特性能有效地了解模型的能力；</li>
+</ul>
+<h2 id="Git-from-the-inside-out"><a href="#Git-from-the-inside-out" class="headerlink" title="Git from the inside out"></a>Git from the inside out</h2><p><a href="https://codewords.recurse.com/issues/two/git-from-the-inside-out" target="_blank" rel="external">https://codewords.recurse.com/issues/two/git-from-the-inside-out</a></p>
+<p>一篇非常有意思的介绍Git原理的文章，虽然比较长，但图文结合，花个半个小时能看懂。</p>
+<h2 id="Core-Functional-Programming-Concepts"><a href="#Core-Functional-Programming-Concepts" class="headerlink" title="Core Functional Programming Concepts"></a>Core Functional Programming Concepts</h2><p><a href="https://thesocietea.org/2016/12/core-functional-programming-concepts/" target="_blank" rel="external">https://thesocietea.org/2016/12/core-functional-programming-concepts/</a></p>
+<ul>
+<li>Functions are Pure：幂等性、无副作用；</li>
+<li>Functions are First-Class and can be Higher-Order：一等公民、高阶函数；</li>
+<li>Variables are Immutable：变量不可变性；</li>
+<li>Functions have Referential Transparency：如果程序中任意两处具有相同输入值的函数调用能够互相置换，而不影响程序的动作，那么该程序就具有引用透明性；</li>
+<li>Functional Programming is Based on Lambda Calculus：Lambda算子（匿名、柯里化）</li>
+</ul>
+<h2 id="The-JVM-Architecture-Explained"><a href="#The-JVM-Architecture-Explained" class="headerlink" title="The JVM Architecture Explained"></a>The JVM Architecture Explained</h2><p><a href="https://dzone.com/articles/jvm-architecture-explained" target="_blank" rel="external">https://dzone.com/articles/jvm-architecture-explained</a></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/JVM-Architecture.png" alt="JVM Architecture"></p>
+<ul>
+<li>Class Loader Subsystem: Boot Strap ClassLoader/Extension ClassLoader/Application ClassLoader;Linking: Verify -&gt; Prepare -&gt; Resolve;</li>
+<li>Runtime Data Area: Method Area/Heap Area/Stack Area/PC Registers/Native Method stacks;</li>
+<li>Execution Engine: Interpreter/JIT Compiler/Garbage Collector;</li>
+</ul>
+<h2 id="One-Sure-Fire-Way-to-Improve-Your-Coding"><a href="#One-Sure-Fire-Way-to-Improve-Your-Coding" class="headerlink" title="One Sure-Fire Way to Improve Your Coding"></a>One Sure-Fire Way to Improve Your Coding</h2><p><a href="https://changelog.com/posts/one-sure-fire-way-to-improve-your-coding" target="_blank" rel="external">https://changelog.com/posts/one-sure-fire-way-to-improve-your-coding</a></p>
+<ul>
+<li>代码写少读多，多读代码能显著提升编码水平；</li>
+<li>读什么：正在用的插件、库和框架；惊艳你的代码；崇拜的大神的代码；从小项目开始；</li>
+<li>怎么读：看整体项目结构、给代码加注释、跑自带的测试用例、尝试更改或添加特性、不断尝试；</li>
+</ul>
+<h2 id="Best-Practices-for-Building-a-Microservice-Architecture"><a href="#Best-Practices-for-Building-a-Microservice-Architecture" class="headerlink" title="Best Practices for Building a Microservice Architecture"></a>Best Practices for Building a Microservice Architecture</h2><p><a href="http://www.vinaysahni.com/best-practices-for-building-a-microservice-architecture" target="_blank" rel="external">http://www.vinaysahni.com/best-practices-for-building-a-microservice-architecture</a></p>
+<h3 id="The-Platform"><a href="#The-Platform" class="headerlink" title="The Platform"></a>The Platform</h3><ul>
+<li>Your platform is a set of standards combined with supporting tools （统一控制面板管理）</li>
+</ul>
+<h3 id="Service-Essentials"><a href="#Service-Essentials" class="headerlink" title="Service Essentials"></a>Service Essentials</h3><ul>
+<li>Independently develop &amp; deploy services （独立开发部署、谨慎对待共享库）</li>
+<li>Services should have their own private data （公用数据库导致服务不独立、共享数据库服务器）</li>
+<li>Keep Services small enough to stay focused and big enough to add value （低耦合、高内聚、单一边界上下文）</li>
+<li>Store data in databases, not ephemeral service instances （无状态服务实例、便于扩容和负载均衡）</li>
+<li>Eventual consistency is your friend  （最终一致性带来松耦合、便于使用异步通信）</li>
+<li>Offload work to asynchronous workers whenever possible （异步通信加快响应、降低错误、便于扩容）</li>
+<li>Keep helpful documentation for all services in a common place （统一维护接口文档）</li>
+<li>Distribute work with load balancers （使用客户端的负载均衡代替接收方的负载均衡）</li>
+<li>Aggregation services on network boundaries can translate for the outside world （聚合服务负责收集来自其他服务的数据，处理任何特殊的编码或压缩要求）</li>
+<li>Layer your security and don’t write your own crypto code! （分层式安全、使用自动化的安全更新、加固底层操作系统、不要自行编写加密代码）</li>
+</ul>
+<h3 id="Service-Interactions"><a href="#Service-Interactions" class="headerlink" title="Service Interactions"></a>Service Interactions</h3><ul>
+<li>Transport data over HTTP, serialized using JSON or protobuf （同步通信用HTTP、异步用消息队列、用JSON或protobuf序列化）</li>
+<li>For HTTP services, 500 series errors or timeouts mean the service is unhealthy（统一服务异常码）</li>
+<li>APIs should be simple and effective （使用优雅的面向资源的REST接口设计）</li>
+<li>A service discovery mechanism makes it easy for services to find each other （服务注册、服务发现、负载均衡+DNS）</li>
+<li>Prefer decentralized interactions over centralized orchestrators （去中心化的交互耦合更低）</li>
+<li>Version all APIs, colocating multiple versions within the same service instances （支持多版本的接口）</li>
+<li>Use limits on resources to fail fast before a service gets overloaded （快速失败）</li>
+<li>Connection pools can reduce downstream impact of sudden request spikes （平滑化请求、相互隔离）</li>
+<li>Timouts minimize impact from downstream delays and failures （更短的超时避免级联失败）</li>
+<li>Be tolerant of unrelated downstream API changes （向前兼容的接口变更）</li>
+<li>Circuit breakers give downstream services a break during tough times （断路器直接失败）</li>
+<li>Correlation IDs help you track requests across service logs （为请求生成唯一标识便于跟踪）</li>
+<li>Make sure you can guarantee eventual consistency （稍后修复、每块数据都应该有一个单一数据源）</li>
+<li>Authenticating all API calls provides a clearer picture of usage patterns</li>
+<li>Auto retry failed requests with random retry intervals （使用随机化的重试避免惊群效应）</li>
+<li>Only talk to a services through exposed and documented APIs </li>
+<li>Economic forces encourage efficient usage of available resources</li>
+<li>Client libraries can handle all the basics, so you can focus on what matters</li>
+</ul>
+<h3 id="Development"><a href="#Development" class="headerlink" title="Development"></a>Development</h3><ul>
+<li>Use a common source control platform for all services （每个服务都该有自己的代码库）</li>
+<li>Either mimic prod in dev or use isolated cloud based dev environments （本地开发和运行的服务与云中运行的隔离环境结合）</li>
+<li>Push working code to mainline often （尽快将开发中的代码与主线分支进行集成）</li>
+<li>Release less, release it faster （持续交付的目标在于更快速地发布小规模变更）</li>
+<li>Warning: shared libraries are painful to update （无法控制何时将共享库的更新部署到使用它的服务上是使用共享库带来的最大挑战，最佳做法是发布弃用时间表）</li>
+<li>Your service templates should cover the fundamentals out of the box （除了核心业务逻辑，服务还管理一系列其他附加任务，例如服务注册、监控、客户端负载均衡、限制管理、断路。团队应能通过这些模板快速实现服务自举以处理所有常见任务，并与平台进行恰当集成。）</li>
+<li>Simple services are also easy to replace</li>
+</ul>
+<h3 id="Deployment"><a href="#Deployment" class="headerlink" title="Deployment"></a>Deployment</h3><ul>
+<li>Use a system image for a deployment package （标准化的部署程序包是自动化部署流水线中重要的组成部件）</li>
+<li>Have a way to automatically deploy any version of any service to any environment （零停机更新）</li>
+<li>Feature flags decouple code deployment from feature deployment （有效地实现代码部署和功能部署间的解耦）</li>
+<li>Configuration should be managed outside of the deployment package</li>
+</ul>
+<h3 id="Operations"><a href="#Operations" class="headerlink" title="Operations"></a>Operations</h3><ul>
+<li>Manage all logs in one place （任何日志都不应存储在实例中）</li>
+<li>Use a common monitoring platform for all services （监控解决方案必须能将不同实例的衡量值汇总在一起）</li>
+<li>Stateless services are easy to auto scale （很多微服务平台为实例数量的处理提供了声明性接口，这种功能非常易用）</li>
+<li>Dependent services that don’t run on your platform also need automation</li>
+</ul>
+<h3 id="People"><a href="#People" class="headerlink" title="People"></a>People</h3><ul>
+<li>Service teams develop, deploy &amp; operate their own services （服务团队需要拥有、运维并完善自己构建的服务）</li>
+<li>Teams should be autonomous in daily operations （拥有这些服务的团队必须具备开发、部署，以及运维这些服务所需的全部技能和工具）</li>
+</ul>
+<h2 id="Best-Practices-for-Designing-a-Pragmatic-RESTful-API"><a href="#Best-Practices-for-Designing-a-Pragmatic-RESTful-API" class="headerlink" title="Best Practices for Designing a Pragmatic RESTful API"></a>Best Practices for Designing a Pragmatic RESTful API</h2><p><a href="http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api" target="_blank" rel="external">http://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api</a></p>
+<ul>
+<li>An API is a user interface for a developer - so put some effort into making it pleasant</li>
+<li>Use RESTful URLs and actions</li>
+<li>Use SSL everywhere, no exceptions</li>
+<li>An API is only as good as its documentation - so have great documentation</li>
+<li>Version via the URL, not via headers</li>
+<li>Use query parameters for advanced filtering, sorting &amp; searching</li>
+<li>Provide a way to limit which fields are returned from the API</li>
+<li>Return something useful from POST, PATCH &amp; PUT requests</li>
+<li>HATEOAS isn’t practical just yet</li>
+<li>Use JSON where possible, XML only if you have to</li>
+<li>You should use camelCase with JSON, but snake_case is 20% easier to read</li>
+<li>Pretty print by default &amp; ensure gzip is supported</li>
+<li>Don’t use response envelopes by default</li>
+<li>Consider using JSON for POST, PUT and PATCH request bodies</li>
+<li>Paginate using Link headers</li>
+<li>Provide a way to autoload related resource representations</li>
+<li>Provide a way to override the HTTP method</li>
+<li>Provide useful response headers for rate limiting</li>
+<li>Use token based authentication, transported over OAuth2 where delegation is needed</li>
+<li>Include response headers that facilitate caching</li>
+<li>Define a consumable error payload</li>
+<li>Effectively use HTTP Status codes</li>
+</ul>
+<h2 id="服务化框架技术选型与京东JSF解密"><a href="#服务化框架技术选型与京东JSF解密" class="headerlink" title="服务化框架技术选型与京东JSF解密"></a>服务化框架技术选型与京东JSF解密</h2><p><a href="http://mp.weixin.qq.com/s/hureIGrLVKO7FLDOWdNjWA" target="_blank" rel="external">http://mp.weixin.qq.com/s/hureIGrLVKO7FLDOWdNjWA</a></p>
+<p>基本的服务化框架包括如下模块：统一的RPC框架，服务注册中心，管理平台。</p>
+<h3 id="RPC框架选型"><a href="#RPC框架选型" class="headerlink" title="RPC框架选型"></a>RPC框架选型</h3><p>需要考量的因素：</p>
+<ul>
+<li>代码规范：例如是对已有代码透明，还是代码生成；</li>
+<li>通讯协议：例如是TCP还是HTTP；</li>
+<li>序列化协议：例如是二进制还是文本，是否需要跨语言，性能；</li>
+<li>IO模型：异步/同步，阻塞/非阻塞；</li>
+<li>负载均衡：客户端软负载，代理模式，服务端负载。</li>
+</ul>
+<p>另外如果是从开源里面选择，那么我们还需要考量：</p>
+<ul>
+<li>成熟度：包括学习成本，社区热度，文档数，是否有团队维护，稳定性（盲目追求的不一定是最适合）；</li>
+<li>可扩展性：是否有SPI支持扩展，是否支持上下兼容；</li>
+<li>跨语言：是否支持跨语言；</li>
+<li>性能：要想作为RPC框架，性能一般都不会太差。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/rpc_compare.png" alt="RPC框架比较"></p>
+<ul>
+<li>如果需要与前端交互的，适合短链接、跨语言的RPC框架，例如RESTful、gRPC等；</li>
+<li>如果纯粹后台交互的，适合长链接、序列化为二进制的RPC框架，例如thrift、dubbo等更高效；</li>
+<li>如果是小公司，新公司从头开始推广服务化框架的，可以选择规范化的RPC框架，例如thrift、RESTful、gRPC；</li>
+<li>如果是已有大量业务代码的再推广服务框架的，那么最好选择无代码入侵的RPC框架，例如dubbo、RESTful。</li>
+</ul>
+<h3 id="注册中心选型"><a href="#注册中心选型" class="headerlink" title="注册中心选型"></a>注册中心选型</h3><p>选择注册中心基本要考量：</p>
+<ul>
+<li>服务注册：接收注册信息的方式；</li>
+<li>服务订阅：返回订阅信息的方式，推还是拉；</li>
+<li>状检测：检测服务端存活状态。</li>
+</ul>
+<p>如果是从开源里面选择，那么还需要考量：</p>
+<ul>
+<li>成熟度：包括学习成本，社区热度，文档数（盲目追求的不一定是最适合）；</li>
+<li>维护成本：注册中心维护；</li>
+<li>数据解构：是否能快速定位结果，是否能遍历；</li>
+<li>性能和稳定性；</li>
+<li>CAP原则：CP（关注一致性）还是AP（关注可用性）。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/registry_center_compare.png" alt="注册中心比较"></p>
+<ul>
+<li>规模小选择CP，RPC框架可以直接接入数据源；</li>
+<li>规模大选择AP， RPC框架不可以直接接入数据源；</li>
+<li>存在跨机房，跨地域的尽量不要选有强一致性协议的注册中心；</li>
+<li>RPC框架必须要有注册中心不可用的容灾策略；</li>
+<li>服务状态检测十分重要。</li>
+</ul>
+<h3 id="完善的服务化框架"><a href="#完善的服务化框架" class="headerlink" title="完善的服务化框架"></a>完善的服务化框架</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/service_framework.png" alt="服务化框架"></p>
+<ul>
+<li>接口文档管理：提供一个接口文档管理以及接口查询的入口。这里可以定义接口的文档，包括接口描述，方法定义，字段定义。可以定义接口的SLA，包括支持的并发数，tp99多少，建议配置是什么。</li>
+<li>配置中心：这里说的配置主要指的是服务相关的一些配置。配置包括分组配置、路由策略、黑白名单、降级开关、限流信息、超时时间、重试次数等等，任何可以动态变更的所有数据。</li>
+<li>监控中心：监控服务关注接口维度，实例维度的数据。RPC框架可以定时上报调用次数，耗时，异常等信息。监控中心可以统计出服务质量信息，也可以进行监控报警。</li>
+<li>分布式跟踪：区别于监控中心，以调用链的模式对服务进行。RPC框架作为分布式跟踪系统的一个天然埋点，可以很好的进行一个数据输出。</li>
+<li>服务治理（重点）：服务路由、调用授权、动态分组、调用限流、灰度部署、配置下发、服务降级；</li>
+<li>网关：RPC框架大部分场景都是自己调用的，网关可以提供如下功能：统一的鉴权服务、限流服务、协议转换、Mock（服务测试，降级等）、其它一些统一处理逻辑（例如请求解析，响应包装）。</li>
+<li>服务注册中心Plus：需要逻辑处理能力，例如对数据进行筛选过滤整合，计算服务路由等功能<br>同时还需要有与RPC框架交互的功能。</li>
+<li>管理端Plus：管理端除了之前的简单服务管理功能外，还需要提供配置信息展示，监控信息展示，各种维度的数据展示。</li>
+</ul>
+<h3 id="京东实践"><a href="#京东实践" class="headerlink" title="京东实践"></a>京东实践</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/JSF.png" alt="JSF"></p>
+<h4 id="JSF注册中心"><a href="#JSF注册中心" class="headerlink" title="JSF注册中心"></a>JSF注册中心</h4><ul>
+<li>京东的注册中心是自研的，基于DB做的数据最终一致;</li>
+<li>注册中心主要实现的就是服务列表的注册订阅推送，服务配置的获取下发，服务状态的实时查看等功能;</li>
+<li>注册中心节点是无状态的，可水平扩展的;</li>
+<li>每个机房部署多个注册中心节点。同机房的RPC框架会优先连本机房的注册中心节点;</li>
+<li>引入Index服务概念：该服务就是一个最简单HTTP的服务，用于找注册中心节点，RPC框架会优先连该服务拿注册中心地址，这样子的好处是注册中心地址变化后，RPC框架不用修改任何设置；</li>
+<li>注册中心内存有服务列表全量缓存，连不上数据库也保证可读；</li>
+<li>数据库的数据结构更适合各种维度展示、过滤、分析等，例如根据分组/IP/应用/机房等不同维度；</li>
+<li>注册中心就是个JSF服务，监控到压力大即可进行动态水平扩展，dogfooding，注册中心其实是第一个JSF接口；</li>
+<li>服务列表推送逻辑改进：例如原来100个Provider，现在加1个节点，之前的SAF是需要下发101个节点，自己判断加了哪个节点，进行长链接建立；现在的改进是：修改为下发一个add事件，告知RPC框架加了1个节点，RPC框架进行长链接建立；这样做大大减少了推送的数据量；</li>
+<li>注册中心与RPC框架可各种交互：注册中心和RPC框架是长链接，而且JSF是支持Callback的，注册中心可以调用RPC框架进行服务列表变化之外的操作；例如查看状态，查看配置，配置下发等。</li>
+</ul>
+<h4 id="JSF-RPC框架"><a href="#JSF-RPC框架" class="headerlink" title="JSF RPC框架"></a>JSF RPC框架</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/JSF_RPC.png" alt="JSF RPC框架"></p>
+<p>JSF的RPC框架主要分为图中的几个模块，下面大概列下一些功能特性：</p>
+<ul>
+<li>Config：Spring/API/Annotation</li>
+<li>Proxy: Javassist/JDK</li>
+<li>Invoker/Filter：内置+自定义，Filter可扩展</li>
+<li>Client：Failover（默认）/FailFast/TransportPinpoint/MultiClientProxy</li>
+<li>调用方式：同步（默认）/异步并行/异步回调/Callback/泛化</li>
+<li>Loadbalance：Random（默认）/Roundrobin/ConsistentHash/ LocalPreference/LeastActiveCall</li>
+<li>路由：参数路由，分组路由，（IP级别路由逻辑在注册中心做）</li>
+<li>连接维护：可用/死亡/亚健康</li>
+<li>协议：JSF（默认）/SAF(dubbo)/HTTP/Telnet/HTTP2</li>
+<li>第三方：REST/Webservice</li>
+<li>序列化：MsgPack（默认）/Hessian/Json/Java/protobuf(c++)</li>
+<li>压缩：Snappy/LZMA</li>
+<li>网络：基于Netty4.0，长连接复用</li>
+<li>线程模型：BOSS+WORKER+BIZ</li>
+<li>容灾：本地文件</li>
+<li>请求上下文：IP，参数，隐式传参</li>
+<li>事件监听：响应事件，连接事件，状态事件</li>
+<li>分布式跟踪支持：进行数据埋点</li>
+</ul>
+<h4 id="JSF管理平台"><a href="#JSF管理平台" class="headerlink" title="JSF管理平台"></a>JSF管理平台</h4><p>提供强大管理功能，包括服务管理，监控管理，注册中心管理等功能。</p>
+<h2 id="高性能高并发系统的稳定性保障"><a href="#高性能高并发系统的稳定性保障" class="headerlink" title="高性能高并发系统的稳定性保障"></a>高性能高并发系统的稳定性保障</h2><p><a href="https://mp.weixin.qq.com/s/YMgIwaz8YC_zNPh_Jf98HA" target="_blank" rel="external">https://mp.weixin.qq.com/s/YMgIwaz8YC_zNPh_Jf98HA</a></p>
+<h3 id="性能、并发、稳定性三者关系"><a href="#性能、并发、稳定性三者关系" class="headerlink" title="性能、并发、稳定性三者关系"></a>性能、并发、稳定性三者关系</h3><ul>
+<li>高性能：高吞吐量、低延时；吞吐量包括QPS， TPS，OPS等；</li>
+<li>并发：并不是越高越好，需要考虑TP99；</li>
+<li>用户角度：系统是个黑盒，复杂系统中的任何一环到会导致稳定性问题。</li>
+<li>SLA：在某种吞吐量下能提供TP99为n毫秒的服务能力。</li>
+<li>降低延时，会提高吞吐量，但是延时的考核是TP99这样的稳定的延时。</li>
+</ul>
+<h3 id="如何改善延时"><a href="#如何改善延时" class="headerlink" title="如何改善延时"></a>如何改善延时</h3><ul>
+<li>关键路径：“28原则”（20%的代码影响了80%的性能问题，抓重点）、“过早优化是万恶之源”。不同解读；</li>
+<li>优化代码：空间换时间：各级缓存；时间换空间：比如传输压缩，解决网络传输的瓶颈；多核并行：减少锁竞争；lesscode；各类语言、框架、库的trick；算法+数据结构，保持代码的清晰、可读、可维护和扩展；</li>
+<li>通过性能测试和监控找出瓶颈；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/metric.png" alt="metric"></p>
+<ul>
+<li>内存分配: 显式分配器(jemalloc/tcmalloc代替默认的ptmalloc)、隐式分配器（JVM GC的各种调优）、是否使用hugepagen预分配和重用（Netty的Pooled ByteBuf）、减少拷贝（new ArrayList(int), new StringBuilder(int)）；</li>
+<li>减少系统调用：批处理:（buffer io，pipeline）、使用用户态的等价函数:（gettimeofday -&gt;clock_gettime ）、减少锁竞争、RWMutex 、CAS、Thread local、最小化锁范围、最小化状态、不变类；</li>
+<li>减少上下文切换：触发（中断、系统调用、时间片耗尽、IO阻塞等）、危害（L1/L2 Cache Missing，上下文保存/恢复）、单线程、ThreadPool的配置；</li>
+<li>网络：内核TCP Tuning参数和SocketOption、TCP Socket连接池、网络I/O模型、传输压缩、编解码效率、超时心跳和重试机制；</li>
+</ul>
+<h3 id="如何提高吞吐量"><a href="#如何提高吞吐量" class="headerlink" title="如何提高吞吐量"></a>如何提高吞吐量</h3><ul>
+<li>复制：通过复制提高读吞吐量、容灾、异构；通过数据分片提高写吞吐量；程序双写（同步双写、异步双写、Change Data Capture如Canal）；底层存储复制机制；</li>
+<li>扩容：扩容规划；扩容checklist、应用扩容、垂直扩容、水平扩容；</li>
+<li>异步化：解耦利器、削峰填谷、页面异步化、系统异步化、JMQ、状态机（worker）+DB、本地队列、集中式缓存队列；</li>
+<li>缓存：多级缓存、缓存前置、一致性延迟权衡、缓存主节点负责写、通过CDC监听数据库binlog主动更新缓存、CPU不是瓶颈，网络才是、优化编码，减少尺寸、优化操作、优化拓扑；</li>
+</ul>
+<h3 id="如何保障稳定性"><a href="#如何保障稳定性" class="headerlink" title="如何保障稳定性"></a>如何保障稳定性</h3><ul>
+<li>提高可用性：衡量指标（几个9）、减少故障、减少故障修复时间、冗余复制灾备切换、快速切换、监控；</li>
+<li>分组和隔离：网络流量隔离、业务系统隔离、流量分组、存储的分组；</li>
+<li>限流：谨慎使用、区分正常流量和超预期流量、读少限，写多限、客户端配合限流、不同分组的限流阈值、多层限流；</li>
+<li>降级：保证用户的核心需求、需要有预案和开关、非关键业务屏蔽、业务功能模块降级、数据降级（动态降级到静态，远程服务降级到本地缓存）；</li>
+<li>监控和故障切换：网络流量；操作系统指标；服务接口调用量、TP99、错误率…；日志；业务量变化；</li>
+</ul>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/high_performacnce_review.png" alt="高性能高并发总结"></p>
+<h2 id="如何更好的设计RESTful-API"><a href="#如何更好的设计RESTful-API" class="headerlink" title="如何更好的设计RESTful API"></a>如何更好的设计RESTful API</h2><p><a href="https://zhuanlan.zhihu.com/p/24592119" target="_blank" rel="external">https://zhuanlan.zhihu.com/p/24592119</a></p>
+<ul>
+<li>你的API越简单明了，使用的人就越多；</li>
+<li>HTTP动词GET（SELECT）：从服务器检索特定资源，或资源列表。</li>
+<li>HTTP动词POST（CREATE）：在服务器上创建一个新的资源。</li>
+<li>HTTP动词PUT（UPDATE）：更新服务器上的资源，提供整个资源。</li>
+<li>HTTP动词DELETE（DELETE）：从服务器删除资源。</li>
+<li>HTTP动词PATCH （UPDATE）：更新服务器上的资源，仅提供更改的属性。</li>
+<li>HTTP动词HEAD - 检索有关资源的元数据，例如数据的哈希或上次更新时间。</li>
+<li>HTTP动词OPTIONS - 检索关于客户端被允许对资源做什么的信息。</li>
+<li>版本控制：一个好的RESTful API设计将跟踪URL中的版本；</li>
+<li>分析：跟踪客户端使用的API的版本/端点；</li>
+<li>将内容设为API根目录是个好主意；</li>
+<li>端点是您的API中指向特定资源或资源集合的URL，当引用每个端点可以做什么时，您需要列出有效的HTTP动词和端点组合。</li>
+<li>当客户端请求对象列表时，请务必为它们提供符合所请求条件的每个对象的列表。然而，重要的是，您确实为客户端提供了指定某种过滤/结果限制的能力。</li>
+<li>作为RESTful API，使用正确的HTTP状态代码非常重要;他们是一个标准！</li>
+<li>认证：OAuth 2.0提供了一个很好的方法。对于每个请求，您可以确定知道哪个客户正在发出请求，代表他们请求哪个用户，并提供一种（大部分）标准化的方式来过期访问或允许用户撤消来自客户端的访问权，需要第三方客户端知道用户登录凭据。</li>
+<li>内容类型：目前，最令人兴奋的API提供来自RESTful接口的JSON数据。</li>
+<li>超媒体API：超媒体API很可能是RESTful API设计的未来。超媒体API概念的工作方式与人类相同。请求API的根返回一个URL列表，它可能指向每个信息集合，并以客户端可以理解的方式描述每个集合。为每个资源提供ID并不重要（或必需），只要提供了一个URL即可。</li>
+</ul>
+<h2 id="微信小程序实战，从入门到弃坑"><a href="#微信小程序实战，从入门到弃坑" class="headerlink" title="微信小程序实战，从入门到弃坑"></a>微信小程序实战，从入门到弃坑</h2><p><a href="http://www.jianshu.com/p/4433d46e6235" target="_blank" rel="external">http://www.jianshu.com/p/4433d46e6235</a></p>
+<ul>
+<li>微信小程序的内容部分是hybrid模式，并非原生；</li>
+<li>一个完整的微信小程序是由一个App实例和多个Page实例构成，其中App实例表示该小程序应用，多个Page表示该小程序的多个页面。</li>
+<li>微信小程序并没有提供自定义组件的方式，这就导致微信小程序在开发较复杂应用时，可能会比较艰难。</li>
+<li>两种配置文件：app.json（应用的全局配置文件）、page.json（页面的全局配置文件）；</li>
+<li>两个核心函数：App() （小程序注册入口，全局唯一）、Page() （页面注册入口）；</li>
+<li>生命周期及调用流程：</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1158202-481a42f6d299528e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="生命周期及调用流程"></p>
+<ul>
+<li>小程序虽然是hybrid模式，但并不使用HTML渲染。WXML支持数据绑定、条件渲染、循环、模块化等功能。但问题却不少：不能跨浏览器、富文本解析困难，iframe视频不支持，没办法外链跳转。</li>
+<li>页面间的跳转见下表：</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/1158202-cf7de8f472d6a147.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="页面跳转方式"></p>
+<ul>
+<li>事件绑定： </li>
+</ul>
+<pre><code>// bindtap 和 catchtap的区别在于
+// bindtap 不会阻止事件冒泡
+// catchtap会冒泡事件冒泡
+&lt;view id=&quot;tapTest&quot; data-hi=&quot;WeChat&quot; bindtap=&quot;tapName&quot;&gt; Click me! &lt;/view&gt;
+&lt;view id=&quot;tapTest&quot; data-hi=&quot;WeChat&quot; catchtap=&quot;tapName&quot;&gt; Click me! &lt;/view&gt;
+
+// 绑定的函数tapName只是一个函数名称，默认接受一个event对象作为参数
+Page({
+  tapName: function(event) {
+    console.log(event)
+  }
+})
+</code></pre><ul>
+<li>事件传参：将参数绑定到wxml标签上，然后通过event.target.dataset获取；直接使用Page.data或其他数据；</li>
+<li>官方组件：<a href="https://mp.weixin.qq.com/debug/wxadoc/dev/component/?t=20161222" target="_blank" rel="external">https://mp.weixin.qq.com/debug/wxadoc/dev/component/?t=20161222</a></li>
+<li>官方API：<a href="https://mp.weixin.qq.com/debug/wxadoc/dev/api/?t=20161222" target="_blank" rel="external">https://mp.weixin.qq.com/debug/wxadoc/dev/api/?t=20161222</a></li>
+</ul>
+<h2 id="Java-模块化技术演进和对现有应用微服务化的意义"><a href="#Java-模块化技术演进和对现有应用微服务化的意义" class="headerlink" title="Java 模块化技术演进和对现有应用微服务化的意义"></a>Java 模块化技术演进和对现有应用微服务化的意义</h2><p><a href="https://mp.weixin.qq.com/s/7H71uPSKcb2hVam7GU0T6g" target="_blank" rel="external">https://mp.weixin.qq.com/s/7H71uPSKcb2hVam7GU0T6g</a></p>
+<ul>
+<li>Java模块化需求：语言定义粒度缺失的一环、顺序加载带来的问题、多版本组件部署；</li>
+<li>Java模块化的实现：OSGI、Jigsaw、JBoss Module；</li>
+<li>Java语言的模块化：Jigsaw项目、Java Platform Module System(JSR 376)、推迟到Java9时发布、JDK9 EA 111合并入Jigsaw；</li>
+<li>JDK 9模块化实例：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/jdk_modules_example1.png" alt="JDK 9模块化示意图形"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/jdk_modules_example2.png" alt="JDK 9模块化代码范例"></p>
+<ul>
+<li><p>3种模块化实现特性比较<br><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/jdk_modules_compare.png" alt="3种模块化实现特性比较"></p>
+</li>
+<li><p>模块化技术对微服务的意义:设计更加灵活、模块化是必须的基础设施、和容器技术配合（运用Docker的层叠式文件系统、Kubernetes自动扩展机制的结合）</p>
+</li>
+<li>开发架构的变化：应用架构按照层次进行模块化改造、语言级进行支持、逐步适应、长期的过程；</li>
+</ul>
+<h2 id="京东亿级商品搜索核心技术解密"><a href="#京东亿级商品搜索核心技术解密" class="headerlink" title="京东亿级商品搜索核心技术解密"></a>京东亿级商品搜索核心技术解密</h2><p><a href="http://mp.weixin.qq.com/s/N2va4w1XERoEIh7ZwT4AUQ" target="_blank" rel="external">http://mp.weixin.qq.com/s/N2va4w1XERoEIh7ZwT4AUQ</a></p>
+<p>京东商品搜索引擎是搜索推荐部自主研发的商品搜索引擎，主要功能是为海量京东用户提供精准、快速的购物体验。</p>
+<p>自身显著的业务特点：结构化的商品数据、极高的召回率要求、商品信息的及时更新、逻辑复杂的商品业务、用户购物的个性化需求；</p>
+<p>系统架构分为四个部分：1. 爬虫系统、2. 离线信息处理系统、3. 索引系统、4. 搜索服务系统。</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/js_search_1.png" alt="京东商品搜索引擎的整体架构"></p>
+<p>从上到下共分为3层:</p>
+<ul>
+<li>最上层是由搜索的前端UI层，负责页面展示。</li>
+<li>中间层是由搜索索引服务、SUG搜索、相关搜索、划词服务和兜底服务组成。其中，SUG搜索提供输入框下拉提示词功能；相关搜索提供与query相关的其他搜索词服务；划词服务提供去除query部分词的功能；兜底服务用于索引服务异常情况下提供托底，保证用户基本的搜索可用。</li>
+<li><p>最下层是索引生产端，主要功能是对接商品、库存、价格、促销、仓储等众多外部系统，整合相关数据生产全量和增量数据的索引，为在线检索服务集群提供全量索引和实时索引数据。</p>
+</li>
+<li><p>爬虫系统：利用大数据平台的数据库抽取接口和中间件系统，实现了站内商品爬虫系统，用来抽取数据库中的商品信息和及时发现变化的商品信息。</p>
+</li>
+<li>离线信息处理系统：主要功能是用来建立商品搜索引擎的待索引数据，包括全量待索引数据和增量待索引数据。对来源分散的数据在商品维度进行合并，生成“商品全量待索引宽表”。该表不仅应用于搜索引擎服务，还同时应用于个性化推荐等其他产品服务当中。但是仅生成宽表是无法完成搜索引擎的索引需求的，因此我们利用Hadoop/MapReduce计算框架对宽表数据进行清洗，并且依照离线业务逻辑规则对数据进行二次“加工”，最终生成一份全量待索引数据。对于增量索引，采用和全量索引类似的方法对数据进行处理，生成增量待索引数据。为了保证增量数据的及时性和准确性，离线信息处理系统会实时调用各商品信息接口获取数据，完成增量待索引数据的在线组装和生产。</li>
+<li>索引系统：索引系统是商品搜索引擎的核心，主要功能是把以商品为维度进行存储的待索引数据，转换成以关键字为维度进行存储的数据，用于搜索引擎上层服务进行调用。</li>
+<li>搜索服务系统：Query Processor服务（用户查询意图分析）、User Profile服务（查询用户标签）、detail服务（结果包装、基于缓存云实现的商品信息KV查询服务）、检索服务进行分片化处理；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/6_reading/js_search_2.png" alt="搜索服务流程"></p>
+<ul>
+<li>进一步优化：多级缓存策略、截断策略、均匀分片策略、业务优化；</li>
+<li>搜索技术的新发展：场景搜索、图像搜索；</li>
+</ul>
+<h2 id="解读2016之深度学习篇：开源深度学习框架发展展望"><a href="#解读2016之深度学习篇：开源深度学习框架发展展望" class="headerlink" title="解读2016之深度学习篇：开源深度学习框架发展展望"></a>解读2016之深度学习篇：开源深度学习框架发展展望</h2><p><a href="http://www.infoq.com/cn/articles/interpretation-of-2016-deeplearning" target="_blank" rel="external">http://www.infoq.com/cn/articles/interpretation-of-2016-deeplearning</a></p>
+<ul>
+<li>单台机器CPU -&gt; 专门的图形处理器（Graphics Processing Unit，GPU）-&gt; 通用图像处理器（General Purpose GPU，GPGPU）;</li>
+<li>大量的研究表明：增加训练样本数或模型参数的数量，或同时增加训练样本数和模型参数的数量，都能够极大地提升最终分类的准确性；</li>
+<li>近年来，存储设备和网络在性能方面的提升远超CPU，CPU性能瓶颈极大地限制了分布式环境下，单台节点的处理速度。许多优秀的开源深度学习框架都在尝试将开源大数据处理技术框架如Spark和GPGPU结合起来，通过提高集群中每台机器的处理性能来加速深度学习算法模型的训练。</li>
+<li>深度学习提升性能的三种方式：纵向扩展（给机器加GPU）、横向扩展（通过集群训练模型）及融合扩展（在分布式的基础上，给每个集群中的Worker节点加GPU）；</li>
+<li>单机开源深度学习框架：Theano（蒙特利尔理工学院）、Torch（Facebook 和 Twitter主推）、TensorFlow（Google开源的）、Caffe（加州大学伯克利分校）、CNTK（微软开源的）；</li>
+<li>分布式开源深度学习框架：DSSTNE（亚马逊开源的）、Paddle（百度开源的）、SparkNet（AMPLab开源的）、Deeplearning4J（Skymind开源的）、Caffe On Spark（Yahoo开源的）、Tensorflow on Spark（Arimo）、TensorFrames（Databricks开源的）、Angel（腾讯开源的）；</li>
+<li>开源深度学习框架的发展有以下几个趋势：a.分布式深度学习框架特别是构建在Hadoop生态体系内的分布式深度学习框架（基于Java或Scala语言实现）会越来越流行，并通过融合扩展的方式加速深度学习算法模型的训练。b.在分布式深度学习方面，大数据的本质除了常说的4V特性之外，还有一个重要的本质那就是Online，数据随时可更新可应用，而且数据本质上具备天然的流式特征，因此具备实时在线、模型可更新算法的深度学习框架也是未来发展的方向。c. 当待训练的深度学习算法模型参数较多时，Spark与开源分布式内存文件系统Tachyon结合使用是提升性能的有效手段。</li>
+</ul>
+<h2 id="技术人员的发展之路"><a href="#技术人员的发展之路" class="headerlink" title="技术人员的发展之路"></a>技术人员的发展之路</h2><p><a href="http://coolshell.cn/articles/17583.html" target="_blank" rel="external">http://coolshell.cn/articles/17583.html</a></p>
+<ul>
+<li>一个重要阶段和标志：人生中的一个非常重要的阶段——20到30岁；这个阶段的首要任务，就是提升自己学习能力和解决难题的能力。这是一个非常非常关键的时间段！这个时间段几乎决定着你的未来。</li>
+<li>高效的学习能力和解决问题的能力；</li>
+<li>个人发展的三个方向：在职场中打拼、去经历有意义有价值的事、追求一种自由的生活；</li>
+</ul>
+<p><strong>免责声明：相关链接版本为原作者所有，如有侵权，请告知删除。</strong></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/函数式编程/" rel="tag"># 函数式编程</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
+          
+            <a href="/tags/Git/" rel="tag"># Git</a>
+          
+            <a href="/tags/数据库中间件/" rel="tag"># 数据库中间件</a>
+          
+            <a href="/tags/推荐系统/" rel="tag"># 推荐系统</a>
+          
+            <a href="/tags/分布式队列/" rel="tag"># 分布式队列</a>
+          
+            <a href="/tags/分布式定时任务/" rel="tag"># 分布式定时任务</a>
+          
+            <a href="/tags/微服务/" rel="tag"># 微服务</a>
+          
+            <a href="/tags/系统架构/" rel="tag"># 系统架构</a>
+          
+            <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          
+            <a href="/tags/DistributedLog/" rel="tag"># DistributedLog</a>
+          
+            <a href="/tags/分布式缓存/" rel="tag"># 分布式缓存</a>
+          
+            <a href="/tags/分布式数据库/" rel="tag"># 分布式数据库</a>
+          
+            <a href="/tags/Motan/" rel="tag"># Motan</a>
+          
+            <a href="/tags/RPC/" rel="tag"># RPC</a>
+          
+            <a href="/tags/IDEA/" rel="tag"># IDEA</a>
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/深度学习/" rel="tag"># 深度学习</a>
+          
+            <a href="/tags/微信小程序/" rel="tag"># 微信小程序</a>
+          
+            <a href="/tags/性能调优/" rel="tag"># 性能调优</a>
+          
+            <a href="/tags/自我提升/" rel="tag"># 自我提升</a>
+          
+            <a href="/tags/服务化/" rel="tag"># 服务化</a>
+          
+            <a href="/tags/高性能/" rel="tag"># 高性能</a>
+          
+            <a href="/tags/高并发/" rel="tag"># 高并发</a>
+          
+            <a href="/tags/高可用/" rel="tag"># 高可用</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/git_definitive_guide_notes/" rel="next" title="《Git权威指南》读书笔记">
+                <i class="fa fa-chevron-left"></i> 《Git权威指南》读书笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/elasticsearch_multi_match_query/" rel="prev" title="动手学习Elasticsearch中的Multi Match Query">
+                动手学习Elasticsearch中的Multi Match Query <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/reading_record_201612/"
+           data-title="阅读随手记 201612" data-url="http://ginobefunny.com/post/reading_record_201612/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">109</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#携程开源数据库访问框架Ctrip-DAL"><span class="nav-number">1.</span> <span class="nav-text">携程开源数据库访问框架Ctrip DAL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Recommender-systems-explained"><span class="nav-number">2.</span> <span class="nav-text">Recommender systems explained</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式队列编程：从模型、实战到优化"><span class="nav-number">3.</span> <span class="nav-text">分布式队列编程：从模型、实战到优化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于Mesos的当当作业云Elastic-Job-Cloud"><span class="nav-number">4.</span> <span class="nav-text">基于Mesos的当当作业云Elastic Job Cloud</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos的核心概念"><span class="nav-number">4.1.</span> <span class="nav-text">Mesos的核心概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mesos带来的好处"><span class="nav-number">4.2.</span> <span class="nav-text">Mesos带来的好处</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#弃用内置Framework，自研Elastic-Job-Cloud"><span class="nav-number">4.3.</span> <span class="nav-text">弃用内置Framework，自研Elastic Job Cloud</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-Hardest-Part-About-Microservices-Your-Data"><span class="nav-number">5.</span> <span class="nav-text">The Hardest Part About Microservices: Your Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#美团外卖系统架构演进与稳定性的探索"><span class="nav-number">6.</span> <span class="nav-text">美团外卖系统架构演进与稳定性的探索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#A-Technical-Review-of-Kafka-and-DistributedLog"><span class="nav-number">7.</span> <span class="nav-text">A Technical Review of Kafka and DistributedLog</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MTDDL——美团点评分布式数据访问层中间件"><span class="nav-number">8.</span> <span class="nav-text">MTDDL——美团点评分布式数据访问层中间件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见性能优化策略的总结"><span class="nav-number">9.</span> <span class="nav-text">常见性能优化策略的总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Intellij-IDEA-一些不为人知的技巧"><span class="nav-number">10.</span> <span class="nav-text">Intellij IDEA 一些不为人知的技巧</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术框架与组件使用"><span class="nav-number">11.</span> <span class="nav-text">技术框架与组件使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#分布式缓存架构基础"><span class="nav-number">12.</span> <span class="nav-text">分布式缓存架构基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从优化性能到应对峰值流量：微博缓存服务化的设计与实践"><span class="nav-number">13.</span> <span class="nav-text">从优化性能到应对峰值流量：微博缓存服务化的设计与实践</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#海量数据存储基础"><span class="nav-number">14.</span> <span class="nav-text">海量数据存储基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java性能调优工程的几点建议"><span class="nav-number">15.</span> <span class="nav-text">Java性能调优工程的几点建议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#机器学习：发展与未来-–-周志华"><span class="nav-number">16.</span> <span class="nav-text">机器学习：发展与未来 – 周志华</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Git-from-the-inside-out"><span class="nav-number">17.</span> <span class="nav-text">Git from the inside out</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Core-Functional-Programming-Concepts"><span class="nav-number">18.</span> <span class="nav-text">Core Functional Programming Concepts</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#The-JVM-Architecture-Explained"><span class="nav-number">19.</span> <span class="nav-text">The JVM Architecture Explained</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#One-Sure-Fire-Way-to-Improve-Your-Coding"><span class="nav-number">20.</span> <span class="nav-text">One Sure-Fire Way to Improve Your Coding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Best-Practices-for-Building-a-Microservice-Architecture"><span class="nav-number">21.</span> <span class="nav-text">Best Practices for Building a Microservice Architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Platform"><span class="nav-number">21.1.</span> <span class="nav-text">The Platform</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service-Essentials"><span class="nav-number">21.2.</span> <span class="nav-text">Service Essentials</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Service-Interactions"><span class="nav-number">21.3.</span> <span class="nav-text">Service Interactions</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Development"><span class="nav-number">21.4.</span> <span class="nav-text">Development</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deployment"><span class="nav-number">21.5.</span> <span class="nav-text">Deployment</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Operations"><span class="nav-number">21.6.</span> <span class="nav-text">Operations</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#People"><span class="nav-number">21.7.</span> <span class="nav-text">People</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Best-Practices-for-Designing-a-Pragmatic-RESTful-API"><span class="nav-number">22.</span> <span class="nav-text">Best Practices for Designing a Pragmatic RESTful API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务化框架技术选型与京东JSF解密"><span class="nav-number">23.</span> <span class="nav-text">服务化框架技术选型与京东JSF解密</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RPC框架选型"><span class="nav-number">23.1.</span> <span class="nav-text">RPC框架选型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注册中心选型"><span class="nav-number">23.2.</span> <span class="nav-text">注册中心选型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#完善的服务化框架"><span class="nav-number">23.3.</span> <span class="nav-text">完善的服务化框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#京东实践"><span class="nav-number">23.4.</span> <span class="nav-text">京东实践</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#JSF注册中心"><span class="nav-number">23.4.1.</span> <span class="nav-text">JSF注册中心</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSF-RPC框架"><span class="nav-number">23.4.2.</span> <span class="nav-text">JSF RPC框架</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JSF管理平台"><span class="nav-number">23.4.3.</span> <span class="nav-text">JSF管理平台</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高性能高并发系统的稳定性保障"><span class="nav-number">24.</span> <span class="nav-text">高性能高并发系统的稳定性保障</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#性能、并发、稳定性三者关系"><span class="nav-number">24.1.</span> <span class="nav-text">性能、并发、稳定性三者关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何改善延时"><span class="nav-number">24.2.</span> <span class="nav-text">如何改善延时</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何提高吞吐量"><span class="nav-number">24.3.</span> <span class="nav-text">如何提高吞吐量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何保障稳定性"><span class="nav-number">24.4.</span> <span class="nav-text">如何保障稳定性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">24.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何更好的设计RESTful-API"><span class="nav-number">25.</span> <span class="nav-text">如何更好的设计RESTful API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#微信小程序实战，从入门到弃坑"><span class="nav-number">26.</span> <span class="nav-text">微信小程序实战，从入门到弃坑</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-模块化技术演进和对现有应用微服务化的意义"><span class="nav-number">27.</span> <span class="nav-text">Java 模块化技术演进和对现有应用微服务化的意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#京东亿级商品搜索核心技术解密"><span class="nav-number">28.</span> <span class="nav-text">京东亿级商品搜索核心技术解密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解读2016之深度学习篇：开源深度学习框架发展展望"><span class="nav-number">29.</span> <span class="nav-text">解读2016之深度学习篇：开源深度学习框架发展展望</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#技术人员的发展之路"><span class="nav-number">30.</span> <span class="nav-text">技术人员的发展之路</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

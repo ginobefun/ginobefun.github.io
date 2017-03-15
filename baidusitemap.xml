@@ -1,0 +1,989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/elasticsearch_dynamic_synonym_plugin/</loc>
+    <lastmod>2017-03-15T08:16:25.083Z</lastmod>
+    <data>
+        <display>
+        <title>一个简易的Elasticsearch动态同义词插件</title>
+        <pubTime>2017-03-15T07:07:22.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>同义词</tag>
+         
+        <tag>synonym</tag>
+         
+        <tag>插件</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/reading_record_201702/</loc>
+    <lastmod>2017-03-07T08:54:52.762Z</lastmod>
+    <data>
+        <display>
+        <title>阅读随手记 201702</title>
+        <pubTime>2017-02-08T04:31:23.000Z</pubTime>
+        
+        <tag>推荐系统</tag>
+         
+        <tag>微服务</tag>
+         
+        <tag>机器学习</tag>
+         
+        <tag>深度学习</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>高可用</tag>
+         
+        <tag>分布式</tag>
+         
+        <tag>配置中心</tag>
+         
+        <tag>Java编程</tag>
+         
+        <tag>运维</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
+    <lastmod>2017-03-07T07:54:44.262Z</lastmod>
+    <data>
+        <display>
+        <title>阅读随手记 201703</title>
+        <pubTime>2017-03-03T00:33:19.000Z</pubTime>
+        
+        <tag>微服务</tag>
+         
+        <tag>RPC</tag>
+         
+        <tag>高性能</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>高可用</tag>
+         
+        <tag>架构</tag>
+         
+        <tag>消息中间件</tag>
+         
+        <tag>缓存</tag>
+         
+        <tag>监控</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+  <url>
+    <loc>http://ginobefunny.com/post/java_concurrency_trip_part4/</loc>
+    <lastmod>2017-03-03T00:38:16.292Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发之旅第四站：并行流</title>
+        <pubTime>2017-02-25T10:11:32.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>并发</tag>
+         
+        <tag>多线程</tag>
+         
+        <tag>Stream</tag>
+         
+        <tag>并行流</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/java_concurrency_trip_part1/</loc>
+    <lastmod>2017-03-03T00:38:01.342Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发之旅第一站：显式锁</title>
+        <pubTime>2017-02-19T05:27:25.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>锁</tag>
+         
+        <tag>并发</tag>
+         
+        <tag>多线程</tag>
+         
+        <tag>重入锁</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/java_concurrency_trip_part2/</loc>
+    <lastmod>2017-03-03T00:37:58.272Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发之旅第二站：原子类与并发容器</title>
+        <pubTime>2017-02-21T11:29:17.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>并发</tag>
+         
+        <tag>多线程</tag>
+         
+        <tag>原子类</tag>
+         
+        <tag>ConcurrentHashMap</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/java_concurrency_trip_part3/</loc>
+    <lastmod>2017-03-03T00:37:50.006Z</lastmod>
+    <data>
+        <display>
+        <title>Java并发之旅第三站：线程池与Future模式</title>
+        <pubTime>2017-02-23T05:18:03.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>并发</tag>
+         
+        <tag>多线程</tag>
+         
+        <tag>线程池</tag>
+         
+        <tag>Future</tag>
+         
+        <tag>CompletableFuture</tag>
+         
+         
+           
+             
+              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/learning_word2vec/</loc>
+    <lastmod>2017-02-14T09:18:41.387Z</lastmod>
+    <data>
+        <display>
+        <title>word2vec学习小记</title>
+        <pubTime>2017-02-13T06:39:39.000Z</pubTime>
+        
+        <tag>Google</tag>
+         
+        <tag>入门</tag>
+         
+        <tag>教程</tag>
+         
+        <tag>实例</tag>
+         
+        <tag>word2vec</tag>
+         
+        <tag>NLP</tag>
+         
+        <tag>词向量</tag>
+         
+        <tag>自然语言处理</tag>
+         
+         
+           
+             
+              <breadCrumb title="NLP" url="http://ginobefunny.com/categories/NLP/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/learning_protobuf/</loc>
+    <lastmod>2017-02-10T05:12:25.760Z</lastmod>
+    <data>
+        <display>
+        <title>Protocol Buffers简明教程</title>
+        <pubTime>2017-02-07T11:32:47.000Z</pubTime>
+        
+        <tag>Google</tag>
+         
+        <tag>入门</tag>
+         
+        <tag>教程</tag>
+         
+        <tag>实例</tag>
+         
+        <tag>Protocol Buffers</tag>
+         
+        <tag>protobuf</tag>
+         
+         
+           
+             
+              <breadCrumb title="OpenSource" url="http://ginobefunny.com/categories/OpenSource/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/learning_guice/</loc>
+    <lastmod>2017-02-10T03:38:03.360Z</lastmod>
+    <data>
+        <display>
+        <title>Guice简明教程</title>
+        <pubTime>2017-01-17T03:26:53.000Z</pubTime>
+        
+        <tag>Guice</tag>
+         
+        <tag>Google</tag>
+         
+        <tag>DI</tag>
+         
+        <tag>IoC</tag>
+         
+        <tag>依赖注入</tag>
+         
+        <tag>控制反转</tag>
+         
+        <tag>入门</tag>
+         
+        <tag>教程</tag>
+         
+        <tag>实例</tag>
+         
+         
+           
+             
+              <breadCrumb title="OpenSource" url="http://ginobefunny.com/categories/OpenSource/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/elasticsearch_reference_notes/</loc>
+    <lastmod>2017-02-04T09:38:26.258Z</lastmod>
+    <data>
+        <display>
+        <title>Elasticsearch Reference阅读笔记</title>
+        <pubTime>2017-02-03T03:28:01.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>一起读文档</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/soft_skills/</loc>
+    <lastmod>2017-02-04T06:02:02.051Z</lastmod>
+    <data>
+        <display>
+        <title>代码之外的生存指南</title>
+        <pubTime>2017-02-04T11:54:18.000Z</pubTime>
+        
+        <tag>自我完善</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>职场</tag>
+         
+         
+           
+             
+              <breadCrumb title="CodingLife" url="http://ginobefunny.com/categories/CodingLife/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part4/</loc>
+    <lastmod>2017-01-31T09:51:04.486Z</lastmod>
+    <data>
+        <display>
+        <title>《深入理解Java虚拟机》读书笔记4：类文件结构</title>
+        <pubTime>2017-01-18T01:24:01.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>虚拟机</tag>
+         
+        <tag>类文件</tag>
+         
+        <tag>常量池</tag>
+         
+        <tag>字节码</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://ginobefunny.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part6/</loc>
+    <lastmod>2017-01-31T09:50:48.931Z</lastmod>
+    <data>
+        <display>
+        <title>《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</title>
+        <pubTime>2017-01-26T09:30:57.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>虚拟机</tag>
+         
+        <tag>字节码</tag>
+         
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
+         
+        <tag>HotSpot</tag>
+         
+        <tag>即时编译器</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://ginobefunny.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part7/</loc>
+    <lastmod>2017-01-31T09:50:33.579Z</lastmod>
+    <data>
+        <display>
+        <title>《深入理解Java虚拟机》读书笔记7：高效并发</title>
+        <pubTime>2017-01-29T07:31:25.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>虚拟机</tag>
+         
+        <tag>HotSpot</tag>
+         
+        <tag>内存模型</tag>
+         
+        <tag>volatile</tag>
+         
+        <tag>synchronized</tag>
+         
+        <tag>锁</tag>
+         
+        <tag>同步</tag>
+         
+        <tag>并发</tag>
+         
+        <tag>多线程</tag>
+         
+        <tag>先行发生原则</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://ginobefunny.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part5/</loc>
+    <lastmod>2017-01-31T09:49:55.824Z</lastmod>
+    <data>
+        <display>
+        <title>《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</title>
+        <pubTime>2017-01-22T06:57:08.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>虚拟机</tag>
+         
+        <tag>字节码</tag>
+         
+        <tag>类加载器</tag>
+         
+        <tag>双亲委派</tag>
+         
+        <tag>执行引擎</tag>
+         
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://ginobefunny.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part3/</loc>
+    <lastmod>2017-01-31T09:49:32.478Z</lastmod>
+    <data>
+        <display>
+        <title>《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</title>
+        <pubTime>2017-01-11T11:30:12.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>性能调优</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>虚拟机</tag>
+         
+        <tag>性能监控</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://ginobefunny.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part2/</loc>
+    <lastmod>2017-01-31T09:49:23.821Z</lastmod>
+    <data>
+        <display>
+        <title>《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</title>
+        <pubTime>2017-01-08T01:29:44.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>垃圾收集</tag>
+         
+        <tag>内存分配</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://ginobefunny.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part1/</loc>
+    <lastmod>2017-01-31T09:49:12.825Z</lastmod>
+    <data>
+        <display>
+        <title>《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</title>
+        <pubTime>2017-01-04T01:11:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>垃圾收集</tag>
+         
+        <tag>内存溢出</tag>
+         
+         
+           
+             
+              <breadCrumb title="JVM" url="http://ginobefunny.com/categories/JVM/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/reading_record_201701/</loc>
+    <lastmod>2017-01-30T14:01:35.231Z</lastmod>
+    <data>
+        <display>
+        <title>阅读随手记 201701</title>
+        <pubTime>2017-01-03T08:23:21.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>微服务</tag>
+         
+        <tag>DistributedLog</tag>
+         
+        <tag>RPC</tag>
+         
+        <tag>性能调优</tag>
+         
+        <tag>高性能</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>高可用</tag>
+         
+        <tag>架构</tag>
+         
+        <tag>消息中间件</tag>
+         
+        <tag>缓存</tag>
+         
+        <tag>日志分析</tag>
+         
+        <tag>平台化</tag>
+         
+        <tag>监控</tag>
+         
+        <tag>负载均衡</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/</loc>
+    <lastmod>2017-01-23T12:30:46.686Z</lastmod>
+    <data>
+        <display>
+        <title>基于Elasticsearch实现搜索建议</title>
+        <pubTime>2017-01-23T09:14:44.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>搜索建议</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/</loc>
+    <lastmod>2017-01-18T08:50:06.921Z</lastmod>
+    <data>
+        <display>
+        <title>一起读Spring Framework文档（1）：概述与新特性</title>
+        <pubTime>2016-12-29T02:15:49.000Z</pubTime>
+        
+        <tag>Spring</tag>
+         
+        <tag>Spring Framework</tag>
+         
+        <tag>一起读文档</tag>
+         
+         
+           
+             
+              <breadCrumb title="Spring" url="http://ginobefunny.com/categories/Spring/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+  <url>
+    <loc>http://ginobefunny.com/post/elasticsearch_plugins_and_integrations/</loc>
+    <lastmod>2017-01-16T07:46:49.177Z</lastmod>
+    <data>
+        <display>
+        <title>Elasticsearch插件与集成介绍</title>
+        <pubTime>2017-01-16T07:35:53.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>Elasticsearch插件</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/elasticsearch_relevancy_score/</loc>
+    <lastmod>2017-01-16T07:44:03.229Z</lastmod>
+    <data>
+        <display>
+        <title>Elasticsearch相关性打分机制学习</title>
+        <pubTime>2016-12-14T03:21:33.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>相关性评分</tag>
+         
+        <tag>TFIDF</tag>
+         
+        <tag>搜索引擎</tag>
+         
+        <tag>function_score</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/elasticsearch_multi_match_query/</loc>
+    <lastmod>2017-01-16T07:43:59.486Z</lastmod>
+    <data>
+        <display>
+        <title>动手学习Elasticsearch中的Multi Match Query</title>
+        <pubTime>2016-12-23T08:29:04.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>Multi Match Query</tag>
+         
+        <tag>best_fields</tag>
+         
+        <tag>cross_fields</tag>
+         
+        <tag>most_fields</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/reading_record_201612/</loc>
+    <lastmod>2017-01-12T01:56:47.284Z</lastmod>
+    <data>
+        <display>
+        <title>阅读随手记 201612</title>
+        <pubTime>2016-12-16T09:03:55.000Z</pubTime>
+        
+        <tag>函数式编程</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>Git</tag>
+         
+        <tag>数据库中间件</tag>
+         
+        <tag>推荐系统</tag>
+         
+        <tag>分布式队列</tag>
+         
+        <tag>分布式定时任务</tag>
+         
+        <tag>微服务</tag>
+         
+        <tag>系统架构</tag>
+         
+        <tag>Kafka</tag>
+         
+        <tag>DistributedLog</tag>
+         
+        <tag>分布式缓存</tag>
+         
+        <tag>分布式数据库</tag>
+         
+        <tag>Motan</tag>
+         
+        <tag>RPC</tag>
+         
+        <tag>IDEA</tag>
+         
+        <tag>机器学习</tag>
+         
+        <tag>深度学习</tag>
+         
+        <tag>微信小程序</tag>
+         
+        <tag>性能调优</tag>
+         
+        <tag>自我提升</tag>
+         
+        <tag>服务化</tag>
+         
+        <tag>高性能</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>高可用</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/git_definitive_guide_notes/</loc>
+    <lastmod>2017-01-03T08:25:14.337Z</lastmod>
+    <data>
+        <display>
+        <title>《Git权威指南》读书笔记</title>
+        <pubTime>2016-12-14T09:47:58.000Z</pubTime>
+        
+        <tag>读书笔记</tag>
+         
+        <tag>Git</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading" url="http://ginobefunny.com/categories/Reading/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/learning_canal/</loc>
+    <lastmod>2016-12-29T10:09:17.312Z</lastmod>
+    <data>
+        <display>
+        <title>Mysql增量订阅和消费组件Canal学习小记</title>
+        <pubTime>2016-11-27T07:45:58.000Z</pubTime>
+        
+        <tag>Mysql</tag>
+         
+        <tag>Canal</tag>
+         
+        <tag>binlog</tag>
+         
+         
+           
+             
+              <breadCrumb title="OpenSource" url="http://ginobefunny.com/categories/OpenSource/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/summary_for_2016/</loc>
+    <lastmod>2016-12-29T01:13:04.701Z</lastmod>
+    <data>
+        <display>
+        <title>一个程序员的小结：2016年的进步、收获与成长</title>
+        <pubTime>2016-12-29T01:09:11.000Z</pubTime>
+        
+        <tag>自我完善</tag>
+         
+        <tag>职场</tag>
+         
+         
+           
+             
+              <breadCrumb title="CodingLife" url="http://ginobefunny.com/categories/CodingLife/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+    
+  <url>
+    <loc>http://ginobefunny.com/post/pomodoro_technique_notes/</loc>
+    <lastmod>2016-12-19T01:30:00.870Z</lastmod>
+    <data>
+        <display>
+        <title>高效工作摆脱拖延的神器 -- 番茄工作法</title>
+        <pubTime>2016-12-13T12:13:38.000Z</pubTime>
+        
+        <tag>番茄工作法</tag>
+         
+        <tag>自我完善</tag>
+         
+        <tag>效率</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading" url="http://ginobefunny.com/categories/Reading/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/java8_lambda_notes/</loc>
+    <lastmod>2016-12-19T01:29:42.625Z</lastmod>
+    <data>
+        <display>
+        <title>《Java 8函数式编程》读书笔记</title>
+        <pubTime>2016-12-09T07:41:25.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Lambda</tag>
+         
+        <tag>函数式编程</tag>
+         
+        <tag>读书笔记</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading" url="http://ginobefunny.com/categories/Reading/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+    
+    
+    
+    
+    
+</urlset>
