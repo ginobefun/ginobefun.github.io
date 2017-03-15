@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ginobefunny.com/about/index.html</loc>
+    
+    <lastmod>2017-03-15T09:41:22.967Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ginobefunny.com/post/elasticsearch_dynamic_synonym_plugin/</loc>
     
     <lastmod>2017-03-15T08:16:25.083Z</lastmod>
@@ -166,13 +173,6 @@
     <loc>http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/</loc>
     
     <lastmod>2017-01-18T08:50:06.921Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ginobefunny.com/about/index.html</loc>
-    
-    <lastmod>2017-01-17T09:54:19.580Z</lastmod>
     
   </url>
   
