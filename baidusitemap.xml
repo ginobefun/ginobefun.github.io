@@ -3,6 +3,7 @@
 
 
     
+    
   <url>
     <loc>http://ginobefunny.com/post/elasticsearch_dynamic_synonym_plugin/</loc>
     <lastmod>2017-03-16T02:47:30.376Z</lastmod>
@@ -104,137 +105,6 @@
     </url>
 
     
-    
-    
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part4/</loc>
-    <lastmod>2017-03-03T00:38:16.292Z</lastmod>
-    <data>
-        <display>
-        <title>Java并发之旅第四站：并行流</title>
-        <pubTime>2017-02-25T10:11:32.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>高并发</tag>
-         
-        <tag>JVM</tag>
-         
-        <tag>并发</tag>
-         
-        <tag>多线程</tag>
-         
-        <tag>Stream</tag>
-         
-        <tag>并行流</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part1/</loc>
-    <lastmod>2017-03-03T00:38:01.342Z</lastmod>
-    <data>
-        <display>
-        <title>Java并发之旅第一站：显式锁</title>
-        <pubTime>2017-02-19T05:27:25.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>高并发</tag>
-         
-        <tag>JVM</tag>
-         
-        <tag>锁</tag>
-         
-        <tag>并发</tag>
-         
-        <tag>多线程</tag>
-         
-        <tag>重入锁</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part2/</loc>
-    <lastmod>2017-03-03T00:37:58.272Z</lastmod>
-    <data>
-        <display>
-        <title>Java并发之旅第二站：原子类与并发容器</title>
-        <pubTime>2017-02-21T11:29:17.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>高并发</tag>
-         
-        <tag>JVM</tag>
-         
-        <tag>并发</tag>
-         
-        <tag>多线程</tag>
-         
-        <tag>原子类</tag>
-         
-        <tag>ConcurrentHashMap</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part3/</loc>
-    <lastmod>2017-03-03T00:37:50.006Z</lastmod>
-    <data>
-        <display>
-        <title>Java并发之旅第三站：线程池与Future模式</title>
-        <pubTime>2017-02-23T05:18:03.000Z</pubTime>
-        
-        <tag>Java</tag>
-         
-        <tag>高并发</tag>
-         
-        <tag>JVM</tag>
-         
-        <tag>并发</tag>
-         
-        <tag>多线程</tag>
-         
-        <tag>线程池</tag>
-         
-        <tag>Future</tag>
-         
-        <tag>CompletableFuture</tag>
-         
-         
-           
-             
-              <breadCrumb title="Java" url="http://ginobefunny.com/categories/Java/"/>
-          
-        </display>
-    </data>
-    </url>
-
     
   <url>
     <loc>http://ginobefunny.com/post/learning_word2vec/</loc>
@@ -398,11 +268,11 @@
          
         <tag>虚拟机</tag>
          
+        <tag>字节码</tag>
+         
         <tag>类文件</tag>
          
         <tag>常量池</tag>
-         
-        <tag>字节码</tag>
          
          
            
@@ -510,11 +380,11 @@
          
         <tag>虚拟机</tag>
          
-        <tag>字节码</tag>
-         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
+         
+        <tag>字节码</tag>
          
         <tag>执行引擎</tag>
          
@@ -628,8 +498,6 @@
         
         <tag>读书笔记</tag>
          
-        <tag>Elasticsearch</tag>
-         
         <tag>微服务</tag>
          
         <tag>DistributedLog</tag>
@@ -643,6 +511,8 @@
         <tag>高并发</tag>
          
         <tag>高可用</tag>
+         
+        <tag>Elasticsearch</tag>
          
         <tag>架构</tag>
          
@@ -804,8 +674,6 @@
          
         <tag>读书笔记</tag>
          
-        <tag>Git</tag>
-         
         <tag>数据库中间件</tag>
          
         <tag>推荐系统</tag>
@@ -839,6 +707,8 @@
         <tag>微信小程序</tag>
          
         <tag>性能调优</tag>
+         
+        <tag>Git</tag>
          
         <tag>自我提升</tag>
          

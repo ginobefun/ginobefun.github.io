@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ginobefunny.com/joy_of_reading/index.html</loc>
+    
+    <lastmod>2017-03-16T08:35:18.247Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ginobefunny.com/post/elasticsearch_dynamic_synonym_plugin/</loc>
     
     <lastmod>2017-03-16T02:47:30.376Z</lastmod>
@@ -33,41 +40,6 @@
     <loc>http://ginobefunny.com/my2017/index.html</loc>
     
     <lastmod>2017-03-06T08:13:32.032Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ginobefunny.com/joy_of_reading/index.html</loc>
-    
-    <lastmod>2017-03-03T09:24:24.846Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part4/</loc>
-    
-    <lastmod>2017-03-03T00:38:16.292Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part1/</loc>
-    
-    <lastmod>2017-03-03T00:38:01.342Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part2/</loc>
-    
-    <lastmod>2017-03-03T00:37:58.272Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ginobefunny.com/post/java_concurrency_trip_part3/</loc>
-    
-    <lastmod>2017-03-03T00:37:50.006Z</lastmod>
     
   </url>
   
@@ -282,13 +254,6 @@
   </url>
   
   <url>
-    <loc>http://ginobefunny.com/images/4_es_score/score_best_fields.json</loc>
-    
-    <lastmod>2016-10-13T11:02:24.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://ginobefunny.com/images/4_es_score/score_cross_fields.json</loc>
     
     <lastmod>2016-10-13T11:02:24.000Z</lastmod>
@@ -297,6 +262,13 @@
   
   <url>
     <loc>http://ginobefunny.com/images/4_es_score/score_simple.json</loc>
+    
+    <lastmod>2016-10-13T11:02:24.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ginobefunny.com/images/4_es_score/score_best_fields.json</loc>
     
     <lastmod>2016-10-13T11:02:24.000Z</lastmod>
     
