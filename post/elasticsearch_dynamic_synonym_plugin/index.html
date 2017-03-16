@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://ginobefunny.com/post/elasticsearch_dynamic_synonym_plugin/index.html">
 <meta property="og:site_name" content="GinoBeFunny">
 <meta property="og:description" content="Elasticsearch自带了一个synonym同义词插件，但是该插件只能使用文件或在分析器中静态地配置同义词，如果需要添加或修改，需要修改配置文件和重启，使用方式不够友好。通过学习Elasticsearch的synonym代码，自研了一个可动态维护同义词的插件，并以运用于生产环境，供大家参考。">
-<meta property="og:updated_time" content="2017-03-16T02:43:19.473Z">
+<meta property="og:updated_time" content="2017-03-16T02:47:30.376Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一个简易的Elasticsearch动态同义词插件">
 <meta name="twitter:description" content="Elasticsearch自带了一个synonym同义词插件，但是该插件只能使用文件或在分析器中静态地配置同义词，如果需要添加或修改，需要修改配置文件和重启，使用方式不够友好。通过学习Elasticsearch的synonym代码，自研了一个可动态维护同义词的插件，并以运用于生产环境，供大家参考。">
@@ -455,7 +455,7 @@ Nike, 耐克, naike
 <pre><code>git clone git@github.com:ginobefun/elasticsearch-dynamic-synonym.git
 </code></pre><p>2.使用maven编译插件</p>
 <pre><code>mvn clean install -DskipTests
-</code></pre><p>3.在ES_HOME/plugin目录新建dynamic-synonym目录，并将target/releases/elasticsearch-dynamic-synonym-\<version\>.zip文件解压到该目录</version\></p>
+</code></pre><p>3.在ES_HOME/plugin目录新建dynamic-synonym目录，并将target/releases/elasticsearch-dynamic-synonym-VERSION.zip文件解压到该目录</p>
 <p>4.在MySQL中创建Elasticsearch同义词数据库并创建用户</p>
 <pre><code>create database elasticsearch;
 DROP TABLE IF EXISTS `dynamic_synonym_rule`;
