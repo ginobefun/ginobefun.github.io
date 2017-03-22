@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Java,读书笔记,JVM,虚拟机,字节码,编译器,解释器,类加载器,双亲委派,执行引擎," />
+  <meta name="keywords" content="Java,读书笔记,JVM,虚拟机,字节码,类加载器,双亲委派,执行引擎,编译器,解释器," />
 
 
 
@@ -120,7 +120,7 @@
     fancybox: true,
     motion: true,
     duoshuo: {
-      userId: 'undefined',
+      userId: '0',
       author: '博主'
     },
     algolia: {
@@ -655,15 +655,15 @@ Stack=2, Locals=4, Args_size=1
           
             <a href="/tags/字节码/" rel="tag"># 字节码</a>
           
-            <a href="/tags/编译器/" rel="tag"># 编译器</a>
-          
-            <a href="/tags/解释器/" rel="tag"># 解释器</a>
-          
             <a href="/tags/类加载器/" rel="tag"># 类加载器</a>
           
             <a href="/tags/双亲委派/" rel="tag"># 双亲委派</a>
           
             <a href="/tags/执行引擎/" rel="tag"># 执行引擎</a>
+          
+            <a href="/tags/编译器/" rel="tag"># 编译器</a>
+          
+            <a href="/tags/解释器/" rel="tag"># 解释器</a>
           
         </div>
       
@@ -733,11 +733,8 @@ Stack=2, Locals=4, Args_size=1
           
   <div class="comments" id="comments">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
+      <div class="ds-thread" data-thread-key="post/deep_in_jvm_notes_part5/"
+           data-title="《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎" data-url="http://ginobefunny.com/post/deep_in_jvm_notes_part5/">
       </div>
     
   </div>
@@ -1013,38 +1010,32 @@ Stack=2, Locals=4, Args_size=1
 
   
 
-
-
+  
+    
   
 
-    <script type="text/javascript">
-      var disqus_shortname = 'ginobefunny';
-      var disqus_identifier = 'post/deep_in_jvm_notes_part5/';
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
 
-      var disqus_title = "《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎";
-
-
-      function run_disqus_script(disqus_script) {
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
-
-      run_disqus_script('count.js');
-
-      
-        var disqus_config = function () {
-            this.page.url = disqus_url;
-            this.page.identifier = disqus_identifier;
-            this.page.title = disqus_title;
-        };
-        run_disqus_script('embed.js');
-      
-
-    </script>
   
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
 
 
 

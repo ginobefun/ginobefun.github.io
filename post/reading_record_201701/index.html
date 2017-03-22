@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Elasticsearch,读书笔记,微服务,DistributedLog,RPC,性能调优,高性能,高并发,高可用,架构,消息中间件,缓存,日志分析,平台化,监控,负载均衡," />
+  <meta name="keywords" content="读书笔记,微服务,DistributedLog,RPC,性能调优,高性能,高并发,高可用,Elasticsearch,架构,消息中间件,缓存,日志分析,平台化,监控,负载均衡," />
 
 
 
@@ -169,7 +169,7 @@
     fancybox: true,
     motion: true,
     duoshuo: {
-      userId: 'undefined',
+      userId: '0',
       author: '博主'
     },
     algolia: {
@@ -1036,8 +1036,6 @@ Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
       
         <div class="post-tags">
           
-            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
-          
             <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
           
             <a href="/tags/微服务/" rel="tag"># 微服务</a>
@@ -1053,6 +1051,8 @@ Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
             <a href="/tags/高并发/" rel="tag"># 高并发</a>
           
             <a href="/tags/高可用/" rel="tag"># 高可用</a>
+          
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
           
             <a href="/tags/架构/" rel="tag"># 架构</a>
           
@@ -1136,11 +1136,8 @@ Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
           
   <div class="comments" id="comments">
     
-      <div id="disqus_thread">
-        <noscript>
-          Please enable JavaScript to view the
-          <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
+      <div class="ds-thread" data-thread-key="post/reading_record_201701/"
+           data-title="阅读随手记 201701" data-url="http://ginobefunny.com/post/reading_record_201701/">
       </div>
     
   </div>
@@ -1416,38 +1413,32 @@ Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
 
   
 
-
-
+  
+    
   
 
-    <script type="text/javascript">
-      var disqus_shortname = 'ginobefunny';
-      var disqus_identifier = 'post/reading_record_201701/';
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
 
-      var disqus_title = "阅读随手记 201701";
-
-
-      function run_disqus_script(disqus_script) {
-        var dsq = document.createElement('script');
-        dsq.type = 'text/javascript';
-        dsq.async = true;
-        dsq.src = '//' + disqus_shortname + '.disqus.com/' + disqus_script;
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-      }
-
-      run_disqus_script('count.js');
-
-      
-        var disqus_config = function () {
-            this.page.url = disqus_url;
-            this.page.identifier = disqus_identifier;
-            this.page.title = disqus_title;
-        };
-        run_disqus_script('embed.js');
-      
-
-    </script>
   
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
 
 
 
