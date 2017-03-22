@@ -3,6 +3,32 @@
 
 
     
+  <url>
+    <loc>http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/</loc>
+    <lastmod>2017-03-22T10:08:39.349Z</lastmod>
+    <data>
+        <display>
+        <title>基于Elasticsearch实现搜索推荐</title>
+        <pubTime>2017-03-21T09:18:39.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>搜索</tag>
+         
+        <tag>推荐</tag>
+         
+        <tag>拼写纠错</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://ginobefunny.com/post/elasticsearch_dynamic_synonym_plugin/</loc>
@@ -236,9 +262,9 @@
         <title>代码之外的生存指南</title>
         <pubTime>2017-02-04T11:54:18.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>自我完善</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>职场</tag>
          
@@ -268,11 +294,11 @@
          
         <tag>虚拟机</tag>
          
-        <tag>字节码</tag>
-         
         <tag>类文件</tag>
          
         <tag>常量池</tag>
+         
+        <tag>字节码</tag>
          
          
            
@@ -302,13 +328,13 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>HotSpot</tag>
          
+        <tag>编译器</tag>
+         
         <tag>即时编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
@@ -380,17 +406,17 @@
          
         <tag>虚拟机</tag>
          
-        <tag>类加载器</tag>
-         
-        <tag>双亲委派</tag>
-         
         <tag>字节码</tag>
-         
-        <tag>执行引擎</tag>
          
         <tag>编译器</tag>
          
         <tag>解释器</tag>
+         
+        <tag>类加载器</tag>
+         
+        <tag>双亲委派</tag>
+         
+        <tag>执行引擎</tag>
          
          
            
@@ -496,6 +522,8 @@
         <title>阅读随手记 201701</title>
         <pubTime>2017-01-03T08:23:21.000Z</pubTime>
         
+        <tag>Elasticsearch</tag>
+         
         <tag>读书笔记</tag>
          
         <tag>微服务</tag>
@@ -511,8 +539,6 @@
         <tag>高并发</tag>
          
         <tag>高可用</tag>
-         
-        <tag>Elasticsearch</tag>
          
         <tag>架构</tag>
          

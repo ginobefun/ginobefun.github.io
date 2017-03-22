@@ -1,0 +1,1141 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Elasticsearch,搜索,推荐,拼写纠错," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Elasticsearch实现搜索推荐">
+<meta property="og:url" content="http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/search_recommadation_overview.png">
+<meta property="og:updated_time" content="2017-03-22T10:08:39.349Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于Elasticsearch实现搜索推荐">
+<meta name="twitter:description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
+<meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/search_recommadation_overview.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/"/>
+
+
+
+
+
+  <title> 基于Elasticsearch实现搜索推荐 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                基于Elasticsearch实现搜索推荐
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-21T17:18:39+08:00">
+                2017-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elasticsearch/" itemprop="url" rel="index">
+                    <span itemprop="name">Elasticsearch</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在<a href="http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/">基于Elasticsearch实现搜索建议</a>一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。</p>
+<a id="more"></a>
+<h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>在根据用户输入和筛选条件进行搜索后，有时返回的是无结果或者结果很少的情况，为了提升用户搜索体验，需要能够给用户推荐一些相关的搜索词，比如用户搜索【迪奥】时没有找到相关的商品，可以推荐搜索【香水】、【眼镜】等关键词。</p>
+<h1 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h1><p>首先需要分析搜索无结果或者结果过少可能的原因，我总结了一下，主要包括主要可能：</p>
+<ol>
+<li>搜索的关键词在本网不存在，比如【迪奥】；</li>
+<li>搜索的关键词在本网的商品很少，比如【科比】；</li>
+<li>搜索的关键词拼写有问题，比如把【阿迪达斯】写成了【阿迪大斯】；</li>
+<li>搜索的关键词过多，由于我们采用的是cross_fields，在一个商品内不可能包含所有的Term，导致无结果，比如【阿迪达斯 耐克 卫衣 运动鞋】；</li>
+</ol>
+<p>那么针对以上情况，可以采用以下方式进行处理：</p>
+<ol>
+<li>搜索的关键词在本网不存在，可以通过爬虫的方式获取相关知识，然后根据<strong>搜索建议词</strong>去提取，比如去百度百科的<a href="http://baike.baidu.com/item/%E8%BF%AA%E5%A5%A5/291012?sefr=cr" target="_blank" rel="external">迪奥</a>词条里就能提取出【香水】、【香氛】和【眼镜】等关键词；当然基于爬虫的知识可能存在偏差，此时需要能够有人工审核或人工更正的部分；</li>
+<li>搜索的关键词在本网的商品很少，有两种解决思路，一种是通过方式1的爬虫去提取关键词，另外一种是通过返回商品的信息去聚合出关键词，如品牌、品类、风格、标签等，这里我们采用的是后者（在测试后发现后者效果更佳）；</li>
+<li>搜索的关键词拼写有问题，这就需要<strong>拼写纠错</strong>出场了，先纠错然后根据纠错后的词去提供搜索推荐；</li>
+<li>搜索的关键词过多，有两种解决思路，一种是识别关键词的类型，如是品牌、品类、风格还是性别，然后通过一定的组合策略来实现搜索推荐；另外一种则是根据用户的输入到搜索建议词里去匹配，设置最小匹配为一个匹配到一个Term即可，这种方式实现比较简单而且效果也不错，所以我们采用的是后者。</li>
+</ol>
+<p>所以，我们在实现搜索推荐的核心是之前讲到的搜索建议词，它提供了本网主要的关键词，另外一个很重要的是它本身包含了<strong>关联商品数的属性</strong>，这样就可以保证推荐给用户的关键词是可以搜索出结果的。</p>
+<h1 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h1><h2 id="整体设计"><a href="#整体设计" class="headerlink" title="整体设计"></a>整体设计</h2><p>整体设计框架如下图所示：</p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/search_recommadation_overview.png" alt="搜索推荐整体设计"></p>
+<h2 id="搜索建议词索引"><a href="#搜索建议词索引" class="headerlink" title="搜索建议词索引"></a>搜索建议词索引</h2><p>在<a href="http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/">基于Elasticsearch实现搜索建议</a>一文已有说明，请移步阅读。此次增加了一个keyword.keyword_lowercase的字段用于拼写纠错，这里列取相关字段的索引：</p>
+<pre><code>PUT /suggest_index
+{
+  &quot;mappings&quot;: {
+    &quot;suggest&quot;: {
+      &quot;properties&quot;: {
+        &quot;keyword&quot;: {
+          &quot;fields&quot;: {
+            &quot;keyword&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;index&quot;: &quot;not_analyzed&quot;
+            },
+            &quot;keyword_lowercase&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;analyzer&quot;: &quot;lowercase_keyword&quot;
+            },
+            &quot;keyword_ik&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;analyzer&quot;: &quot;ik_smart&quot;
+            },
+            &quot;keyword_pinyin&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;analyzer&quot;: &quot;pinyin_analyzer&quot;
+            },
+            &quot;keyword_first_py&quot;: {
+              &quot;type&quot;: &quot;string&quot;,
+              &quot;analyzer&quot;: &quot;pinyin_first_letter_keyword_analyzer&quot;
+            }
+          },
+          &quot;type&quot;: &quot;multi_field&quot;
+        },
+        &quot;type&quot;: {
+          &quot;type&quot;: &quot;long&quot;
+        },
+        &quot;weight&quot;: {
+          &quot;type&quot;: &quot;long&quot;
+        },
+        &quot;count&quot;: {
+          &quot;type&quot;: &quot;long&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre><h2 id="商品数据索引"><a href="#商品数据索引" class="headerlink" title="商品数据索引"></a>商品数据索引</h2><p>这里只列取相关字段的mapping：</p>
+<pre><code>PUT /product_index
+{
+  &quot;mappings&quot;: {
+    &quot;product&quot;: {
+      &quot;properties&quot;: {
+        &quot;productSkn&quot;: {
+          &quot;type&quot;: &quot;long&quot;
+        },
+        &quot;productName&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;ik_smart&quot;
+        },
+        &quot;brandName&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;ik_smart&quot;
+        },
+        &quot;sortName&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;ik_smart&quot;
+        },
+        &quot;style&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;ik_smart&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre><h2 id="关键词映射索引"><a href="#关键词映射索引" class="headerlink" title="关键词映射索引"></a>关键词映射索引</h2><p>主要就是source和dest直接的映射关系。</p>
+<pre><code>PUT /conversion_index
+{
+  &quot;mappings&quot;: {
+    &quot;conversion&quot;: {
+      &quot;properties&quot;: {
+        &quot;source&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;analyzer&quot;: &quot;lowercase_keyword&quot;
+        },
+        &quot;dest&quot;: {
+          &quot;type&quot;: &quot;string&quot;,
+          &quot;index&quot;: &quot;not_analyzed&quot;
+        }
+      }
+    }
+  }
+}
+</code></pre><h2 id="爬虫数据爬取"><a href="#爬虫数据爬取" class="headerlink" title="爬虫数据爬取"></a>爬虫数据爬取</h2><p>在实现的时候，我们主要是爬取了百度百科上面的词条，在实际的实现中又分为了全量爬虫和增加爬虫。</p>
+<h3 id="全量爬虫"><a href="#全量爬虫" class="headerlink" title="全量爬虫"></a>全量爬虫</h3><p>全量爬虫我这边是从网上下载了一份<a href="https://pan.baidu.com/s/1gfcHXvX" target="_blank" rel="external">他人汇总的词条URL资源</a>，里面根据一级分类包含多个目录，每个目录又根据二级分类包含多个词条，每一行的内容的格式如下：</p>
+<pre><code>李宁!http://baike.baidu.com/view/10670.html?fromTaglist
+diesel!http://baike.baidu.com/view/394305.html?fromTaglist
+ONLY!http://baike.baidu.com/view/92541.html?fromTaglist
+lotto!http://baike.baidu.com/view/907709.html?fromTaglist
+</code></pre><p>这样在启动的时候我们就可以使用多线程甚至分布式的方式爬虫自己感兴趣的词条内容作为初始化数据保持到爬虫数据表。为了保证幂等性，如果再次全量爬取时就需要排除掉数据库里已有的词条。</p>
+<h3 id="增量爬虫"><a href="#增量爬虫" class="headerlink" title="增量爬虫"></a>增量爬虫</h3><ol>
+<li>在商品搜索接口中，如果搜索某个关键词关联的商品数为0或小于一定的阈值（如20条），就通过Redis的ZSet进行按天统计；</li>
+<li>统计的时候是区分搜索无结果和结果过少两个Key的，因为两种情况实际上是有所区别的，而且后续在搜索推荐查询时也有用到这个统计结果；</li>
+<li>增量爬虫是每天凌晨运行，根据前一天统计的关键词进行爬取，爬取前需要排除掉已经爬过的关键词和黑名单中的关键词；</li>
+<li>所谓黑名单的数据包含两种：一种是每天增量爬虫失败的关键字（一般会重试几次，确保失败后加入黑名单），一种是人工维护的确定不需要爬虫的关键词；</li>
+</ol>
+<h2 id="爬虫数据关键词提取"><a href="#爬虫数据关键词提取" class="headerlink" title="爬虫数据关键词提取"></a>爬虫数据关键词提取</h2><ol>
+<li>首先需要明确关键词的范围，这里我们采用的是suggest中类型为品牌、品类、风格、款式的词作为关键词；</li>
+<li>关键词提取的核心步骤就是对爬虫内容和关键词分别分词，然后进行分词匹配，看该爬虫数据是否包含关键词的所有Term（如果就是一个Term就直接判断包含就好了）；在处理的时候还可以对匹配到关键词的次数进行排序，最终的结果就是一个key-value的映射，如{迪奥 -&gt; [香水,香氛,时装,眼镜], 纪梵希 -&gt; [香水,时装,彩妆,配饰,礼服]}；</li>
+</ol>
+<h2 id="管理关键词映射"><a href="#管理关键词映射" class="headerlink" title="管理关键词映射"></a>管理关键词映射</h2><ol>
+<li>由于爬虫数据提取的关键词是和词条的内容相关联的，因此很有可能提取的关键词效果不大好，因此就需要人工管理；</li>
+<li>管理动作主要是包括添加、修改和置失效关键词映射，然后增量地更新到conversion_index索引中；</li>
+</ol>
+<h2 id="搜索推荐服务的实现"><a href="#搜索推荐服务的实现" class="headerlink" title="搜索推荐服务的实现"></a>搜索推荐服务的实现</h2><ol>
+<li>首先如果对搜索推荐的入口进行判断，一些非法的情况不进行推荐（比如关键词太短或太长），另外由于搜索推荐并非核心功能，可以增加一个全局动态参数来控制是否进行搜索推荐；</li>
+<li>在<strong>设计思路</strong>里面我们分析过可能有4中场景需要搜索推荐，如何高效、快速地找到具体的场景从而减少不必要的查询判断是推荐服务实现的关键；这个在设计的时候就需要综合权衡，我们通过一段时间的观察后，目前采用的逻辑的伪代码如下：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> JSONObject <span class="title">recommend</span><span class="params">(SearchResult searchResult, String queryWord)</span> </span>&#123;</div><div class="line">    <span class="keyword">try</span> &#123;</div><div class="line">        String keywordsToSearch = queryWord;</div><div class="line"></div><div class="line">        <span class="comment">// 搜索推荐分两部分</span></div><div class="line">        <span class="comment">// 1) 第一部分是最常见的情况，包括有结果、根据SKN搜索、关键词未出现在空结果Redis ZSet里</span></div><div class="line">        <span class="keyword">if</span> (containsProductInSearchResult(searchResult)) &#123;</div><div class="line">            <span class="comment">// 1.1） 搜索有结果的 优先从搜索结果聚合出品牌等关键词进行查询</span></div><div class="line">            String aggKeywords = aggKeywordsByProductList(searchResult);</div><div class="line">            keywordsToSearch = queryWord + <span class="string">" "</span> + aggKeywords;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isQuerySkn(queryWord)) &#123;</div><div class="line">            <span class="comment">// 1.2） 如果是查询SKN 没有查询到的 后续的逻辑也无法推荐 所以直接到ES里去获取关键词</span></div><div class="line">            keywordsToSearch = aggKeywordsBySkns(queryWord);</div><div class="line">            <span class="keyword">if</span> (StringUtils.isEmpty(keywordsToSearch)) &#123;</div><div class="line">                <span class="keyword">return</span> defaultSuggestRecommendation();</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        Double count = searchKeyWordService.getKeywordCount(RedisKeys.SEARCH_KEYWORDS_EMPTY, queryWord);</div><div class="line">        <span class="keyword">if</span> (count == <span class="keyword">null</span> || queryWord.length() &gt;= <span class="number">5</span>) &#123;</div><div class="line">            <span class="comment">// 1.3) 如果该关键词一次都没有出现在空结果列表或者长度大于5 则该词很有可能是可以搜索出结果的</span></div><div class="line">            <span class="comment">//      因此优先取suggest_index去搜索一把 减少后面的查询动作</span></div><div class="line">            JSONObject recommendResult = recommendBySuggestIndex(queryWord, keywordsToSearch, <span class="keyword">false</span>);</div><div class="line">            <span class="keyword">if</span> (isNotEmptyResult(recommendResult)) &#123;</div><div class="line">                <span class="keyword">return</span> recommendResult;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 2) 第二部分是通过Conversion和拼写纠错去获取关键词 由于很多品牌的拼写可能比较相近 因此先走Conversion然后再拼写检查</span></div><div class="line">        String spellingCorrentWord = <span class="keyword">null</span>, dest = <span class="keyword">null</span>;</div><div class="line">        <span class="keyword">if</span> (allowGetingDest(queryWord) &amp;&amp; StringUtils.isNotEmpty((dest = getSuggestConversionDestBySource(queryWord)))) &#123;</div><div class="line">            <span class="comment">// 2.1) 爬虫和自定义的Conversion处理</span></div><div class="line">            keywordsToSearch = dest;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (allowSpellingCorrent(queryWord) </div><div class="line">		         &amp;&amp; StringUtils.isNotEmpty((spellingCorrentWord = suggestService.getSpellingCorrectKeyword(queryWord)))) &#123;</div><div class="line">            <span class="comment">// 2.2) 执行拼写检查 由于在搜索建议的时候会进行拼写检查 所以缓存命中率高</span></div><div class="line">            keywordsToSearch = spellingCorrentWord;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="comment">// 2.3) 如果两者都没有 则直接返回</span></div><div class="line">            <span class="keyword">return</span> defaultSuggestRecommendation();</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        JSONObject recommendResult = recommendBySuggestIndex(queryWord, keywordsToSearch, dest != <span class="keyword">null</span>);</div><div class="line">        <span class="keyword">return</span> isNotEmptyResult(recommendResult) ? recommendResult : defaultSuggestRecommendation();</div><div class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">        logger.error(<span class="string">"[func=recommend][queryWord="</span> + queryWord + <span class="string">"]"</span>, e);</div><div class="line">        <span class="keyword">return</span> defaultSuggestRecommendation();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其中涉及到的几个函数简单说明下：</p>
+<ul>
+<li>aggKeywordsByProductList方法用商品列表的结果，聚合出出现次数最多的几个品牌和品类（比如各2个），这样我们就可以得到4个关键词，和原先用户的输入拼接后调用recommendBySuggestIndex获取推荐词；</li>
+<li>aggKeywordsBySkns方法是根据用户输入的SKN先到product_index索引获取商品列表，然后再调用aggKeywordsByProductList去获取品牌和品类的关键词列表；</li>
+<li>getSuggestConversionDestBySource方法是查询conversion_index索引去获取关键词提取的结果，这里在调用recommendBySuggestIndex时有个参数，该参数主要是用于处理是否限制只能是输入的关键词；</li>
+<li>getSpellingCorrectKeyword方法为拼写检查，在调用suggest_index处理时有个地方需要注意一下，拼写检查是基于编辑距离的，大小写不一致的情况会导致Elasticsearch Suggester无法得到正确的拼写建议，因此在处理时需要两边都转换为小写后进行拼写检查；</li>
+<li>最终都需要调用recommendBySuggestIndex方法获取搜索推荐，因为通过suggest_index索引可以确保推荐出去的词是有意义的且关联到商品的。该方法核心逻辑的伪代码如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> JSONObject <span class="title">recommendBySuggestIndex</span><span class="params">(String srcQueryWord, String keywordsToSearch, <span class="keyword">boolean</span> isLimitKeywords)</span> </span>&#123;</div><div class="line">    <span class="comment">// 1) 先对keywordsToSearch进行分词</span></div><div class="line">    List&lt;String&gt; terms = <span class="keyword">null</span>;</div><div class="line">    <span class="keyword">if</span> (isLimitKeywords) &#123;</div><div class="line">        terms = Arrays.stream(keywordsToSearch.split(<span class="string">","</span>)).filter(term -&gt; term != <span class="keyword">null</span> &amp;&amp; term.length() &gt; <span class="number">1</span>)</div><div class="line">                      .distinct().collect(Collectors.toList());</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        terms = searchAnalyzeService.getAnalyzeTerms(keywordsToSearch, <span class="string">"ik_smart"</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (CollectionUtils.isEmpty(terms)) &#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> JSONObject();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 2) 根据terms搜索构造搜索请求</span></div><div class="line">    SearchParam searchParam = <span class="keyword">new</span> SearchParam();</div><div class="line">    searchParam.setPage(<span class="number">1</span>);</div><div class="line">    searchParam.setSize(<span class="number">3</span>);</div><div class="line"></div><div class="line">    <span class="comment">// 2.1) 构建FunctionScoreQueryBuilder</span></div><div class="line">    QueryBuilder queryBuilder = isLimitKeywords ? buildQueryBuilderByLimit(terms)</div><div class="line">                                  : buildQueryBuilder(keywordsToSearch, terms);</div><div class="line">    searchParam.setQuery(queryBuilder);</div><div class="line">    </div><div class="line">    <span class="comment">// 2.2) 设置过滤条件</span></div><div class="line">    BoolQueryBuilder boolFilter = QueryBuilders.boolQuery();</div><div class="line">    boolFilter.must(QueryBuilders.rangeQuery(<span class="string">"count"</span>).gte(<span class="number">20</span>));</div><div class="line">    boolFilter.mustNot(QueryBuilders.termQuery(<span class="string">"keyword.keyword_lowercase"</span>, srcQueryWord.toLowerCase()));</div><div class="line">    <span class="keyword">if</span> (isLimitKeywords) &#123;</div><div class="line">        boolFilter.must(QueryBuilders.termsQuery(<span class="string">"keyword.keyword_lowercase"</span>, terms.stream()</div><div class="line">            .map(String::toLowerCase).collect(Collectors.toList())));</div><div class="line">    &#125;</div><div class="line">    searchParam.setFiter(boolFilter);</div><div class="line"></div><div class="line">    <span class="comment">// 2.3) 按照得分、权重、数量的规则降序排序</span></div><div class="line">    List&lt;SortBuilder&gt; sortBuilders = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="number">3</span>);</div><div class="line">    sortBuilders.add(SortBuilders.fieldSort(<span class="string">"_score"</span>).order(SortOrder.DESC));</div><div class="line">    sortBuilders.add(SortBuilders.fieldSort(<span class="string">"weight"</span>).order(SortOrder.DESC));</div><div class="line">    sortBuilders.add(SortBuilders.fieldSort(<span class="string">"count"</span>).order(SortOrder.DESC));</div><div class="line">    searchParam.setSortBuilders(sortBuilders);</div><div class="line"></div><div class="line">    <span class="comment">// 4) 先从缓存中获取</span></div><div class="line">    <span class="keyword">final</span> String indexName = SearchConstants.INDEX_NAME_SUGGEST;</div><div class="line">    JSONObject suggestResult = searchCacheService.getJSONObjectFromCache(indexName, searchParam);</div><div class="line">    <span class="keyword">if</span> (suggestResult != <span class="keyword">null</span>) &#123;</div><div class="line">        <span class="keyword">return</span> suggestResult;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">// 5) 调用ES执行搜索</span></div><div class="line">    SearchResult searchResult = searchCommonService.doSearch(indexName, searchParam);</div><div class="line"></div><div class="line">    <span class="comment">// 6) 构建结果加入缓存</span></div><div class="line">    suggestResult = <span class="keyword">new</span> JSONObject();</div><div class="line">    List&lt;String&gt; resultTerms = searchResult.getResultList().stream()</div><div class="line">            .map(map -&gt; (String) map.get(<span class="string">"keyword"</span>)).collect(Collectors.toList());</div><div class="line">    suggestResult.put(<span class="string">"search_recommendation"</span>, resultTerms);</div><div class="line">    searchCacheService.addJSONObjectToCache(indexName, searchParam, suggestResult);</div><div class="line">    <span class="keyword">return</span> suggestResult;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> QueryBuilder <span class="title">buildQueryBuilderByLimit</span><span class="params">(List&lt;String&gt; terms)</span> </span>&#123;</div><div class="line">    FunctionScoreQueryBuilder functionScoreQueryBuilder</div><div class="line">        = <span class="keyword">new</span> FunctionScoreQueryBuilder(QueryBuilders.matchAllQuery());</div><div class="line"></div><div class="line">    <span class="comment">// 给品类类型的关键词加分</span></div><div class="line">    functionScoreQueryBuilder.add(QueryBuilders.termQuery(<span class="string">"type"</span>, Integer.valueOf(<span class="number">2</span>)),</div><div class="line">        ScoreFunctionBuilders.weightFactorFunction(<span class="number">3</span>));</div><div class="line"></div><div class="line">    <span class="comment">// 按词出现的顺序加分</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; terms.size(); i++) &#123;</div><div class="line">        functionScoreQueryBuilder.add(QueryBuilders.termQuery(<span class="string">"keyword.keyword_lowercase"</span>, </div><div class="line">   terms.get(i).toLowerCase()),</div><div class="line">            ScoreFunctionBuilders.weightFactorFunction(terms.size() - i));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    functionScoreQueryBuilder.boostMode(CombineFunction.SUM);</div><div class="line">    <span class="keyword">return</span> functionScoreQueryBuilder;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> QueryBuilder <span class="title">buildQueryBuilder</span><span class="params">(String keywordsToSearch, Set&lt;String&gt; termSet)</span> </span>&#123;</div><div class="line">    <span class="comment">// 1) 对于suggest的multi-fields至少要有一个字段匹配到 匹配得分为常量1</span></div><div class="line">    MultiMatchQueryBuilder queryBuilder = QueryBuilders.multiMatchQuery(keywordsToSearch.toLowerCase(),</div><div class="line">            <span class="string">"keyword.keyword_ik"</span>, <span class="string">"keyword.keyword_pinyin"</span>, </div><div class="line">            <span class="string">"keyword.keyword_first_py"</span>, <span class="string">"keyword.keyword_lowercase"</span>)</div><div class="line">        .analyzer(<span class="string">"ik_smart"</span>)</div><div class="line">        .type(MultiMatchQueryBuilder.Type.BEST_FIELDS)</div><div class="line">        .operator(MatchQueryBuilder.Operator.OR)</div><div class="line">        .minimumShouldMatch(<span class="string">"1"</span>);</div><div class="line"></div><div class="line">    FunctionScoreQueryBuilder functionScoreQueryBuilder</div><div class="line">        = <span class="keyword">new</span> FunctionScoreQueryBuilder(QueryBuilders.constantScoreQuery(queryBuilder));</div><div class="line">			</div><div class="line">    <span class="keyword">for</span> (String term : termSet) &#123;</div><div class="line">        <span class="comment">// 2) 对于完全匹配Term的加1分</span></div><div class="line">        functionScoreQueryBuilder.add(QueryBuilders.termQuery(<span class="string">"keyword.keyword_lowercase"</span>, term.toLowerCase()),</div><div class="line">            ScoreFunctionBuilders.weightFactorFunction(<span class="number">1</span>));</div><div class="line"></div><div class="line">        <span class="comment">// 3) 对于匹配到一个Term的加2分</span></div><div class="line">        functionScoreQueryBuilder.add(QueryBuilders.termQuery(<span class="string">"keyword.keyword_ik"</span>, term),</div><div class="line">            ScoreFunctionBuilders.weightFactorFunction(<span class="number">2</span>));</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    functionScoreQueryBuilder.boostMode(CombineFunction.SUM);</div><div class="line">    <span class="keyword">return</span> functionScoreQueryBuilder;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最后，从实际运行的统计来看，有90%以上的查询都能在1.3)的情况下返回推荐词，而这一部分还没有进行拼写纠错和conversion_index索引的查询，因此还是比较高效的；剩下的10%在最坏的情况且缓存都没有命中的情况下，最多还需要进行三次ES的查询，性能是比较差的，但是由于有缓存而且大部分的无结果的关键词都比较集中，因此也在可接受的范围，这一块可以考虑再增加一个动态参数，在大促的时候进行关闭处理。</p>
+<h1 id="小结与后续改进"><a href="#小结与后续改进" class="headerlink" title="小结与后续改进"></a>小结与后续改进</h1><ul>
+<li>通过以上的设计和实现，我们实现了一个效果不错的搜索推荐功能，线上使用效果如下：</li>
+</ul>
+<pre><code>//搜索【迪奥】，本站无该品牌商品
+没有找到 &quot;迪奥&quot; 相关的商品， 为您推荐 &quot;香水&quot; 的搜索结果。或者试试 &quot;香氛&quot;  &quot;眼镜&quot; 
+
+//搜索【puma 运动鞋 上衣】，关键词太多无法匹配
+没有找到 &quot;puma 运动鞋 上衣&quot; 相关的商品， 为您推荐 &quot;PUMA 运动鞋&quot; 的搜索结果。或者试试 &quot;PUMA 运动鞋 女&quot;  &quot;PUMA 运动鞋 男&quot;
+
+//搜索【puma 上衣】，结果太少
+&quot;puma 上衣&quot; 搜索结果太少了，试试 &quot;上衣&quot;  &quot;PUMA&quot;  &quot;PUMA 休闲&quot; 关键词搜索
+
+//搜索【51489312】特定的SKN，结果太少
+&quot;51489312&quot; 搜索结果太少了，试试 &quot;夹克&quot;  &quot;PUMA&quot;  &quot;户外&quot; 关键词搜索
+
+//搜索【blackjauk】，拼写错误
+没有找到 &quot;blackjauk&quot; 相关的商品， 为您推荐 &quot;BLACKJACK&quot; 的搜索结果。或者试试 &quot;BLACKJACK T恤&quot;  &quot;BLACKJACK 休闲裤&quot; 
+</code></pre><ul>
+<li>后续考虑的改进包括：1.继续统计各种无结果或结果太少场景出现的频率和对应推荐词的实现，优化搜索推荐服务的效率；2.爬取更多的语料资源，提升conversion的能力；3.考虑增加个性化的功能，给用户推荐Ta最感兴趣的内容。</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          
+            <a href="/tags/搜索/" rel="tag"># 搜索</a>
+          
+            <a href="/tags/推荐/" rel="tag"># 推荐</a>
+          
+            <a href="/tags/拼写纠错/" rel="tag"># 拼写纠错</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/elasticsearch_dynamic_synonym_plugin/" rel="next" title="一个简易的Elasticsearch动态同义词插件">
+                <i class="fa fa-chevron-left"></i> 一个简易的Elasticsearch动态同义词插件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/search_recommendation_implemention_based_elasticsearch/"
+           data-title="基于Elasticsearch实现搜索推荐" data-url="http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">28</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">104</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#设计思路"><span class="nav-number">2.</span> <span class="nav-text">设计思路</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实现细节"><span class="nav-number">3.</span> <span class="nav-text">实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#整体设计"><span class="nav-number">3.1.</span> <span class="nav-text">整体设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索建议词索引"><span class="nav-number">3.2.</span> <span class="nav-text">搜索建议词索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#商品数据索引"><span class="nav-number">3.3.</span> <span class="nav-text">商品数据索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键词映射索引"><span class="nav-number">3.4.</span> <span class="nav-text">关键词映射索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#爬虫数据爬取"><span class="nav-number">3.5.</span> <span class="nav-text">爬虫数据爬取</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#全量爬虫"><span class="nav-number">3.5.1.</span> <span class="nav-text">全量爬虫</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#增量爬虫"><span class="nav-number">3.5.2.</span> <span class="nav-text">增量爬虫</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#爬虫数据关键词提取"><span class="nav-number">3.6.</span> <span class="nav-text">爬虫数据关键词提取</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#管理关键词映射"><span class="nav-number">3.7.</span> <span class="nav-text">管理关键词映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搜索推荐服务的实现"><span class="nav-number">3.8.</span> <span class="nav-text">搜索推荐服务的实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#小结与后续改进"><span class="nav-number">4.</span> <span class="nav-text">小结与后续改进</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
