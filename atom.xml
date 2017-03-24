@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-03-22T10:08:39.349Z</updated>
+  <updated>2017-03-24T01:32:41.619Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -20,9 +20,9 @@
     <link href="http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/"/>
     <id>http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/</id>
     <published>2017-03-21T09:18:39.000Z</published>
-    <updated>2017-03-22T10:08:39.349Z</updated>
+    <updated>2017-03-24T01:32:41.619Z</updated>
     
-    <content type="html"><![CDATA[<p>在<a href="http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/">基于Elasticsearch实现搜索建议</a>一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。</p>
+    <content type="html"><![CDATA[<p>在<a href="http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/">基于Elasticsearch实现搜索建议</a>一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基础上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。</p>
 <a id="more"></a>
 <h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>在根据用户输入和筛选条件进行搜索后，有时返回的是无结果或者结果很少的情况，为了提升用户搜索体验，需要能够给用户推荐一些相关的搜索词，比如用户搜索【迪奥】时没有找到相关的商品，可以推荐搜索【香水】、【眼镜】等关键词。</p>
 <h1 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h1><p>首先需要分析搜索无结果或者结果过少可能的原因，我总结了一下，主要包括主要可能：</p>
@@ -187,13 +187,13 @@ lotto!http://baike.baidu.com/view/907709.html?fromTaglist
 //搜索【blackjauk】，拼写错误
 没有找到 &quot;blackjauk&quot; 相关的商品， 为您推荐 &quot;BLACKJACK&quot; 的搜索结果。或者试试 &quot;BLACKJACK T恤&quot;  &quot;BLACKJACK 休闲裤&quot; 
 </code></pre><ul>
-<li>后续考虑的改进包括：1.继续统计各种无结果或结果太少场景出现的频率和对应推荐词的实现，优化搜索推荐服务的效率；2.爬取更多的语料资源，提升conversion的能力；3.考虑增加个性化的功能，给用户推荐Ta最感兴趣的内容。</li>
+<li>后续考虑的改进包括：1.继续统计各种无结果或结果太少场景出现的频率和对应推荐词的实现，优化搜索推荐服务的效率；2.爬取更多的语料资源，提升Conversion的准确性；3.考虑增加个性化的功能，给用户推荐Ta最感兴趣的内容。</li>
 </ul>
 ]]></content>
     
     <summary type="html">
     
-      &lt;p&gt;在&lt;a href=&quot;http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/&quot;&gt;基于Elasticsearch实现搜索建议&lt;/a&gt;一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。&lt;/p&gt;
+      &lt;p&gt;在&lt;a href=&quot;http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/&quot;&gt;基于Elasticsearch实现搜索建议&lt;/a&gt;一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基础上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。&lt;/p&gt;
     
     </summary>
     
@@ -1413,9 +1413,9 @@ message AddressBook {
       <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
     
     
-      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
-    
       <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
     
       <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
     
@@ -4097,13 +4097,13 @@ and must have the same mapping.
     
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
-      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
-    
       <category term="HotSpot" scheme="http://ginobefunny.com/tags/HotSpot/"/>
     
+      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
       <category term="即时编译器" scheme="http://ginobefunny.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
     
   </entry>
   
@@ -4470,15 +4470,15 @@ Stack=2, Locals=4, Args_size=1
     
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
+      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
+    
       <category term="类加载器" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/"/>
     
       <category term="双亲委派" scheme="http://ginobefunny.com/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/"/>
     
       <category term="执行引擎" scheme="http://ginobefunny.com/tags/%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/"/>
-    
-      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
     
   </entry>
   
@@ -5944,6 +5944,8 @@ Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
     
       <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
+      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
+    
       <category term="微服务" scheme="http://ginobefunny.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
     
       <category term="DistributedLog" scheme="http://ginobefunny.com/tags/DistributedLog/"/>
@@ -5957,8 +5959,6 @@ Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
       <category term="高并发" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/"/>
     
       <category term="高可用" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
-    
-      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
     
       <category term="架构" scheme="http://ginobefunny.com/tags/%E6%9E%B6%E6%9E%84/"/>
     

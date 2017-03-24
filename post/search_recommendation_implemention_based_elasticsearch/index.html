@@ -86,17 +86,17 @@
 
 
 
-<meta name="description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
+<meta name="description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基础上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于Elasticsearch实现搜索推荐">
 <meta property="og:url" content="http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/index.html">
 <meta property="og:site_name" content="GinoBeFunny">
-<meta property="og:description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
+<meta property="og:description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基础上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/search_recommadation_overview.png">
-<meta property="og:updated_time" content="2017-03-22T10:08:39.349Z">
+<meta property="og:updated_time" content="2017-03-24T01:32:41.619Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于Elasticsearch实现搜索推荐">
-<meta name="twitter:description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
+<meta name="twitter:description" content="在基于Elasticsearch实现搜索建议一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基础上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。">
 <meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/search_recommadation_overview.png">
 
 
@@ -416,7 +416,7 @@
       
 
       
-        <p>在<a href="http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/">基于Elasticsearch实现搜索建议</a>一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基于上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。</p>
+        <p>在<a href="http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/">基于Elasticsearch实现搜索建议</a>一文中我们曾经介绍过如何基于Elasticsearch来实现搜索建议，而本文是在此基础上进一步优化搜索体验，在当搜索无结果或结果过少时提供推荐搜索词给用户。</p>
 <a id="more"></a>
 <h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>在根据用户输入和筛选条件进行搜索后，有时返回的是无结果或者结果很少的情况，为了提升用户搜索体验，需要能够给用户推荐一些相关的搜索词，比如用户搜索【迪奥】时没有找到相关的商品，可以推荐搜索【香水】、【眼镜】等关键词。</p>
 <h1 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h1><p>首先需要分析搜索无结果或者结果过少可能的原因，我总结了一下，主要包括主要可能：</p>
@@ -581,7 +581,7 @@ lotto!http://baike.baidu.com/view/907709.html?fromTaglist
 //搜索【blackjauk】，拼写错误
 没有找到 &quot;blackjauk&quot; 相关的商品， 为您推荐 &quot;BLACKJACK&quot; 的搜索结果。或者试试 &quot;BLACKJACK T恤&quot;  &quot;BLACKJACK 休闲裤&quot; 
 </code></pre><ul>
-<li>后续考虑的改进包括：1.继续统计各种无结果或结果太少场景出现的频率和对应推荐词的实现，优化搜索推荐服务的效率；2.爬取更多的语料资源，提升conversion的能力；3.考虑增加个性化的功能，给用户推荐Ta最感兴趣的内容。</li>
+<li>后续考虑的改进包括：1.继续统计各种无结果或结果太少场景出现的频率和对应推荐词的实现，优化搜索推荐服务的效率；2.爬取更多的语料资源，提升Conversion的准确性；3.考虑增加个性化的功能，给用户推荐Ta最感兴趣的内容。</li>
 </ul>
 
       
