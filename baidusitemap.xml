@@ -4,6 +4,48 @@
 
     
   <url>
+    <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
+    <lastmod>2017-03-27T09:17:53.414Z</lastmod>
+    <data>
+        <display>
+        <title>阅读随手记 201703</title>
+        <pubTime>2017-03-03T00:33:19.000Z</pubTime>
+        
+        <tag>微服务</tag>
+         
+        <tag>RPC</tag>
+         
+        <tag>高性能</tag>
+         
+        <tag>高并发</tag>
+         
+        <tag>高可用</tag>
+         
+        <tag>架构</tag>
+         
+        <tag>消息中间件</tag>
+         
+        <tag>缓存</tag>
+         
+        <tag>监控</tag>
+         
+        <tag>图数据库</tag>
+         
+        <tag>TDD</tag>
+         
+        <tag>Lambda架构</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://ginobefunny.com/post/search_recommendation_implemention_based_elasticsearch/</loc>
     <lastmod>2017-03-24T01:32:41.619Z</lastmod>
     <data>
@@ -84,42 +126,6 @@
         <tag>Java编程</tag>
          
         <tag>运维</tag>
-         
-         
-           
-             
-              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
-    <lastmod>2017-03-07T07:54:44.262Z</lastmod>
-    <data>
-        <display>
-        <title>阅读随手记 201703</title>
-        <pubTime>2017-03-03T00:33:19.000Z</pubTime>
-        
-        <tag>微服务</tag>
-         
-        <tag>RPC</tag>
-         
-        <tag>高性能</tag>
-         
-        <tag>高并发</tag>
-         
-        <tag>高可用</tag>
-         
-        <tag>架构</tag>
-         
-        <tag>消息中间件</tag>
-         
-        <tag>缓存</tag>
-         
-        <tag>监控</tag>
          
          
            
