@@ -5,7 +5,7 @@
     
   <url>
     <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
-    <lastmod>2017-03-28T05:37:39.054Z</lastmod>
+    <lastmod>2017-03-28T06:43:28.053Z</lastmod>
     <data>
         <display>
         <title>阅读随手记 201703</title>
@@ -700,6 +700,8 @@
          
         <tag>读书笔记</tag>
          
+        <tag>Git</tag>
+         
         <tag>数据库中间件</tag>
          
         <tag>推荐系统</tag>
@@ -733,8 +735,6 @@
         <tag>微信小程序</tag>
          
         <tag>性能调优</tag>
-         
-        <tag>Git</tag>
          
         <tag>自我提升</tag>
          
