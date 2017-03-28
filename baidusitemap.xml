@@ -294,11 +294,11 @@
          
         <tag>虚拟机</tag>
          
-        <tag>字节码</tag>
-         
         <tag>类文件</tag>
          
         <tag>常量池</tag>
+         
+        <tag>字节码</tag>
          
          
            
@@ -406,11 +406,11 @@
          
         <tag>虚拟机</tag>
          
+        <tag>字节码</tag>
+         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
-         
-        <tag>字节码</tag>
          
         <tag>执行引擎</tag>
          
@@ -700,8 +700,6 @@
          
         <tag>读书笔记</tag>
          
-        <tag>Git</tag>
-         
         <tag>数据库中间件</tag>
          
         <tag>推荐系统</tag>
@@ -735,6 +733,8 @@
         <tag>微信小程序</tag>
          
         <tag>性能调优</tag>
+         
+        <tag>Git</tag>
          
         <tag>自我提升</tag>
          
