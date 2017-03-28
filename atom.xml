@@ -398,7 +398,7 @@ http://localhost:9200/test/_analyze?analyzer=analyzer_with_dynamic_synonym&amp;t
     <link href="http://ginobefunny.com/post/reading_record_201703/"/>
     <id>http://ginobefunny.com/post/reading_record_201703/</id>
     <published>2017-03-03T00:33:19.000Z</published>
-    <updated>2017-03-28T03:30:30.415Z</updated>
+    <updated>2017-03-28T05:37:39.054Z</updated>
     
     <content type="html"><![CDATA[<p>关键字：微服务, 架构, 消息中间件, 缓存, RPC, 监控, 高性能, 高并发, 高可用。<br><a id="more"></a></p>
 <h3 id="Microservices-Decomposing-Applications-for-Deployability-and-Scalability-Chris-Richardson"><a href="#Microservices-Decomposing-Applications-for-Deployability-and-Scalability-Chris-Richardson" class="headerlink" title="Microservices: Decomposing Applications for Deployability and Scalability  Chris Richardson"></a><a href="https://www.infoq.com/articles/microservices-intro" target="_blank" rel="external">Microservices: Decomposing Applications for Deployability and Scalability</a>  Chris Richardson</h3><h3 id="Pattern-Microservice-Architecture-Chris-Richardson"><a href="#Pattern-Microservice-Architecture-Chris-Richardson" class="headerlink" title="Pattern: Microservice Architecture Chris Richardson"></a><a href="http://microservices.io/patterns/microservices.html" target="_blank" rel="external">Pattern: Microservice Architecture</a> Chris Richardson</h3><h3 id="Introduction-to-Microservices-Chris-Richardson"><a href="#Introduction-to-Microservices-Chris-Richardson" class="headerlink" title="Introduction to Microservices Chris Richardson"></a><a href="https://www.nginx.com/blog/introduction-to-microservices/" target="_blank" rel="external">Introduction to Microservices</a> Chris Richardson</h3><h3 id="Building-Microservices-Using-an-API-Gateway-Chris-Richardson"><a href="#Building-Microservices-Using-an-API-Gateway-Chris-Richardson" class="headerlink" title="Building Microservices: Using an API Gateway Chris Richardson"></a><a href="https://www.nginx.com/blog/building-microservices-using-an-api-gateway/" target="_blank" rel="external">Building Microservices: Using an API Gateway</a> Chris Richardson</h3><h3 id="Building-Microservices-Inter-Process-Communication-in-a-Microservices-Architecture-Chris-Richardson"><a href="#Building-Microservices-Inter-Process-Communication-in-a-Microservices-Architecture-Chris-Richardson" class="headerlink" title="Building Microservices: Inter-Process Communication in a Microservices Architecture Chris Richardson"></a><a href="https://www.nginx.com/blog/building-microservices-inter-process-communication" target="_blank" rel="external">Building Microservices: Inter-Process Communication in a Microservices Architecture</a> Chris Richardson</h3><h3 id="Service-Discovery-in-a-Microservices-Architecture-Chris-Richardson"><a href="#Service-Discovery-in-a-Microservices-Architecture-Chris-Richardson" class="headerlink" title="Service Discovery in a Microservices Architecture Chris Richardson"></a><a href="https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/" target="_blank" rel="external">Service Discovery in a Microservices Architecture</a> Chris Richardson</h3><h3 id="Event-Driven-Data-Management-for-Microservices-Chris-Richardson"><a href="#Event-Driven-Data-Management-for-Microservices-Chris-Richardson" class="headerlink" title="Event-Driven Data Management for Microservices Chris Richardson"></a><a href="https://www.nginx.com/blog/event-driven-data-management-microservices/" target="_blank" rel="external">Event-Driven Data Management for Microservices</a> Chris Richardson</h3><h3 id="Choosing-a-Microservices-Deployment-Strategy-Chris-Richardson"><a href="#Choosing-a-Microservices-Deployment-Strategy-Chris-Richardson" class="headerlink" title="Choosing a Microservices Deployment Strategy Chris Richardson"></a><a href="https://www.nginx.com/blog/deploying-microservices/" target="_blank" rel="external">Choosing a Microservices Deployment Strategy</a> Chris Richardson</h3><h3 id="Refactoring-a-Monolith-into-Microservices-Chris-Richardson"><a href="#Refactoring-a-Monolith-into-Microservices-Chris-Richardson" class="headerlink" title="Refactoring a Monolith into Microservices Chris Richardson"></a><a href="https://www.nginx.com/blog/refactoring-a-monolith-into-microservices/" target="_blank" rel="external">Refactoring a Monolith into Microservices</a> Chris Richardson</h3><h3 id="Fault-Tolerance-in-a-High-Volume-Distributed-System-Ben-Christensen"><a href="#Fault-Tolerance-in-a-High-Volume-Distributed-System-Ben-Christensen" class="headerlink" title="Fault Tolerance in a High Volume, Distributed System Ben Christensen"></a><a href="http://techblog.netflix.com/2012/02/fault-tolerance-in-high-volume.html" target="_blank" rel="external">Fault Tolerance in a High Volume, Distributed System</a> Ben Christensen</h3><h3 id="JDK1-8-AbstractQueuedSynchronizer的实现分析-刘锟洋"><a href="#JDK1-8-AbstractQueuedSynchronizer的实现分析-刘锟洋" class="headerlink" title="JDK1.8 AbstractQueuedSynchronizer的实现分析 刘锟洋"></a><a href="http://www.infoq.com/cn/articles/jdk1.8-abstractqueuedsynchronizer" target="_blank" rel="external">JDK1.8 AbstractQueuedSynchronizer的实现分析</a> 刘锟洋</h3><h3 id="从LONGADDER看更高效的无锁实现-jd刘锟洋"><a href="#从LONGADDER看更高效的无锁实现-jd刘锟洋" class="headerlink" title="从LONGADDER看更高效的无锁实现 jd刘锟洋"></a><a href="http://coolshell.cn/articles/11454.html" target="_blank" rel="external">从LONGADDER看更高效的无锁实现</a> jd刘锟洋</h3><h3 id="RxJava2实例解析-Victor-Grazi-薛命灯Rays"><a href="#RxJava2实例解析-Victor-Grazi-薛命灯Rays" class="headerlink" title="RxJava2实例解析  Victor Grazi/薛命灯Rays"></a><a href="http://www.infoq.com/cn/articles/rxjava2-by-example" target="_blank" rel="external">RxJava2实例解析</a>  Victor Grazi/薛命灯Rays</h3><h3 id="Martin-Fowler谈如何理解事件驱动和CQRS-Martin-Fowler-薛命灯"><a href="#Martin-Fowler谈如何理解事件驱动和CQRS-Martin-Fowler-薛命灯" class="headerlink" title="Martin Fowler谈如何理解事件驱动和CQRS Martin Fowler/薛命灯"></a><a href="http://mp.weixin.qq.com/s?__biz=MzA5Nzc4OTA1Mw==&amp;mid=2659599045&amp;idx=1&amp;sn=02aee31a7e947626df37165e3484953f" target="_blank" rel="external">Martin Fowler谈如何理解事件驱动和CQRS</a> Martin Fowler/薛命灯</h3><p>原文地址:<a href="https://martinfowler.com/articles/201701-event-driven.html" target="_blank" rel="external">https://martinfowler.com/articles/201701-event-driven.html</a></p>
@@ -413,7 +413,13 @@ http://localhost:9200/test/_analyze?analyzer=analyzer_with_dynamic_synonym&amp;t
 <li>DHH先批判了测试先行的教条主义，虽然它能提升开发人员对软件质量的自信，且对于自动回归测试是有帮助的，但它不应该作为每日工作的教条；而业界近些年来对于TDD的推崇以及对未采用TDD开发的嘲讽更让DHH发火；当DHH多次尝试TDD而发现这会伤害程序的设计时，DHH声明不以TDD的方式开发软件了；</li>
 <li>DHH的建议：重新平衡单元测试和系统测试，减少对于单元测试的重视，将更多的精力投入到系统测试；但千万不要跳入只做系统测试的极端里。</li>
 </ul>
-<h3 id="Is-TDD-Dead-Martin-Fowler-David-Heinemeier-Hansson-Kent-Beck"><a href="#Is-TDD-Dead-Martin-Fowler-David-Heinemeier-Hansson-Kent-Beck" class="headerlink" title="Is TDD Dead? Martin Fowler/David Heinemeier Hansson/Kent Beck"></a><a href="https://martinfowler.com/articles/is-tdd-dead/" target="_blank" rel="external">Is TDD Dead?</a> Martin Fowler/David Heinemeier Hansson/Kent Beck</h3><p>视频地址: <a href="https://www.youtube.com/watch?v=z9quxZsLcfo" target="_blank" rel="external">https://www.youtube.com/watch?v=z9quxZsLcfo</a></p>
+<h3 id="Is-TDD-Dead-Martin-Fowler-David-Heinemeier-Hansson-Kent-Beck"><a href="#Is-TDD-Dead-Martin-Fowler-David-Heinemeier-Hansson-Kent-Beck" class="headerlink" title="Is TDD Dead? Martin Fowler/David Heinemeier Hansson/Kent Beck"></a><a href="https://martinfowler.com/articles/is-tdd-dead/" target="_blank" rel="external">Is TDD Dead?</a> Martin Fowler/David Heinemeier Hansson/Kent Beck</h3><ul>
+<li>Part 1: <a href="https://www.youtube.com/watch?v=z9quxZsLcfo" target="_blank" rel="external">https://www.youtube.com/watch?v=z9quxZsLcfo</a></li>
+<li>Part 2: <a href="https://www.youtube.com/watch?v=JoTB2mcjU7w" target="_blank" rel="external">https://www.youtube.com/watch?v=JoTB2mcjU7w</a></li>
+<li>Part 3: <a href="https://www.youtube.com/watch?v=YNw4baDz6WA" target="_blank" rel="external">https://www.youtube.com/watch?v=YNw4baDz6WA</a></li>
+<li>Part 4: <a href="https://www.youtube.com/watch?v=dGtasFJnUxI" target="_blank" rel="external">https://www.youtube.com/watch?v=dGtasFJnUxI</a></li>
+<li>Part 5 &amp; Part 6: <a href="https://www.youtube.com/watch?v=gWD6REVeKW4" target="_blank" rel="external">https://www.youtube.com/watch?v=gWD6REVeKW4</a> </li>
+</ul>
 <h3 id="让我们再聊聊TDD-刘冉"><a href="#让我们再聊聊TDD-刘冉" class="headerlink" title="让我们再聊聊TDD 刘冉"></a><a href="http://mp.weixin.qq.com/s/dmreBAzk2Mz94YfkXN8PHg" target="_blank" rel="external">让我们再聊聊TDD</a> 刘冉</h3><ul>
 <li>总结一下，技术人员拒绝TDD的主要原因在于难度大、工作量大、Mock的大量使用导致很难测试业务价值等。这些理解主要是建立在片面的理解和实践之上，而在我的认知中，TDD的核心是：<strong>先写测试，并使用它帮助开发人员来驱动软件开发</strong>。</li>
 <li>首先是先写测试，这里的测试并不只是单元测试，也不是说一定要使用mock和stub来做测试。这里的测试就是指软件测试本身，可以是基于代码单元的单元测试，可以是基于业务需求的功能测试，也可以是基于特定验收条件的验收测试。其次是帮助开发人员，主要是帮助开发人员理解软件的功能需求和验收条件，帮助其思考和设计代码，从而达到驱动开发的目的</li>
@@ -4205,13 +4211,13 @@ and must have the same mapping.
     
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
-      <category term="HotSpot" scheme="http://ginobefunny.com/tags/HotSpot/"/>
-    
       <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
     
-      <category term="即时编译器" scheme="http://ginobefunny.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
       <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
+    
+      <category term="HotSpot" scheme="http://ginobefunny.com/tags/HotSpot/"/>
+    
+      <category term="即时编译器" scheme="http://ginobefunny.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E5%99%A8/"/>
     
   </entry>
   
@@ -4576,17 +4582,17 @@ Stack=2, Locals=4, Args_size=1
     
       <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
-      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
-    
-      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
-    
       <category term="类加载器" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/"/>
     
       <category term="双亲委派" scheme="http://ginobefunny.com/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/"/>
     
+      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
+    
       <category term="执行引擎" scheme="http://ginobefunny.com/tags/%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/"/>
+    
+      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
     
   </entry>
   
@@ -4768,11 +4774,11 @@ Stack=2, Locals=4, Args_size=1
     
       <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
+      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
+    
       <category term="类文件" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E6%96%87%E4%BB%B6/"/>
     
       <category term="常量池" scheme="http://ginobefunny.com/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/"/>
-    
-      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
   </entry>
   
