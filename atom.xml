@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-03-24T01:32:41.619Z</updated>
+  <updated>2017-03-28T10:01:39.664Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -14,6 +14,115 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>基于word2vec和Elasticsearch实现个性化搜索</title>
+    <link href="http://ginobefunny.com/post/personalized_search_implemention_based_word2vec_and_elasticsearch/"/>
+    <id>http://ginobefunny.com/post/personalized_search_implemention_based_word2vec_and_elasticsearch/</id>
+    <published>2017-03-28T07:51:02.000Z</published>
+    <updated>2017-03-28T10:01:39.664Z</updated>
+    
+    <content type="html"><![CDATA[<p>在<a href="http://ginobefunny.com/post/learning_word2vec/">word2vec学习小记</a>一文中我们曾经学习了word2vec这个工具，它基于神经网络语言模型并在其基础上进行优化，最终能获取词向量和语言模型。在我们的商品搜索系统里，采用了word2vec的方式来计算用户向量和商品向量，并通过Elasticsearch的function_score评分机制和自定义的脚本插件来实现个性化搜索。</p>
+<a id="more"></a> 
+<h1 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h1><p>先来看下<a href="https://en.wikipedia.org/wiki/Personalized_search" target="_blank" rel="external">维基百科</a>上对于个性化搜索的定义和介绍：</p>
+<blockquote>
+<p>Personalized search refers to web search experiences that are tailored specifically to an individual’s interests by incorporating information about the individual beyond specific query provided. Pitkow et al. describe two general approaches to personalizing search results, one involving modifying the user’s query and the other re-ranking search results.</p>
+</blockquote>
+<p>由此我们可以得到两个重要的信息：</p>
+<ol>
+<li>个性化搜索需要充分考虑到用户的偏好，将<strong>用户感兴趣的内容</strong>优先展示给用户；</li>
+<li>另外是对于实现个性化的方式上主要有<strong>查询修改和对搜索结果的重排序</strong>两种。</li>
+</ol>
+<p>而对我们电商网站来说，个性化搜索的重点是当用户搜索某个关键字，如【卫衣】时，能将用户最感兴趣最可能购买的商品（如用户偏好的品牌或款式）优先展示给用户，以提升用户体验和点击转化。</p>
+<h1 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h1><ol>
+<li>在此之前我们曾经有一般的个性化搜索实现，其主要是通过计算用户和商品的一些重要属性（比如品牌、品类、性别等）的权重，然后得到一个用户和商品之间的关联系数，然后根据该系数进行重排序。</li>
+<li>但是这一版从效果来看并不是很好，我个人觉得主要的原因有以下几点：用户对商品的各个属性的重视程度并不是一样的，另外考虑的商品的属性并不全，且没有去考虑商品和商品直接的关系；</li>
+<li>在新的版本的设计中，我们考虑通过<strong>用户的浏览记录这种时序数据</strong>来获取用户和商品以及商品和商品直接的关联关系，其核心就是通过类似于语言模型的词出现的顺序来训练向量表示结果；</li>
+<li>在获取用户向量和商品向量表示后，我们就可以<strong>根据向量直接的距离来计算相关性</strong>，从而将用户感兴趣的商品优先展示；</li>
+</ol>
+<h1 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h1><h2 id="商品向量的计算"><a href="#商品向量的计算" class="headerlink" title="商品向量的计算"></a>商品向量的计算</h2><ol>
+<li>根据用户最近某段时间（如30天内）的浏览记录，获取得到浏览SKN的列表并使用空格分隔；核心的逻辑如下面的SQL所示：</li>
+</ol>
+<pre><code>select concat_ws(&apos; &apos;, collect_set(product_skn)) as skns 
+from 
+ (select uid, cast(product_skn as string) as product_skn, click_time_stamp 
+  from product_click_record 
+  where date_id &lt;= $date_id and date_id &gt;= $date_id_30_day_ago
+  order by uid, click_time_stamp) as a 
+group by uid;
+</code></pre><ol>
+<li>将该SQL的执行结果写入文件作为word2vec训练的输入；</li>
+<li>调用word2vec执行训练，并保存训练的结果：</li>
+</ol>
+<pre><code>time ./word2vec -train $prepare_file -output $result_file -cbow 1 -size 20 
+-window 8 -negative 25 -hs 0 -sample 1e-4 -threads 20 -iter 15 
+</code></pre><ol>
+<li>读取训练结果的向量，保存到搜索库的商品向量表。</li>
+</ol>
+<h2 id="用户向量的计算"><a href="#用户向量的计算" class="headerlink" title="用户向量的计算"></a>用户向量的计算</h2><ol>
+<li>在计算用户向量时采用了一种简化的处理，即通过用户最近某段时间（如30天内）的商品浏览记录，根据这些商品的向量进行每一维的求平均值处理来计算用户向量，核心的逻辑如下：</li>
+</ol>
+<pre><code>vec_list = []
+for i in range(feature_length):
+    vec_list.append(&quot;avg(coalesce(b.vec[%s], 0))&quot; % (str(i)))
+vec = &apos;, &apos;.join(vec_list)
+
+
+select a.uid as uid, array(%s) as vec 
+from 
+ (select * from product_click_record where date_id &lt;= $date_id and date_id &gt;= $date_id_30_day_ago) as a
+left outer join
+ (select * from product_w2v where date_id = $date_id) as b
+on a.product_skn = b.product_skn
+group by a.uid;
+</code></pre><ol>
+<li>将计算获取的用户向量，保存到Redis里供搜索服务获取。</li>
+</ol>
+<h2 id="搜索服务时增加个性化评分"><a href="#搜索服务时增加个性化评分" class="headerlink" title="搜索服务时增加个性化评分"></a>搜索服务时增加个性化评分</h2><ol>
+<li>商品索引重建构造器在重建索引时设置商品向量到product_index的某个字段中，比如下面例子的productFeatureVector字段；</li>
+<li>搜索服务在默认的cross_fields相关性评分的机制下，需要增加个性化的评分，这个可以通过<strong>function_score</strong>来实现。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Map&lt;String, Object&gt; scriptParams = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">scriptParams.put(<span class="string">"field"</span>, <span class="string">"productFeatureVector"</span>);</div><div class="line">scriptParams.put(<span class="string">"inputFeatureVector"</span>, userVector);</div><div class="line">scriptParams.put(<span class="string">"version"</span>, version);</div><div class="line">Script script = <span class="keyword">new</span> Script(<span class="string">"feature_vector_scoring_script"</span>, ScriptService.ScriptType.INLINE, <span class="string">"native"</span>, scriptParams);</div><div class="line">functionScoreQueryBuilder.add(ScoreFunctionBuilders.scriptFunction(script));</div></pre></td></tr></table></figure>
+<ol>
+<li>这里采用了<a href="https://github.com/ginobefun/elasticsearch-feature-vector-scoring" target="_blank" rel="external">elasticsearch-feature-vector-scoring插件</a>来进行相关性评分，其核心是向量的余弦距离表示，具体见下面一小节的介绍。在脚本参数中，field表示索引中保存商品特征向量的字段；inputFeatureVector表示输入的向量，在这里为用户的向量；</li>
+<li>这里把version参数单独拿出来解释一下，因为每天计算出来的向量是不一样的，向量的每一维并没有对应商品的某个具体的属性（至少我们现在看不出来这种关联），因此我们要特别避免不同时间计算出来的向量的之间计算相关性。在实现的时候，我们是通过一个中间变量来表示最新的版本，即在完成商品向量和用户向量的计算和推送给搜索之后，再更新这个中间向量；搜索的索引构造器定期轮询这个中间变量，当发现发生更新之后，就将商品的特征向量批量更新到ES中，在后面的搜索中就可以采用新版本的向量了；</li>
+</ol>
+<h2 id="elasticsearch-feature-vector-scoring插件"><a href="#elasticsearch-feature-vector-scoring插件" class="headerlink" title="elasticsearch-feature-vector-scoring插件"></a>elasticsearch-feature-vector-scoring插件</h2><p>这是我自己写的一个插件，具体的使用可以看下<a href="https://github.com/ginobefun/elasticsearch-feature-vector-scoring" target="_blank" rel="external">项目主页</a>，其核心也就一个类，我将其主要的代码和注释贴一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FeatureVectorScoringSearchScript</span> <span class="keyword">extends</span> <span class="title">AbstractSearchScript</span> </span>&#123;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> ESLogger LOGGER = Loggers.getLogger(<span class="string">"feature-vector-scoring"</span>);</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SCRIPT_NAME = <span class="string">"feature_vector_scoring_script"</span>;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> DEFAULT_BASE_CONSTANT = <span class="number">1.0</span>D;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> DEFAULT_FACTOR_CONSTANT = <span class="number">1.0</span>D;</div><div class="line"></div><div class="line">    <span class="comment">// field in index to store feature vector</span></div><div class="line">    <span class="keyword">private</span> String field;</div><div class="line"></div><div class="line">    <span class="comment">// version of feature vector, if it isn't null, it should match version of index</span></div><div class="line">    <span class="keyword">private</span> String version;</div><div class="line"></div><div class="line">    <span class="comment">// final_score = baseConstant + factorConstant * cos(X, Y)</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> baseConstant;</div><div class="line"></div><div class="line">    <span class="comment">// final_score = baseConstant + factorConstant * cos(X, Y)</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> factorConstant;</div><div class="line"></div><div class="line">    <span class="comment">// input feature vector</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span>[] inputFeatureVector;</div><div class="line"></div><div class="line">    <span class="comment">// cos(X, Y) = Σ(Xi * Yi) / ( sqrt(Σ(Xi * Xi)) * sqrt(Σ(Yi * Yi)) )</span></div><div class="line">    <span class="comment">// the inputFeatureVectorNorm is sqrt(Σ(Xi * Xi))</span></div><div class="line">    <span class="keyword">private</span> <span class="keyword">double</span> inputFeatureVectorNorm;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">ScriptFactory</span> <span class="keyword">implements</span> <span class="title">NativeScriptFactory</span> </span>&#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> ExecutableScript <span class="title">newScript</span><span class="params">(@Nullable Map&lt;String, Object&gt; params)</span> <span class="keyword">throws</span> ScriptException </span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">new</span> FeatureVectorScoringSearchScript(params);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">needsScores</span><span class="params">()</span> </span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="title">FeatureVectorScoringSearchScript</span><span class="params">(Map&lt;String, Object&gt; params)</span> <span class="keyword">throws</span> ScriptException </span>&#123;</div><div class="line">        <span class="keyword">this</span>.field = (String) params.get(<span class="string">"field"</span>);</div><div class="line">        String inputFeatureVectorStr = (String) params.get(<span class="string">"inputFeatureVector"</span>);</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.field == <span class="keyword">null</span> || inputFeatureVectorStr == <span class="keyword">null</span> || inputFeatureVectorStr.trim().length() == <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ScriptException(<span class="string">"Initialize script "</span> + SCRIPT_NAME + <span class="string">" failed!"</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">this</span>.version = (String) params.get(<span class="string">"version"</span>);</div><div class="line">        <span class="keyword">this</span>.baseConstant = params.get(<span class="string">"baseConstant"</span>) != <span class="keyword">null</span> ? Double.parseDouble(params.get(<span class="string">"baseConstant"</span>).toString()) : DEFAULT_BASE_CONSTANT;</div><div class="line">        <span class="keyword">this</span>.factorConstant = params.get(<span class="string">"factorConstant"</span>) != <span class="keyword">null</span> ? Double.parseDouble(params.get(<span class="string">"factorConstant"</span>).toString()) : DEFAULT_FACTOR_CONSTANT;</div><div class="line"></div><div class="line">        String[] inputFeatureVectorArr = inputFeatureVectorStr.split(<span class="string">","</span>);</div><div class="line">        <span class="keyword">int</span> dimension = inputFeatureVectorArr.length;</div><div class="line">        <span class="keyword">double</span> sumOfSquare = <span class="number">0.0</span>D;</div><div class="line">        <span class="keyword">this</span>.inputFeatureVector = <span class="keyword">new</span> <span class="keyword">double</span>[dimension];</div><div class="line">        <span class="keyword">double</span> temp;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> index = <span class="number">0</span>; index &lt; dimension; index++) &#123;</div><div class="line">            temp = Double.parseDouble(inputFeatureVectorArr[index].trim());</div><div class="line">            <span class="keyword">this</span>.inputFeatureVector[index] = temp;</div><div class="line">            sumOfSquare += temp * temp;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">this</span>.inputFeatureVectorNorm = Math.sqrt(sumOfSquare);</div><div class="line">        LOGGER.debug(<span class="string">"FeatureVectorScoringSearchScript.init, version:&#123;&#125;, norm:&#123;&#125;, baseConstant:&#123;&#125;, factorConstant:&#123;&#125;."</span></div><div class="line">                , <span class="keyword">this</span>.version, <span class="keyword">this</span>.inputFeatureVectorNorm, <span class="keyword">this</span>.baseConstant, <span class="keyword">this</span>.factorConstant);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.inputFeatureVectorNorm == <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (!doc().containsKey(<span class="keyword">this</span>.field) || doc().get(<span class="keyword">this</span>.field) == <span class="keyword">null</span>) &#123;</div><div class="line">            LOGGER.error(<span class="string">"cannot find field &#123;&#125;."</span>, field);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        String docFeatureVectorStr = ((ScriptDocValues.Strings) doc().get(<span class="keyword">this</span>.field)).getValue();</div><div class="line">        <span class="keyword">return</span> calculateScore(docFeatureVectorStr);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">calculateScore</span><span class="params">(String docFeatureVectorStr)</span> </span>&#123;</div><div class="line">        <span class="comment">// 1. check docFeatureVector</span></div><div class="line">        <span class="keyword">if</span> (docFeatureVectorStr == <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        docFeatureVectorStr = docFeatureVectorStr.trim();</div><div class="line">        <span class="keyword">if</span> (docFeatureVectorStr.isEmpty()) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 2. check version and get feature vector array of document</span></div><div class="line">        String[] docFeatureVectorArr;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.version != <span class="keyword">null</span>) &#123;</div><div class="line">            String versionPrefix = version + <span class="string">"|"</span>;</div><div class="line">            <span class="keyword">if</span> (!docFeatureVectorStr.startsWith(versionPrefix)) &#123;</div><div class="line">                <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant;</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            docFeatureVectorArr = docFeatureVectorStr.substring(versionPrefix.length()).split(<span class="string">","</span>);</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            docFeatureVectorArr = docFeatureVectorStr.split(<span class="string">","</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 3. check the dimension of input and document</span></div><div class="line">        <span class="keyword">int</span> dimension = <span class="keyword">this</span>.inputFeatureVector.length;</div><div class="line">        <span class="keyword">if</span> (docFeatureVectorArr == <span class="keyword">null</span> || docFeatureVectorArr.length != dimension) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">// 4. calculate the relevance score of the two feature vector</span></div><div class="line">        <span class="keyword">double</span> sumOfSquare = <span class="number">0.0</span>D;</div><div class="line">        <span class="keyword">double</span> sumOfProduct = <span class="number">0.0</span>D;</div><div class="line">        <span class="keyword">double</span> tempValueInDouble;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; dimension; i++) &#123;</div><div class="line">            tempValueInDouble = Double.parseDouble(docFeatureVectorArr[i].trim());</div><div class="line">            sumOfProduct += tempValueInDouble * <span class="keyword">this</span>.inputFeatureVector[i];</div><div class="line">            sumOfSquare += tempValueInDouble * tempValueInDouble;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">if</span> (sumOfSquare == <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">double</span> cosScore = sumOfProduct / (Math.sqrt(sumOfSquare) * inputFeatureVectorNorm);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.baseConstant + <span class="keyword">this</span>.factorConstant * cosScore;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h1 id="总结与后续改进"><a href="#总结与后续改进" class="headerlink" title="总结与后续改进"></a>总结与后续改进</h1><ul>
+<li>基于word2vec、Elasticsearch和自定义的脚本插件，我们就实现了一个个性化的搜索服务，相对于原有的实现，新版的点击率和转化率都有大幅的提升；</li>
+<li>基于word2vec的商品向量还有一个可用之处，就是可以用来实现相似商品的推荐；</li>
+<li>但是以我个人的理解，使用word2vec来实现个性化搜索或个性化推荐是有一定局限性的，因为它只能处理用户点击历史这样的时序数据，而无法全面的去考虑用户偏好，这个还是有很大的改进和提升的空间；</li>
+<li>后续的话我们会更多的参考业界的做法，更多地更全面地考虑用户的偏好，另外还需要考虑时效性的问题，以优化商品排序和推荐。</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://en.wikipedia.org/wiki/Personalized_search" target="_blank" rel="external">Personalized search Wiki</a></li>
+<li><a href="http://blog.csdn.net/soso_blog/article/details/6050346" target="_blank" rel="external">搜索下一站：个性化搜索基本方法和简单实验</a></li>
+<li><a href="http://www.infoq.com/cn/presentations/jingdong-personalized-search-engine-based-on-big-data-technology" target="_blank" rel="external">京东基于大数据技术的个性化电商搜索引擎</a></li>
+<li><a href="https://www.zhihu.com/question/35574888" target="_blank" rel="external">淘宝为什么还不能实现个性化推荐和搜索？</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在&lt;a href=&quot;http://ginobefunny.com/post/learning_word2vec/&quot;&gt;word2vec学习小记&lt;/a&gt;一文中我们曾经学习了word2vec这个工具，它基于神经网络语言模型并在其基础上进行优化，最终能获取词向量和语言模型。在我们的商品搜索系统里，采用了word2vec的方式来计算用户向量和商品向量，并通过Elasticsearch的function_score评分机制和自定义的脚本插件来实现个性化搜索。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="Elasticsearch" scheme="http://ginobefunny.com/categories/Elasticsearch/"/>
+    
+    
+      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
+    
+      <category term="word2vec" scheme="http://ginobefunny.com/tags/word2vec/"/>
+    
+      <category term="搜索" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2/"/>
+    
+      <category term="推荐" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90/"/>
+    
+      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
+    
+  </entry>
   
   <entry>
     <title>基于Elasticsearch实现搜索推荐</title>
@@ -6113,340 +6222,6 @@ Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
       <category term="监控" scheme="http://ginobefunny.com/tags/%E7%9B%91%E6%8E%A7/"/>
     
       <category term="负载均衡" scheme="http://ginobefunny.com/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>一起读Spring Framework文档（1）：概述与新特性</title>
-    <link href="http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/"/>
-    <id>http://ginobefunny.com/post/spring_framework_reference_notes_part1_overview_and_newfeature/</id>
-    <published>2016-12-29T02:15:49.000Z</published>
-    <updated>2017-01-18T08:50:06.921Z</updated>
-    
-    <content type="html"><![CDATA[<p>主要包括Spring Framework的介绍、快速入门、模块体系以及4.x各个版本的新特性和改进。<br><a id="more"></a></p>
-<p><strong>阅读说明：</strong></p>
-<ol>
-<li>Spring经过多年的发展，现在已经有多个成熟的项目，包括Spring Framework、Spring Boot、Spring Cloud、Spring Data等，但是大家最熟知的应该还是Spring Framework，在这一系列的博文中，如无特殊说明，Spring指的皆为Spring Framework；</li>
-<li>Spring中很大一部分我没有用过，在笔记中可能存在错误描述，欢迎指正。另外如果有些词不好翻译，会保留英文单词；</li>
-<li>该笔记阅读的文档是Spring最新的4.3.5版本，官网地址可能随着新版本的发布而替换；</li>
-<li>部分内容会因为个人喜好进行增减，如需完整阅读，可以阅读官网原文。</li>
-</ol>
-<h1 id="第一部分-Spring概述"><a href="#第一部分-Spring概述" class="headerlink" title="第一部分 Spring概述"></a>第一部分 Spring概述</h1><ul>
-<li>轻量级的开源框架；</li>
-<li>潜在的一站式企业级应用开发解决方案；</li>
-<li>模块化的设计；</li>
-<li>非侵入式的设计；</li>
-<li>支持声明式的事务管理；</li>
-<li>提供全功能的MVC框架；</li>
-<li>能将AOP透明地集成；</li>
-</ul>
-<h2 id="1-Spring快速入门"><a href="#1-Spring快速入门" class="headerlink" title="1. Spring快速入门"></a>1. Spring快速入门</h2><p>Spring Framework Reference主要介绍的是框架的详细信息，如果是新手，建议从官的<a href="https://spring.io/guides" target="_blank" rel="external">Guides</a>的实例入手（比如<a href="https://spring.io/guides/tutorials/bookmarks/" target="_blank" rel="external">Building REST services with Spring</a>这个就超级棒），这些实例很多都是基于Spring Boot来运行。</p>
-<h2 id="2-Spring介绍"><a href="#2-Spring介绍" class="headerlink" title="2. Spring介绍"></a>2. Spring介绍</h2><p>Spring为开发Java提供了基础架构的支持，基于普通的POJO使得开发J2EE更加轻松。</p>
-<h3 id="2-1-依赖注入和控制反转"><a href="#2-1-依赖注入和控制反转" class="headerlink" title="2.1 依赖注入和控制反转"></a>2.1 依赖注入和控制反转</h3><p>通常一个Java程序包含了大量的对象需要管理，而这些对象之间又存在各种依赖关系。这时虽然一些设计模式如工厂模式、构造器、服务定位的方式可以采用，但是更好的方式利用一个统一的模式：我们只需描述是什么以及在哪里使用即可，剩下的一起交给框架去实现。</p>
-<p>Spring的控制反转组件（<em>Inversion of Control, IOC</em>）开箱即用，其通过一系列的组件来形成统一的模式来实现。Spring的IOC是Spring最经典的设计之一，越来越多的公司采用这种方案。</p>
-<p>关于IOC，应该读读Martin Fowler大神的《<a href="http://martinfowler.com/articles/injection.html" target="_blank" rel="external">Inversion of Control Containers and the Dependency Injection pattern</a>》一文。</p>
-<h3 id="2-2-Spring的模块"><a href="#2-2-Spring的模块" class="headerlink" title="2.2 Spring的模块"></a>2.2 Spring的模块</h3><p>Spring现在已经发展到包括大约20个模块，按功能可分为：核心容器、数据访问与集成、Web开发、面向切面（AOP）、类代理、消息和测试，整体框架图如下所示：</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_modules.png" alt="Spring Modules"></p>
-<h4 id="2-2-1-核心容器"><a href="#2-2-1-核心容器" class="headerlink" title="2.2.1 核心容器"></a>2.2.1 核心容器</h4><ul>
-<li><strong>spring-core</strong>和<strong>spring-beans</strong>是Spring最基础的模块，提供了控制反转（IOC）和依赖注入（DI）特性。<strong>BeanFactory</strong>接口解耦了程序中的配置和依赖关系。</li>
-<li><strong>spring-context</strong>使得访问对象更加便捷，还增加了对国际化、事件传播、资源加载的支持，以及透明化创建上下文的能力。<strong>ApplicationContext</strong>是该模块的核心接口。</li>
-<li><strong>spring-context-support</strong>提供了常见的第三方库集成到Spring上下文的支持，如缓存（EhCache, Guava, JCache）、通知（JavaMail）、调度（CommonJ, Quartz）和模板引擎（FreeMarker, JasperReports, Velocity）。</li>
-<li><strong>spring-expression</strong>提供了一个强大的表达式语言（EL）来查询和操作运行时的对象图。该表达式语言支持属性赋值、方法调用、访问集合、算术和逻辑运算等能力。</li>
-</ul>
-<h4 id="2-2-2-AOP和类代理（Instrumentation）"><a href="#2-2-2-AOP和类代理（Instrumentation）" class="headerlink" title="2.2.2 AOP和类代理（Instrumentation）"></a>2.2.2 AOP和类代理（Instrumentation）</h4><ul>
-<li><strong>spring-aop</strong>提供了面向切面编程（<em>Aspect Oriented Programming, AOP</em>）的能力，利用方法拦截器和切入点能使原始方法和新的逻辑完全分离。使用源码级的元数据功能，还可以将行为信息合并到你的代码中。</li>
-<li><strong>spring-aspects</strong>集成了AspectJ（另外一个流行的AOP利器）；</li>
-<li><strong>spring-instrument</strong>为应用服务器提供了类代理支持（<em>注：这个地方叫做类代码不知道正确与否，主要是参考了<a href="https://www.ibm.com/developerworks/cn/java/j-lo-jse61/" target="_blank" rel="external">Java SE 6 新特性: Instrumentation 新功能</a>一文 随着后面的阅读再来更正</em>）和类加载器实现。</li>
-<li><strong>spring-instrument-tomcat</strong>模块是为Tomcat服务器实现的类代理。</li>
-</ul>
-<h4 id="2-2-3-消息"><a href="#2-2-3-消息" class="headerlink" title="2.2.3 消息"></a>2.2.3 消息</h4><p><strong>spring-messaging</strong>模块为信息通信处理提供了一套包含抽象概念的实现，包括<em>Message</em>，<em>MessageChannel</em>，<em>MessageHandler</em>等，另外还提供了一些易用的注解。</p>
-<h4 id="2-2-4-数据访问与集成"><a href="#2-2-4-数据访问与集成" class="headerlink" title="2.2.4 数据访问与集成"></a>2.2.4 数据访问与集成</h4><ul>
-<li><strong>spring-jdbc</strong> 模块提供了一个JDBC抽象层，消除冗长的JDBC编码和数据库厂商特有的错误码。</li>
-<li><strong>spring-tx</strong>模块支持编程和声明式事务，而这只需实现特定的接口甚至是简单的POJO。</li>
-<li><strong>spring-orm</strong>模块集成了流行的对象关系映射（ORM）API，包括JPA、JDO和Hibernate。</li>
-<li><strong>spring-oxm</strong>模块提供了“对象XML映射”抽象实现，支持JAXB, Castor, XMLBeans, JiBX和XStream。</li>
-<li><strong>spring-jms</strong>模块包含了生产和消费信息的功能。4.1版本后还提供了与<strong>spring-messaging</strong>模块的集成。</li>
-</ul>
-<h4 id="2-2-5-Web开发"><a href="#2-2-5-Web开发" class="headerlink" title="2.2.5 Web开发"></a>2.2.5 Web开发</h4><ul>
-<li><strong>spring-web</strong>模块提供了基本的面向Web的集成特性，例如方文件上传功能、使用Servlet的监听器以及一个面向Web应用程序上下文IoC容器的初始化。它还包含一个HTTP客户端和远程访问相关的部分。</li>
-<li><strong>spring-webmvc</strong>模块包含Spring的模型-视图-控制器（<em>MVC</em>）和REST Web服务实现。Spring MVC框架使得领域模型代码和Web展示的代码完全分离，并能与其他Spring功能无缝集成。</li>
-<li><strong>spring-webmvc-portlet</strong>模块为Portlet环境提供了Spring MVC实现。</li>
-</ul>
-<h4 id="2-2-6-测试"><a href="#2-2-6-测试" class="headerlink" title="2.2.6 测试"></a>2.2.6 测试</h4><p><strong>spring-test</strong>模块支持Spring这些组件基于Junit或TestNG的单元测试和集成测试。它提供了一致的上下文加载和缓存，另外它还使得对象的Mock更加容易。</p>
-<h3 id="2-3-Spring的使用场景"><a href="#2-3-Spring的使用场景" class="headerlink" title="2.3 Spring的使用场景"></a>2.3 Spring的使用场景</h3><p>++典型的基于Spring的Web应用++</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_web.png" alt="典型的基于Spring的Web应用"></p>
-<ul>
-<li>持久化层可以利用<strong>spring-orm</strong>来实现对象关系映射，用<strong>spring-tx</strong>来声明事务；</li>
-<li>逻辑层可以基于POJO，并使用IOC容器来管理对象；另外还可以使用邮件发送通知，远程服务实现RPC；</li>
-<li>展示层可以使用<strong>spring-webmvc</strong>分离逻辑和展示；</li>
-</ul>
-<p>++与其他Web开发框架集成++</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_other_web_framework.png" alt="与其他Web开发框架集成"></p>
-<p>++远程服务调用++</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_remoting.png" alt="远程服务调用"></p>
-<p>++EJB集成++</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/8_spring_ref/spring_use_for_ejb.png" alt="EJB集成"></p>
-<h4 id="2-3-1-依赖管理与命名约定"><a href="#2-3-1-依赖管理与命名约定" class="headerlink" title="2.3.1 依赖管理与命名约定"></a>2.3.1 依赖管理与命名约定</h4><ul>
-<li>Maven依赖仓库：Maven的中央仓库和一些特别为Spring建立的公共Maven仓库；</li>
-<li>命名约定：GroupId为<em>org.springframework</em>，ArtifactId为各个模块名如<em>spring-aop</em>；</li>
-<li>最小化依赖原则：不必依赖所有的模块，按需依赖；</li>
-</ul>
-<p>Maven依赖配置：</p>
-<pre><code>&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
-        &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
-        &lt;scope&gt;runtime&lt;/scope&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre><p>Gradle依赖配置：</p>
-<pre><code>repositories {
-    mavenCentral()
-    // and optionally...
-    maven { url &quot;http://repo.spring.io/release&quot; }
-}
-
-dependencies {
-    compile(&quot;org.springframework:spring-context:4.3.5.RELEASE&quot;)
-    testCompile(&quot;org.springframework:spring-test:4.3.5.RELEASE&quot;)
-}
-</code></pre><h4 id="2-3-2-日志框架"><a href="#2-3-2-日志框架" class="headerlink" title="2.3.2 日志框架"></a>2.3.2 日志框架</h4><p>日志框架依赖的问题对于Spring框架非常的重要，因为：</p>
-<ul>
-<li>它是Spring仅有的必须的外部依赖；</li>
-<li>应用程序本身也离不开日志；</li>
-<li>Spring所集成的第三方框架本身也会依赖日志框架；</li>
-</ul>
-<p>Spring采取的方案是在<strong>spring-core</strong>模块中依赖<strong>commons-logging</strong>，其他模块通过传递依赖来依赖该模块。这样的好处是你无须做特别的处理，程序会在classpath或特定的路径寻找最合适的日志框架，即使找不到也会有看着不错的日志输出。</p>
-<p>另外一种选择是放弃<strong>commons-logging</strong>改用SLF4J（<em>Simple Logging Facade for Java，基于门面模式本身并不负责记录日志、支持常用的日志框架</em>），依赖配置如下：</p>
-<pre><code>&lt;dependencies&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
-        &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
-        &lt;version&gt;4.3.5.RELEASE&lt;/version&gt;
-        &lt;exclusions&gt;
-            &lt;exclusion&gt;
-                &lt;groupId&gt;commons-logging&lt;/groupId&gt;
-                &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;
-            &lt;/exclusion&gt;
-        &lt;/exclusions&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-        &lt;artifactId&gt;jcl-over-slf4j&lt;/artifactId&gt;
-        &lt;version&gt;1.5.8&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-        &lt;artifactId&gt;slf4j-api&lt;/artifactId&gt;
-        &lt;version&gt;1.5.8&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;org.slf4j&lt;/groupId&gt;
-        &lt;artifactId&gt;slf4j-log4j12&lt;/artifactId&gt;
-        &lt;version&gt;1.5.8&lt;/version&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-        &lt;groupId&gt;log4j&lt;/groupId&gt;
-        &lt;artifactId&gt;log4j&lt;/artifactId&gt;
-        &lt;version&gt;1.2.14&lt;/version&gt;
-    &lt;/dependency&gt;
-&lt;/dependencies&gt;
-</code></pre><h1 id="第二部分-Spring框架4-x版本新特性"><a href="#第二部分-Spring框架4-x版本新特性" class="headerlink" title="第二部分 Spring框架4.x版本新特性"></a>第二部分 Spring框架4.x版本新特性</h1><h2 id="3-Spring-4-0版本新特性与改进"><a href="#3-Spring-4-0版本新特性与改进" class="headerlink" title="3. Spring 4.0版本新特性与改进"></a>3. Spring 4.0版本新特性与改进</h2><p>Spring自从2004年发布以来，经历了多个重大版本的演变。在Spring 2.0中提供了XML命名空间和AspectJ支持；在Spring 2.5中拥抱注解驱动的配置；在Spring 3.0在框架代码中大量使用Java 5+的特性，如<em>@Configuration</em>。</p>
-<p>Spring 4.0是目前的最新主要版本，首次支持Java 8的功能，当前你也可以使用旧版本的Java，但是最低要求是Java 6。</p>
-<p>在这个版本中，Spring清除了很多过时的类和方法。具体升级时可以参考<a href="https://github.com/spring-projects/spring-framework/wiki/Migrating-from-earlier-versions-of-the-spring-framework" target="_blank" rel="external">migration guide for upgrading to Spring 4.0</a>指南。</p>
-<h3 id="3-1-改进快速入门体验"><a href="#3-1-改进快速入门体验" class="headerlink" title="3.1 改进快速入门体验"></a>3.1 改进快速入门体验</h3><p>网站改版，同时例子补充得更完整更易理解</p>
-<h3 id="3-2-移除废弃的包和类"><a href="#3-2-移除废弃的包和类" class="headerlink" title="3.2 移除废弃的包和类"></a>3.2 移除废弃的包和类</h3><p>同时对第三方依赖的框架也进行了版本升级</p>
-<h3 id="3-3-对Java-8的支持"><a href="#3-3-对Java-8的支持" class="headerlink" title="3.3 对Java 8的支持"></a>3.3 对Java 8的支持</h3><p>包括Lambda表达式、方法引用、java.time；</p>
-<h3 id="3-4-对Java-EE-6和7的支持"><a href="#3-4-对Java-EE-6和7的支持" class="headerlink" title="3.4 对Java EE 6和7的支持"></a>3.4 对Java EE 6和7的支持</h3><ul>
-<li>J2EE 6：JPA 2.0, Servlet 3.0;</li>
-<li>J2EE 7：JMS 2.0, JTA 1.2, JPA 2.1, Bean Validation 1.1, JSR-236;</li>
-</ul>
-<h3 id="3-5-使用Groovy的领域专业语言（DSL）定义Bean"><a href="#3-5-使用Groovy的领域专业语言（DSL）定义Bean" class="headerlink" title="3.5 使用Groovy的领域专业语言（DSL）定义Bean"></a>3.5 使用Groovy的领域专业语言（DSL）定义Bean</h3><p>举个栗子：</p>
-<pre><code>def reader = new GroovyBeanDefinitionReader(myApplicationContext)
-reader.beans {
-    dataSource(BasicDataSource) {
-        driverClassName = &quot;org.hsqldb.jdbcDriver&quot;
-        url = &quot;jdbc:hsqldb:mem:grailsDB&quot;
-        username = &quot;sa&quot;
-        password = &quot;&quot;
-        settings = [mynew:&quot;setting&quot;]
-    }
-    sessionFactory(SessionFactory) {
-        dataSource = dataSource
-    }
-    myService(MyService) {
-        nestedBean = { AnotherBean bean -&gt;
-            dataSource = dataSource
-        }
-    }
-}
-</code></pre><h3 id="3-6-核心容器改进"><a href="#3-6-核心容器改进" class="headerlink" title="3.6 核心容器改进"></a>3.6 核心容器改进</h3><ul>
-<li>注入Bean时支持泛型作为一个标识符，如@Autowired Repository<customer> customerRepository；</customer></li>
-<li>Spring的元注解支持定制来实现暴露源注解的特定属性；</li>
-<li>集合和数组属性在装配时支持排序；</li>
-<li>@Lazy注解允许在注入点和@Bean定义时使用；</li>
-<li>引入新的@Description注解；</li>
-<li>通过@Conditional注解实现了条件过滤Bean，和@Profile不同之处在于@Conditional可以通过自定义编程来过滤；</li>
-<li>基于CGLIB的代理类不再需要默认的构造函数，从而实现了无须调用构造函数的代理；</li>
-<li>通过LocaleContext支持对时区进行管理；</li>
-</ul>
-<h3 id="3-7-Web开发改进"><a href="#3-7-Web开发改进" class="headerlink" title="3.7 Web开发改进"></a>3.7 Web开发改进</h3><ul>
-<li>全面采用Servlet 3；</li>
-<li>增加@RestController注解，这样无须在RequestMapping的方法上添加@ResponseBody注解；</li>
-<li>AsyncRestTemplate支持非阻塞异步REST请求；</li>
-<li>Spring MVC中更易理解的时区机制；</li>
-</ul>
-<h3 id="3-8-WebSocket、SockJS以及STOMP通信"><a href="#3-8-WebSocket、SockJS以及STOMP通信" class="headerlink" title="3.8 WebSocket、SockJS以及STOMP通信"></a>3.8 WebSocket、SockJS以及STOMP通信</h3><ul>
-<li>增加了<strong>spring-websocket</strong>模块支持JSR-356;</li>
-<li>增加了<strong>spring-messaging</strong>模块支持STOMP，另外该工程还对消息通信进行了抽象以便给其他模块集成；</li>
-</ul>
-<h3 id="3-9-测试方面的改进"><a href="#3-9-测试方面的改进" class="headerlink" title="3.9 测试方面的改进"></a>3.9 测试方面的改进</h3><ul>
-<li>几乎所有的Spring注解都可以在测试代码中使用；</li>
-<li>Active bean definition profiles可以通过自定义编码来实现；</li>
-<li><strong>spring-core</strong>工程的SocketUtils类可以扫描本地空闲的TCP和UDP端口；</li>
-<li>大部分的Servlet相关的Mock类都升级到Servlet 3.0版本了；</li>
-</ul>
-<h2 id="4-Spring-4-1版本新特性与改进"><a href="#4-Spring-4-1版本新特性与改进" class="headerlink" title="4. Spring 4.1版本新特性与改进"></a>4. Spring 4.1版本新特性与改进</h2><h3 id="4-1-JMS的改进"><a href="#4-1-JMS的改进" class="headerlink" title="4.1 JMS的改进"></a>4.1 JMS的改进</h3><ul>
-<li>Spring 4.1引进了一个更简单的方式来注册JMS监听，即给Bean的方法上增加@JmsListener注解，同时XML命名空间上也增加了jms:annotation-driven，使用JmsListenerConfigurer还可以实现完全自定义编程的注册。</li>
-<li>由于<strong>spring-messaging</strong>模块的抽象定义，消息监听可以变得更灵活。另外像@Payload、@Header、@Headers、@SendTo这样的注解的引入使得代码编写更加清晰；</li>
-<li>JmsMessageOperations的引入使得JmsTemplate调用更加便捷；</li>
-<li>JmsTemplate支持同步的请求应答；</li>
-<li>可以给多个<jms:listener>设置优先级；</jms:listener></li>
-<li>支持JMS 2.0的共享消费者；</li>
-</ul>
-<h3 id="4-2-缓存改进"><a href="#4-2-缓存改进" class="headerlink" title="4.2 缓存改进"></a>4.2 缓存改进</h3><ul>
-<li>在无须更改现有的缓存配置下支持JCache (JSR-107)；</li>
-<li>使用CacheResolver支持运行期的缓存，从而缓存的value参数不是必须的了；</li>
-<li>支持更多操作级的定制，如缓存使用、缓存管理、缓存key生成；</li>
-<li>通过类级别的@CacheConfig注解允许一些配置在类级别共享，而不需要任何额外的缓存操作；</li>
-<li>通过CacheErrorHandler更好的异常处理；</li>
-<li>Cache接口增加了新的方法putIfAbsent；</li>
-</ul>
-<h3 id="4-3-Web开发改进"><a href="#4-3-Web开发改进" class="headerlink" title="4.3 Web开发改进"></a>4.3 Web开发改进</h3><ul>
-<li>基于资源处理现有的支持ResourceHttpRequestHandler 已经扩展了新的抽象ResourceResolver，ResourceTransformer和ResourceUrlProvider；许多内置的实现支持多版本的URL资源、定位gzip压缩资源、生成HTML 5声明等能力。</li>
-<li>@RequestParam、@RequestHeader和@MatrixVariable这些控制器的方法参数支持Java 8的java.util.Optional;</li>
-<li>当一个服务已经返回ListenableFuture时，可以使用其作为返回来替代原本采用的DeferredResult；</li>
-<li>按照相互依赖的顺序关系来调用@ModelAttribute；</li>
-<li>Jackson的@JsonView注解可以直接在带有@ResponseBody和ResponseEntity的控制器方法上使用；</li>
-<li>Jackson支持JSONP；</li>
-<li>声明一个@ControllerAdvice的Bean可以在控制器方法已经结束但响应写入之前的时机被调用；</li>
-<li>HttpMessageConverter支持三个新的选项：Gson、Protobuf以及Jackson基于XML的序列化；</li>
-<li>JSP这样的视图文件可以通过名字定义指向控制器方法的链接；</li>
-<li>ResponseEntity提供了一个内建风格的API来声明服务器端的响应，例如方法ResponseEntity.ok()；</li>
-<li>RequestEntity提供了一个内置风格的API来声明客户端REST代码对HTTP请求；</li>
-<li>MVC方面：视图解析器现在可以配置内容negotiation、默认已支持视图控制器重定向和设置响应状态、默认已支持自定义的路由；</li>
-<li>支持Groovy的标记模板；</li>
-</ul>
-<h3 id="4-4-WebSocket通信改进"><a href="#4-4-WebSocket通信改进" class="headerlink" title="4.4 WebSocket通信改进"></a>4.4 WebSocket通信改进</h3><ul>
-<li>支持SockJS客户端；</li>
-<li>当STOMP客户端订阅和取消订阅时会发布新的上下文事件SessionSubscribeEvent和SessionUnsubscribeEvent；</li>
-<li>@SendToUser只针对单一会话不需要身份验证；</li>
-<li>@MessageMapping方法使用“.”替换原来的“/”作为路径分隔符；</li>
-</ul>
-<h3 id="4-5-测试方面的改进"><a href="#4-5-测试方面的改进" class="headerlink" title="4.5 测试方面的改进"></a>4.5 测试方面的改进</h3><ul>
-<li>通过TestTransaction API可以测试事务；</li>
-<li>通过@Sql和@SqlConfig注解为每个类或方法执行SQL脚本；</li>
-<li>通过@TestPropertySource注解实现测试属性值覆盖应用和系统的属性值；</li>
-</ul>
-<h2 id="5-Spring-4-2版本新特性与改进"><a href="#5-Spring-4-2版本新特性与改进" class="headerlink" title="5. Spring 4.2版本新特性与改进"></a>5. Spring 4.2版本新特性与改进</h2><h3 id="5-1-核心容器的改进"><a href="#5-1-核心容器的改进" class="headerlink" title="5.1 核心容器的改进"></a>5.1 核心容器的改进</h3><ul>
-<li>支持Java 8接口默认方法上的@Bean注解解析；</li>
-<li>Configration类可以在普通的组件类上使用@Import注解；</li>
-<li>Confugration类可以通过@Order注解实现排序；</li>
-<li>@Resource注入点支持@Lazy声明；</li>
-<li>事件处理机制引入了基于注解模型的能力；</li>
-<li>对注释的属性别名的声明和查找提供了先天的支持；</li>
-<li>元注解的查找进行了多项优化；</li>
-<li>DefaultConversionService和DefaultFormattingConversionService提供了对字符、金额、时区的转换能力；</li>
-</ul>
-<h3 id="5-2-数据访问的改进"><a href="#5-2-数据访问的改进" class="headerlink" title="5.2 数据访问的改进"></a>5.2 数据访问的改进</h3><ul>
-<li>通过AspectJ支持javax.transaction.Transactional；</li>
-<li>支持Hibernate ORM 5.0；</li>
-<li>内置的数据库可以自动分配唯一的名称；</li>
-</ul>
-<h3 id="5-3-JMS的改进"><a href="#5-3-JMS的改进" class="headerlink" title="5.3 JMS的改进"></a>5.3 JMS的改进</h3><ul>
-<li>通过JmsListenerContainerFactory可以控制autoStartup属性；</li>
-<li>可以给每个监听的容器配置回复的Destination；</li>
-<li>在同一方法上可以配置多个@JmsListener；</li>
-</ul>
-<h3 id="5-4-Web开发的改进"><a href="#5-4-Web开发的改进" class="headerlink" title="5.4 Web开发的改进"></a>5.4 Web开发的改进</h3><ul>
-<li>支持HTTP流和服务器发送事件；</li>
-<li>内置支持CORS，包括全局和本地的配置；</li>
-<li>HTTP缓存机制优化包括新的CacheControl构造器、ETag/Last-Modified改进；</li>
-<li>支持自定义的Mapping注解；</li>
-<li>通过AbstractHandlerMethodMapping在运行时注册和取消注册请求Mapping；</li>
-<li>@Controller方法返回类型支持java.util.concurrent.CompletableFuture；</li>
-<li>RestTemplate集成okhttp；</li>
-</ul>
-<h3 id="5-5-WebSocket通信改进"><a href="#5-5-WebSocket通信改进" class="headerlink" title="5.5 WebSocket通信改进"></a>5.5 WebSocket通信改进</h3><ul>
-<li>暴露有关连接用户和订阅状态的信息；</li>
-<li>解决跨服务器的集群用户destinations；</li>
-<li>StompSubProtocolErrorHandler来自定义STOMP错误处理；</li>
-</ul>
-<h3 id="5-6-测试方面的改进"><a href="#5-6-测试方面的改进" class="headerlink" title="5.6 测试方面的改进"></a>5.6 测试方面的改进</h3><ul>
-<li>基于JUnit的集成测试，现在可以使用JUnit的规则，而不是执行 SpringJUnit4ClassRunner。这使得基于Spring集成测试可以通过JUnit的执行器或第三方执行器（如MockitoJUnitRunner）来执行；</li>
-<li>为HtmlUnit提供先天支持；</li>
-<li>AopTestUtils是一种新的测试工具类，它允许开发者获得隐藏着一个或多个Spring代理基础目标对象的引用；</li>
-<li>ReflectionTestUtils现在支持设置和获取static属性，包括常量；</li>
-<li>@Commit替换原来的 @Rollback(false)；</li>
-</ul>
-<h2 id="6-Spring-4-3版本新特性与改进"><a href="#6-Spring-4-3版本新特性与改进" class="headerlink" title="6. Spring 4.3版本新特性与改进"></a>6. Spring 4.3版本新特性与改进</h2><h3 id="6-1-核心容器改进"><a href="#6-1-核心容器改进" class="headerlink" title="6.1 核心容器改进"></a>6.1 核心容器改进</h3><ul>
-<li>核心容器异常时提供更丰富的元数据信息；</li>
-<li>Bean属性的getters/setters支持Java 8的默认方法；</li>
-<li>当注入一个Primary的Bean时，懒加载的候选Bean不会被立即创建；</li>
-<li>@Configuration 类支持构造函数注入；</li>
-<li>@Scheduled适用于任何范围的Bean；</li>
-</ul>
-<h3 id="6-2-数据访问的改进"><a href="#6-2-数据访问的改进" class="headerlink" title="6.2 数据访问的改进"></a>6.2 数据访问的改进</h3><p>jdbc:initialize-database和jdbc:embedded-database可以给每个脚本应用单独的可配置separator；</p>
-<h3 id="6-3-缓存方面的改进"><a href="#6-3-缓存方面的改进" class="headerlink" title="6.3 缓存方面的改进"></a>6.3 缓存方面的改进</h3><ul>
-<li>在指定Key上面的并发调用变成同步的，使得缓存值只会被计算一次；该特性需要通过@Cacheable的sync属性开启；</li>
-<li>Cache接口增加了get(Object key, Callable<t> valueLoader)方法；</t></li>
-<li>ConcurrentMapCacheManager和ConcurrentMapCache现在可以通过storeByValue属性进行缓存的序列化；</li>
-</ul>
-<h3 id="6-4-JMS的改进"><a href="#6-4-JMS的改进" class="headerlink" title="6.4 JMS的改进"></a>6.4 JMS的改进</h3><ul>
-<li>@SendTo现在可以在类级别指定共用的一个回复destination。</li>
-<li>@JmsListener和@JmsListeners现在可以用作元注解来创建自定义的支持属性覆盖的复合注解；</li>
-</ul>
-<h3 id="6-5-Web开发的改进"><a href="#6-5-Web开发的改进" class="headerlink" title="6.5 Web开发的改进"></a>6.5 Web开发的改进</h3><ul>
-<li>内置支持HTTP HEAD和HTTP OPTIONS；</li>
-<li>新的注解：@GetMapping、@PostMapping、@PutMapping、@DeleteMapping和@PatchMapping；</li>
-<li>新的注解：@RequestScope、@SessionScope和@ApplicationScope；</li>
-<li>@ResponseStatus支持类级别并被所有方法继承；</li>
-<li>在HTTP消息转换时采用一致的字符集处理；</li>
-<li>AsyncRestTemplate 支持请求拦截；</li>
-</ul>
-<h3 id="6-6-WebSocket通信改进"><a href="#6-6-WebSocket通信改进" class="headerlink" title="6.6 WebSocket通信改进"></a>6.6 WebSocket通信改进</h3><p>@SendTo现在可以在类级别指定共用的一个回复destination。</p>
-<h3 id="6-7-测试方面的改进"><a href="#6-7-测试方面的改进" class="headerlink" title="6.7 测试方面的改进"></a>6.7 测试方面的改进</h3><ul>
-<li>Spring测试上下文需要Junit 4.12以上的版本；</li>
-<li>SpringJUnit4ClassRunner增加新的别名SpringRunner；</li>
-<li>测试的有关注解现在可以在接口中声明；</li>
-</ul>
-<h3 id="6-8-第三方框架版本更新"><a href="#6-8-第三方框架版本更新" class="headerlink" title="6.8 第三方框架版本更新"></a>6.8 第三方框架版本更新</h3><ul>
-<li>Hibernate ORM 5.2</li>
-<li>Hibernate Validator 5.3</li>
-<li>Jackson 2.8</li>
-<li>OkHttp 3.x</li>
-<li>Tomcat 8.5</li>
-<li>Netty 4.1</li>
-<li>Undertow 1.4</li>
-<li>WildFly 10.1</li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;主要包括Spring Framework的介绍、快速入门、模块体系以及4.x各个版本的新特性和改进。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="Spring" scheme="http://ginobefunny.com/categories/Spring/"/>
-    
-    
-      <category term="Spring" scheme="http://ginobefunny.com/tags/Spring/"/>
-    
-      <category term="Spring Framework" scheme="http://ginobefunny.com/tags/Spring-Framework/"/>
-    
-      <category term="一起读文档" scheme="http://ginobefunny.com/tags/%E4%B8%80%E8%B5%B7%E8%AF%BB%E6%96%87%E6%A1%A3/"/>
     
   </entry>
   
