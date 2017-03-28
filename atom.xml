@@ -398,7 +398,7 @@ http://localhost:9200/test/_analyze?analyzer=analyzer_with_dynamic_synonym&amp;t
     <link href="http://ginobefunny.com/post/reading_record_201703/"/>
     <id>http://ginobefunny.com/post/reading_record_201703/</id>
     <published>2017-03-03T00:33:19.000Z</published>
-    <updated>2017-03-27T10:00:02.114Z</updated>
+    <updated>2017-03-28T03:30:30.415Z</updated>
     
     <content type="html"><![CDATA[<p>关键字：微服务, 架构, 消息中间件, 缓存, RPC, 监控, 高性能, 高并发, 高可用。<br><a id="more"></a></p>
 <h3 id="Microservices-Decomposing-Applications-for-Deployability-and-Scalability-Chris-Richardson"><a href="#Microservices-Decomposing-Applications-for-Deployability-and-Scalability-Chris-Richardson" class="headerlink" title="Microservices: Decomposing Applications for Deployability and Scalability  Chris Richardson"></a><a href="https://www.infoq.com/articles/microservices-intro" target="_blank" rel="external">Microservices: Decomposing Applications for Deployability and Scalability</a>  Chris Richardson</h3><h3 id="Pattern-Microservice-Architecture-Chris-Richardson"><a href="#Pattern-Microservice-Architecture-Chris-Richardson" class="headerlink" title="Pattern: Microservice Architecture Chris Richardson"></a><a href="http://microservices.io/patterns/microservices.html" target="_blank" rel="external">Pattern: Microservice Architecture</a> Chris Richardson</h3><h3 id="Introduction-to-Microservices-Chris-Richardson"><a href="#Introduction-to-Microservices-Chris-Richardson" class="headerlink" title="Introduction to Microservices Chris Richardson"></a><a href="https://www.nginx.com/blog/introduction-to-microservices/" target="_blank" rel="external">Introduction to Microservices</a> Chris Richardson</h3><h3 id="Building-Microservices-Using-an-API-Gateway-Chris-Richardson"><a href="#Building-Microservices-Using-an-API-Gateway-Chris-Richardson" class="headerlink" title="Building Microservices: Using an API Gateway Chris Richardson"></a><a href="https://www.nginx.com/blog/building-microservices-using-an-api-gateway/" target="_blank" rel="external">Building Microservices: Using an API Gateway</a> Chris Richardson</h3><h3 id="Building-Microservices-Inter-Process-Communication-in-a-Microservices-Architecture-Chris-Richardson"><a href="#Building-Microservices-Inter-Process-Communication-in-a-Microservices-Architecture-Chris-Richardson" class="headerlink" title="Building Microservices: Inter-Process Communication in a Microservices Architecture Chris Richardson"></a><a href="https://www.nginx.com/blog/building-microservices-inter-process-communication" target="_blank" rel="external">Building Microservices: Inter-Process Communication in a Microservices Architecture</a> Chris Richardson</h3><h3 id="Service-Discovery-in-a-Microservices-Architecture-Chris-Richardson"><a href="#Service-Discovery-in-a-Microservices-Architecture-Chris-Richardson" class="headerlink" title="Service Discovery in a Microservices Architecture Chris Richardson"></a><a href="https://www.nginx.com/blog/service-discovery-in-a-microservices-architecture/" target="_blank" rel="external">Service Discovery in a Microservices Architecture</a> Chris Richardson</h3><h3 id="Event-Driven-Data-Management-for-Microservices-Chris-Richardson"><a href="#Event-Driven-Data-Management-for-Microservices-Chris-Richardson" class="headerlink" title="Event-Driven Data Management for Microservices Chris Richardson"></a><a href="https://www.nginx.com/blog/event-driven-data-management-microservices/" target="_blank" rel="external">Event-Driven Data Management for Microservices</a> Chris Richardson</h3><h3 id="Choosing-a-Microservices-Deployment-Strategy-Chris-Richardson"><a href="#Choosing-a-Microservices-Deployment-Strategy-Chris-Richardson" class="headerlink" title="Choosing a Microservices Deployment Strategy Chris Richardson"></a><a href="https://www.nginx.com/blog/deploying-microservices/" target="_blank" rel="external">Choosing a Microservices Deployment Strategy</a> Chris Richardson</h3><h3 id="Refactoring-a-Monolith-into-Microservices-Chris-Richardson"><a href="#Refactoring-a-Monolith-into-Microservices-Chris-Richardson" class="headerlink" title="Refactoring a Monolith into Microservices Chris Richardson"></a><a href="https://www.nginx.com/blog/refactoring-a-monolith-into-microservices/" target="_blank" rel="external">Refactoring a Monolith into Microservices</a> Chris Richardson</h3><h3 id="Fault-Tolerance-in-a-High-Volume-Distributed-System-Ben-Christensen"><a href="#Fault-Tolerance-in-a-High-Volume-Distributed-System-Ben-Christensen" class="headerlink" title="Fault Tolerance in a High Volume, Distributed System Ben Christensen"></a><a href="http://techblog.netflix.com/2012/02/fault-tolerance-in-high-volume.html" target="_blank" rel="external">Fault Tolerance in a High Volume, Distributed System</a> Ben Christensen</h3><h3 id="JDK1-8-AbstractQueuedSynchronizer的实现分析-刘锟洋"><a href="#JDK1-8-AbstractQueuedSynchronizer的实现分析-刘锟洋" class="headerlink" title="JDK1.8 AbstractQueuedSynchronizer的实现分析 刘锟洋"></a><a href="http://www.infoq.com/cn/articles/jdk1.8-abstractqueuedsynchronizer" target="_blank" rel="external">JDK1.8 AbstractQueuedSynchronizer的实现分析</a> 刘锟洋</h3><h3 id="从LONGADDER看更高效的无锁实现-jd刘锟洋"><a href="#从LONGADDER看更高效的无锁实现-jd刘锟洋" class="headerlink" title="从LONGADDER看更高效的无锁实现 jd刘锟洋"></a><a href="http://coolshell.cn/articles/11454.html" target="_blank" rel="external">从LONGADDER看更高效的无锁实现</a> jd刘锟洋</h3><h3 id="RxJava2实例解析-Victor-Grazi-薛命灯Rays"><a href="#RxJava2实例解析-Victor-Grazi-薛命灯Rays" class="headerlink" title="RxJava2实例解析  Victor Grazi/薛命灯Rays"></a><a href="http://www.infoq.com/cn/articles/rxjava2-by-example" target="_blank" rel="external">RxJava2实例解析</a>  Victor Grazi/薛命灯Rays</h3><h3 id="Martin-Fowler谈如何理解事件驱动和CQRS-Martin-Fowler-薛命灯"><a href="#Martin-Fowler谈如何理解事件驱动和CQRS-Martin-Fowler-薛命灯" class="headerlink" title="Martin Fowler谈如何理解事件驱动和CQRS Martin Fowler/薛命灯"></a><a href="http://mp.weixin.qq.com/s?__biz=MzA5Nzc4OTA1Mw==&amp;mid=2659599045&amp;idx=1&amp;sn=02aee31a7e947626df37165e3484953f" target="_blank" rel="external">Martin Fowler谈如何理解事件驱动和CQRS</a> Martin Fowler/薛命灯</h3><p>原文地址:<a href="https://martinfowler.com/articles/201701-event-driven.html" target="_blank" rel="external">https://martinfowler.com/articles/201701-event-driven.html</a></p>
@@ -408,7 +408,30 @@ http://localhost:9200/test/_analyze?analyzer=analyzer_with_dynamic_synonym&amp;t
 <h3 id="北大AI公开课第2讲：雷鸣-amp-余凯漫谈嵌入式AI-新智元"><a href="#北大AI公开课第2讲：雷鸣-amp-余凯漫谈嵌入式AI-新智元" class="headerlink" title="北大AI公开课第2讲：雷鸣&amp;余凯漫谈嵌入式AI 新智元"></a><a href="http://mp.weixin.qq.com/s/cl8FMJagC9GZvSIdVAmrJQ" target="_blank" rel="external">北大AI公开课第2讲：雷鸣&amp;余凯漫谈嵌入式AI</a> 新智元</h3><p>视频回放链接：<a href="http://www.iqiyi.com/w_19rtza2dh9.html" target="_blank" rel="external">http://www.iqiyi.com/w_19rtza2dh9.html</a></p>
 <h3 id="北大AI公开课第3讲：蚂蚁金服漆远-人工智能驱动的金融生活服务-新智元"><a href="#北大AI公开课第3讲：蚂蚁金服漆远-人工智能驱动的金融生活服务-新智元" class="headerlink" title="北大AI公开课第3讲：蚂蚁金服漆远 人工智能驱动的金融生活服务 新智元"></a><a href="http://mp.weixin.qq.com/s/Sj0jUshXXLCfJsxvoH5eYg" target="_blank" rel="external">北大AI公开课第3讲：蚂蚁金服漆远 人工智能驱动的金融生活服务</a> 新智元</h3><p>视频回放链接：<a href="http://www.iqiyi.com/l_19rrfk4wof.html" target="_blank" rel="external">http://www.iqiyi.com/l_19rrfk4wof.html</a></p>
 <h3 id="北大AI公开课第4讲：吴甘沙：智能驾驶，有多少AI可以重来-新智元"><a href="#北大AI公开课第4讲：吴甘沙：智能驾驶，有多少AI可以重来-新智元" class="headerlink" title="北大AI公开课第4讲：吴甘沙：智能驾驶，有多少AI可以重来 新智元"></a><a href="http://mp.weixin.qq.com/s/deWPwaw4IWY4GcC-LK7Ilw" target="_blank" rel="external">北大AI公开课第4讲：吴甘沙：智能驾驶，有多少AI可以重来</a> 新智元</h3><p>视频回放链接：<a href="http://www.iqiyi.com/w_19ru020epp.html" target="_blank" rel="external">http://www.iqiyi.com/w_19ru020epp.html</a></p>
-<h3 id="北大AI公开课第5讲：小米黄江吉-产品化引领人工智能硬件发展-新智元"><a href="#北大AI公开课第5讲：小米黄江吉-产品化引领人工智能硬件发展-新智元" class="headerlink" title="北大AI公开课第5讲：小米黄江吉 产品化引领人工智能硬件发展 新智元"></a><a href="http://mp.weixin.qq.com/s/Wdz0wNSpf_5FWkUOJ-XfEw" target="_blank" rel="external">北大AI公开课第5讲：小米黄江吉 产品化引领人工智能硬件发展</a> 新智元</h3><h3 id="实例化DevOps原则-伍斌"><a href="#实例化DevOps原则-伍斌" class="headerlink" title="实例化DevOps原则 伍斌"></a><a href="http://mp.weixin.qq.com/s?__biz=MjM5MjY3OTgwMA==&amp;mid=2652456410&amp;idx=1&amp;sn=e1e54a5b790969e1cd86f70f4d4363db" target="_blank" rel="external">实例化DevOps原则</a> 伍斌</h3><h3 id="让我们再聊聊TDD-刘冉"><a href="#让我们再聊聊TDD-刘冉" class="headerlink" title="让我们再聊聊TDD 刘冉"></a><a href="http://mp.weixin.qq.com/s/dmreBAzk2Mz94YfkXN8PHg" target="_blank" rel="external">让我们再聊聊TDD</a> 刘冉</h3><h3 id="让我们再聊聊TDD-续——人人都在做TDD-刘冉"><a href="#让我们再聊聊TDD-续——人人都在做TDD-刘冉" class="headerlink" title="让我们再聊聊TDD 续——人人都在做TDD 刘冉"></a><a href="https://mp.weixin.qq.com/s/tm70lIohbbhlZ50LoFD5HA" target="_blank" rel="external">让我们再聊聊TDD 续——人人都在做TDD</a> 刘冉</h3><h3 id="推行TDD的思考-张逸"><a href="#推行TDD的思考-张逸" class="headerlink" title="推行TDD的思考  张逸"></a><a href="http://mp.weixin.qq.com/s/c2xmaqjD9U07PWX4BMOyZA" target="_blank" rel="external">推行TDD的思考</a>  张逸</h3><ul>
+<h3 id="北大AI公开课第5讲：小米黄江吉-产品化引领人工智能硬件发展-新智元"><a href="#北大AI公开课第5讲：小米黄江吉-产品化引领人工智能硬件发展-新智元" class="headerlink" title="北大AI公开课第5讲：小米黄江吉 产品化引领人工智能硬件发展 新智元"></a><a href="http://mp.weixin.qq.com/s/Wdz0wNSpf_5FWkUOJ-XfEw" target="_blank" rel="external">北大AI公开课第5讲：小米黄江吉 产品化引领人工智能硬件发展</a> 新智元</h3><h3 id="实例化DevOps原则-伍斌"><a href="#实例化DevOps原则-伍斌" class="headerlink" title="实例化DevOps原则 伍斌"></a><a href="http://mp.weixin.qq.com/s?__biz=MjM5MjY3OTgwMA==&amp;mid=2652456410&amp;idx=1&amp;sn=e1e54a5b790969e1cd86f70f4d4363db" target="_blank" rel="external">实例化DevOps原则</a> 伍斌</h3><h3 id="TDD-is-dead-Long-live-testing-David-Heinemeier-Hansson"><a href="#TDD-is-dead-Long-live-testing-David-Heinemeier-Hansson" class="headerlink" title="TDD is dead. Long live testing.  David Heinemeier Hansson"></a><a href="http://david.heinemeierhansson.com/2014/tdd-is-dead-long-live-testing.html" target="_blank" rel="external">TDD is dead. Long live testing.</a>  David Heinemeier Hansson</h3><ul>
+<li>DHH是Ruby on Rails的创始人，Basecamp公司的创始人和CTO；</li>
+<li>DHH先批判了测试先行的教条主义，虽然它能提升开发人员对软件质量的自信，且对于自动回归测试是有帮助的，但它不应该作为每日工作的教条；而业界近些年来对于TDD的推崇以及对未采用TDD开发的嘲讽更让DHH发火；当DHH多次尝试TDD而发现这会伤害程序的设计时，DHH声明不以TDD的方式开发软件了；</li>
+<li>DHH的建议：重新平衡单元测试和系统测试，减少对于单元测试的重视，将更多的精力投入到系统测试；但千万不要跳入只做系统测试的极端里。</li>
+</ul>
+<h3 id="Is-TDD-Dead-Martin-Fowler-David-Heinemeier-Hansson-Kent-Beck"><a href="#Is-TDD-Dead-Martin-Fowler-David-Heinemeier-Hansson-Kent-Beck" class="headerlink" title="Is TDD Dead? Martin Fowler/David Heinemeier Hansson/Kent Beck"></a><a href="https://martinfowler.com/articles/is-tdd-dead/" target="_blank" rel="external">Is TDD Dead?</a> Martin Fowler/David Heinemeier Hansson/Kent Beck</h3><p>视频地址: <a href="https://www.youtube.com/watch?v=z9quxZsLcfo" target="_blank" rel="external">https://www.youtube.com/watch?v=z9quxZsLcfo</a></p>
+<h3 id="让我们再聊聊TDD-刘冉"><a href="#让我们再聊聊TDD-刘冉" class="headerlink" title="让我们再聊聊TDD 刘冉"></a><a href="http://mp.weixin.qq.com/s/dmreBAzk2Mz94YfkXN8PHg" target="_blank" rel="external">让我们再聊聊TDD</a> 刘冉</h3><ul>
+<li>总结一下，技术人员拒绝TDD的主要原因在于难度大、工作量大、Mock的大量使用导致很难测试业务价值等。这些理解主要是建立在片面的理解和实践之上，而在我的认知中，TDD的核心是：<strong>先写测试，并使用它帮助开发人员来驱动软件开发</strong>。</li>
+<li>首先是先写测试，这里的测试并不只是单元测试，也不是说一定要使用mock和stub来做测试。这里的测试就是指软件测试本身，可以是基于代码单元的单元测试，可以是基于业务需求的功能测试，也可以是基于特定验收条件的验收测试。其次是帮助开发人员，主要是帮助开发人员理解软件的功能需求和验收条件，帮助其思考和设计代码，从而达到驱动开发的目的</li>
+<li>TDD是包含两部分：ATDD（验收驱动测试开发，首先BA或者QA编写验收测试用例，然后Dev通过验收测试来理解需求和验收条件，并编写实现代码直到验收测试用例通过）与UTDD（单元驱动测试开发，首先Dev编写单元测试用例，然后编写实现代码直到单元测试通过）。</li>
+</ul>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/aaVJqS7LaMLN7tU0IqFick0jH1uSDLQ5fVd3nXpDRicibEZ3JMjw6CDr0KUk3F1jJ1TmdkcLOaPLQaPUrHZicvRJFQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="TDD包括ATDD和UTDD"></p>
+<ul>
+<li>TDD不是银弹，不要期望它能解决任何问题，无论是UTDD、EDD还是BDD，根据自己项目的实际情况，比如资金、人力资源、时间、组织架构等，合理的选择。  </li>
+<li>TDD并没有死，死的是你的持续学习、思考、实践与总结。TDD其实早已融入日常的软件开发工作中，只是很多人还没有意识到。</li>
+</ul>
+<h3 id="让我们再聊聊TDD-续——人人都在做TDD-刘冉"><a href="#让我们再聊聊TDD-续——人人都在做TDD-刘冉" class="headerlink" title="让我们再聊聊TDD 续——人人都在做TDD 刘冉"></a><a href="https://mp.weixin.qq.com/s/tm70lIohbbhlZ50LoFD5HA" target="_blank" rel="external">让我们再聊聊TDD 续——人人都在做TDD</a> 刘冉</h3><ul>
+<li>现实世界中TDD的实施一般分为三个阶段，即无意识的TDD、被动通过技术实现的TDD、以及有意识和主动通过技术实现的TDD。</li>
+<li>无意识的TDD：当拿到一个新的软件需求时，首先会思考如何实现，其中包括当前软件架构、业务分解、实现设计、代码分层、代码实现等，然后通过思考和设计所得到的产出物来驱动代码实现，进而在代码实现中会思考如何通过一个或多个函数或者算法来实现业务逻辑，这类思考其实已经是意识思维上的TDD，它帮助开发人员先在大脑里面设计并验证代码实现，甚至帮助其重构代码；其实开发人员在开发前思考测试逻辑和用例的过程就是在做TDD了；只不过这是初级的无意识的TDD，没有明确的产出来协助和规范这个测试驱动开发方式，也缺乏快速反馈、度量、传递和协作等；</li>
+<li>被动通过技术实现TDD：由于意识层面上的难易程度和工作量都比技术层面上相对较小，所以前者实施起来相对容易一些，而后者则相对较难，所以如果通过了各种手段强行实施TDD，而没有主动去摆正做TDD的意识，甚至没有足够的技术能力，那么这样的TDD就是一个倒三角，非常容易倒塌；</li>
+<li>有意识和主动通过技术实现TDD：首先要突破思维意识的局限，认识到TDD的普遍存在性和适用性，不要害怕和排斥TDD这种思维和开发模式；其次要主动学习，并刻意练习TDD的技术实现，提升自己的技术能力，从而在技术层面能更容易的实现TDD，摆脱被动TDD的困境；只有大量的刻意练习才能让你在真实的代码编写过程中去思考和理解TDD，去运用你通过学习得到的知识，最终才能做到有意识和主动的通过技术去实现TDD，TDD的倒三角才能变成一个稳定的砖块，然后哪里需要往哪里搬。</li>
+</ul>
+<p><img src="http://mmbiz.qpic.cn/mmbiz_png/aaVJqS7LaMKMVkVm2qvJxgkWcicPgeIgXShj5d81Z98AMXJcfvASJlstibhFHSLDw3tI2XxSMuUSGpDMic3rLTSibg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="TDD"></p>
+<h3 id="推行TDD的思考-张逸"><a href="#推行TDD的思考-张逸" class="headerlink" title="推行TDD的思考  张逸"></a><a href="http://mp.weixin.qq.com/s/c2xmaqjD9U07PWX4BMOyZA" target="_blank" rel="external">推行TDD的思考</a>  张逸</h3><ul>
 <li>开发人员的质量意识：由开发人员编写测试带来的收益，最重要的一点不在于测试本身，而在于它能促进开发、测试以及需求分析人员的交流与沟通；也能让开发者从消费者角度去思考接口的设计；软件质量除了外部质量之外，内部质量同等重要，维护成本的增加主要归咎于内部质量的糟糕；</li>
 <li>需求分析与任务分解：TDD要求我们在编写测试之前要做好合理的任务分解。若没有很好地理解需求，任务分解就无法顺利进行；任务分解应该是有层次的，即业务价值——&gt;业务功能——&gt;业务实现；任务分解是TDD的核心，是驱动设计和开发的重要力量；</li>
 <li>测试先行的编程习惯：任务分解应该是TDD的起点，多数开发者未能形成任务分解的习惯，因此在改变为测试先行的时候，错以为应该一上来就写测试；测试驱动开发仍可进行事先设计，设计并不仅包含技术层面的设计如对OO思想乃至设计模式的运用，它本身还包括对需求的分析与建模；测试驱动开发提倡的任务分解，实际上就是一种需求的分析，如何寻找职责，以及识别职责的承担者则可以视为建模设计；在开始测试驱动开发之前，做适度的事先设计，还有利于我们仔细思考技术实现的解决方案，它与测试驱动接口的设计并不相悖；</li>
@@ -479,6 +502,13 @@ query = function(batch view . realtime view)
 <li>1号店推荐系统实践：推荐引擎组件包括用户意图、用户画像、千人千面、情境推荐、反向推荐、主题推荐；</li>
 </ul>
 <p><img src="http://mmbiz.qpic.cn/mmbiz/8XkvNnTiapONibSkm2GM78fSeyNicjYLiaS4FYPdPln0wy1kLaxOKPc6geibsjAkVNgWbvHr5gt1pib07OqvWMF10lBQ/640?wx_fmt=jpeg&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="1号店推荐系统实践"></p>
+<h3 id="技术的边界-阮一峰"><a href="#技术的边界-阮一峰" class="headerlink" title="技术的边界 阮一峰"></a><a href="http://www.ruanyifeng.com/blog/2017/03/boundary.html" target="_blank" rel="external">技术的边界</a> 阮一峰</h3><ul>
+<li>当代社会就像一座机器组成的监狱，学会技术可以摆脱牢房。</li>
+<li>我们理应享受技术成果，问题是，技术正变得越来越先进，也越来越难懂，大多数人已经不能够理解技术了。</li>
+<li>技术已经到了这样一个地步：我们走一步看一步，谁也不知道十年后，技术会突破到什么程度。</li>
+<li>我最近常想，技术有没有边界呢？一旦接近”绝境长城”，我们会自觉停在那里，不再往下发展吗？举例来说，人工智能领域有一个概念，叫做”终极智能”。意思是，当机器的智能达到这种程度时，就不需要人类再做发明创造了，因为机器自己就会发明创造。如果这种”终极智能”真的可能实现，技术要不要去实现它呢？</li>
+<li>一个依赖技术的高科技、高度自动化的社会，也是一个非常脆弱的社会。整个人类正坐在一架软件驾驶的飞机里面，只能祈祷软件运行永远不发生错误。一旦发生问题，人类就会坠机。</li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -4175,13 +4205,13 @@ and must have the same mapping.
     
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
-      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
-    
       <category term="HotSpot" scheme="http://ginobefunny.com/tags/HotSpot/"/>
     
+      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
       <category term="即时编译器" scheme="http://ginobefunny.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
     
   </entry>
   
@@ -4548,15 +4578,15 @@ Stack=2, Locals=4, Args_size=1
     
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
+      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
+    
       <category term="类加载器" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/"/>
     
       <category term="双亲委派" scheme="http://ginobefunny.com/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/"/>
     
       <category term="执行引擎" scheme="http://ginobefunny.com/tags/%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/"/>
-    
-      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
     
   </entry>
   
