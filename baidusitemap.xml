@@ -4,27 +4,37 @@
 
     
   <url>
-    <loc>http://ginobefunny.com/post/personalized_search_implemention_based_word2vec_and_elasticsearch/</loc>
-    <lastmod>2017-03-28T11:51:39.026Z</lastmod>
+    <loc>http://ginobefunny.com/post/reading_record_201702/</loc>
+    <lastmod>2017-03-29T03:18:45.777Z</lastmod>
     <data>
         <display>
-        <title>基于word2vec和Elasticsearch实现个性化搜索</title>
-        <pubTime>2017-03-28T07:51:02.000Z</pubTime>
+        <title>阅读随手记 201702</title>
+        <pubTime>2017-02-08T04:31:23.000Z</pubTime>
         
-        <tag>Elasticsearch</tag>
+        <tag>推荐系统</tag>
          
-        <tag>word2vec</tag>
+        <tag>微服务</tag>
          
-        <tag>个性化</tag>
+        <tag>机器学习</tag>
          
-        <tag>搜索</tag>
+        <tag>深度学习</tag>
          
-        <tag>推荐</tag>
+        <tag>高并发</tag>
+         
+        <tag>高可用</tag>
+         
+        <tag>分布式</tag>
+         
+        <tag>配置中心</tag>
+         
+        <tag>Java编程</tag>
+         
+        <tag>运维</tag>
          
          
            
              
-              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
+              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
           
         </display>
     </data>
@@ -33,7 +43,7 @@
     
   <url>
     <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
-    <lastmod>2017-03-28T06:43:28.053Z</lastmod>
+    <lastmod>2017-03-29T03:18:35.166Z</lastmod>
     <data>
         <display>
         <title>阅读随手记 201703</title>
@@ -61,6 +71,34 @@
            
              
               <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/personalized_search_implemention_based_word2vec_and_elasticsearch/</loc>
+    <lastmod>2017-03-28T11:51:39.026Z</lastmod>
+    <data>
+        <display>
+        <title>基于word2vec和Elasticsearch实现个性化搜索</title>
+        <pubTime>2017-03-28T07:51:02.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>word2vec</tag>
+         
+        <tag>个性化</tag>
+         
+        <tag>搜索</tag>
+         
+        <tag>推荐</tag>
+         
+         
+           
+             
+              <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
           
         </display>
     </data>
@@ -115,44 +153,6 @@
            
              
               <breadCrumb title="Elasticsearch" url="http://ginobefunny.com/categories/Elasticsearch/"/>
-          
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://ginobefunny.com/post/reading_record_201702/</loc>
-    <lastmod>2017-03-07T08:54:52.762Z</lastmod>
-    <data>
-        <display>
-        <title>阅读随手记 201702</title>
-        <pubTime>2017-02-08T04:31:23.000Z</pubTime>
-        
-        <tag>推荐系统</tag>
-         
-        <tag>微服务</tag>
-         
-        <tag>机器学习</tag>
-         
-        <tag>深度学习</tag>
-         
-        <tag>高并发</tag>
-         
-        <tag>高可用</tag>
-         
-        <tag>分布式</tag>
-         
-        <tag>配置中心</tag>
-         
-        <tag>Java编程</tag>
-         
-        <tag>运维</tag>
-         
-         
-           
-             
-              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
           
         </display>
     </data>
@@ -290,9 +290,9 @@
         <title>代码之外的生存指南</title>
         <pubTime>2017-02-04T11:54:18.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>自我完善</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>职场</tag>
          
@@ -468,9 +468,9 @@
          
         <tag>读书笔记</tag>
          
-        <tag>JVM</tag>
-         
         <tag>性能调优</tag>
+         
+        <tag>JVM</tag>
          
         <tag>虚拟机</tag>
          
@@ -550,9 +550,9 @@
         <title>阅读随手记 201701</title>
         <pubTime>2017-01-03T08:23:21.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Elasticsearch</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>微服务</tag>
          
