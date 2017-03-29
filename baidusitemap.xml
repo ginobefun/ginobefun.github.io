@@ -5,7 +5,7 @@
     
   <url>
     <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
-    <lastmod>2017-03-29T06:33:28.268Z</lastmod>
+    <lastmod>2017-03-29T07:12:34.414Z</lastmod>
     <data>
         <display>
         <title>阅读随手记 201703</title>
@@ -290,9 +290,9 @@
         <title>代码之外的生存指南</title>
         <pubTime>2017-02-04T11:54:18.000Z</pubTime>
         
-        <tag>自我完善</tag>
-         
         <tag>读书笔记</tag>
+         
+        <tag>自我完善</tag>
          
         <tag>职场</tag>
          
@@ -314,9 +314,9 @@
         <title>《深入理解Java虚拟机》读书笔记4：类文件结构</title>
         <pubTime>2017-01-18T01:24:01.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>JVM</tag>
          
@@ -346,9 +346,9 @@
         <title>《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</title>
         <pubTime>2017-01-26T09:30:57.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>JVM</tag>
          
@@ -382,9 +382,9 @@
         <title>《深入理解Java虚拟机》读书笔记7：高效并发</title>
         <pubTime>2017-01-29T07:31:25.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>JVM</tag>
          
@@ -426,9 +426,9 @@
         <title>《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</title>
         <pubTime>2017-01-22T06:57:08.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>JVM</tag>
          
@@ -464,11 +464,11 @@
         <title>《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</title>
         <pubTime>2017-01-11T11:30:12.000Z</pubTime>
         
+        <tag>Java</tag>
+         
         <tag>读书笔记</tag>
          
         <tag>性能调优</tag>
-         
-        <tag>Java</tag>
          
         <tag>JVM</tag>
          
@@ -494,9 +494,9 @@
         <title>《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</title>
         <pubTime>2017-01-08T01:29:44.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>JVM</tag>
          
@@ -522,9 +522,9 @@
         <title>《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</title>
         <pubTime>2017-01-04T01:11:00.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Java</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>JVM</tag>
          
@@ -550,6 +550,8 @@
         <title>阅读随手记 201701</title>
         <pubTime>2017-01-03T08:23:21.000Z</pubTime>
         
+        <tag>读书笔记</tag>
+         
         <tag>Elasticsearch</tag>
          
         <tag>微服务</tag>
@@ -557,8 +559,6 @@
         <tag>DistributedLog</tag>
          
         <tag>RPC</tag>
-         
-        <tag>读书笔记</tag>
          
         <tag>性能调优</tag>
          
@@ -724,6 +724,12 @@
         <title>阅读随手记 201612</title>
         <pubTime>2016-12-16T09:03:55.000Z</pubTime>
         
+        <tag>函数式编程</tag>
+         
+        <tag>读书笔记</tag>
+         
+        <tag>Git</tag>
+         
         <tag>数据库中间件</tag>
          
         <tag>推荐系统</tag>
@@ -750,8 +756,6 @@
          
         <tag>IDEA</tag>
          
-        <tag>读书笔记</tag>
-         
         <tag>机器学习</tag>
          
         <tag>深度学习</tag>
@@ -759,10 +763,6 @@
         <tag>微信小程序</tag>
          
         <tag>性能调优</tag>
-         
-        <tag>Git</tag>
-         
-        <tag>函数式编程</tag>
          
         <tag>自我提升</tag>
          
@@ -887,13 +887,13 @@
         <title>《Java 8函数式编程》读书笔记</title>
         <pubTime>2016-12-09T07:41:25.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
-        <tag>函数式编程</tag>
-         
         <tag>Java</tag>
          
         <tag>Lambda</tag>
+         
+        <tag>函数式编程</tag>
+         
+        <tag>读书笔记</tag>
          
          
            
