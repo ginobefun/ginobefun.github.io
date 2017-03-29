@@ -5,7 +5,7 @@
     
   <url>
     <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
-    <lastmod>2017-03-29T07:12:34.414Z</lastmod>
+    <lastmod>2017-03-29T08:19:26.411Z</lastmod>
     <data>
         <display>
         <title>阅读随手记 201703</title>
@@ -14,6 +14,10 @@
         <tag>微服务</tag>
          
         <tag>RPC</tag>
+         
+        <tag>机器学习</tag>
+         
+        <tag>深度学习</tag>
          
         <tag>高性能</tag>
          
@@ -28,6 +32,16 @@
         <tag>缓存</tag>
          
         <tag>监控</tag>
+         
+        <tag>Event Sourcing</tag>
+         
+        <tag>CQRS</tag>
+         
+        <tag>Redis</tag>
+         
+        <tag>TDD</tag>
+         
+        <tag>人工智能</tag>
          
          
            
@@ -290,9 +304,9 @@
         <title>代码之外的生存指南</title>
         <pubTime>2017-02-04T11:54:18.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>自我完善</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>职场</tag>
          
@@ -322,11 +336,11 @@
          
         <tag>虚拟机</tag>
          
-        <tag>字节码</tag>
-         
         <tag>类文件</tag>
          
         <tag>常量池</tag>
+         
+        <tag>字节码</tag>
          
          
            
@@ -434,11 +448,11 @@
          
         <tag>虚拟机</tag>
          
+        <tag>字节码</tag>
+         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
-         
-        <tag>字节码</tag>
          
         <tag>执行引擎</tag>
          
@@ -552,8 +566,6 @@
         
         <tag>读书笔记</tag>
          
-        <tag>Elasticsearch</tag>
-         
         <tag>微服务</tag>
          
         <tag>DistributedLog</tag>
@@ -567,6 +579,8 @@
         <tag>高并发</tag>
          
         <tag>高可用</tag>
+         
+        <tag>Elasticsearch</tag>
          
         <tag>架构</tag>
          
@@ -728,8 +742,6 @@
          
         <tag>读书笔记</tag>
          
-        <tag>Git</tag>
-         
         <tag>数据库中间件</tag>
          
         <tag>推荐系统</tag>
@@ -763,6 +775,8 @@
         <tag>微信小程序</tag>
          
         <tag>性能调优</tag>
+         
+        <tag>Git</tag>
          
         <tag>自我提升</tag>
          
