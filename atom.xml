@@ -507,7 +507,7 @@ http://localhost:9200/test/_analyze?analyzer=analyzer_with_dynamic_synonym&amp;t
     <link href="http://ginobefunny.com/post/reading_record_201703/"/>
     <id>http://ginobefunny.com/post/reading_record_201703/</id>
     <published>2017-03-03T00:33:19.000Z</published>
-    <updated>2017-03-29T08:48:51.621Z</updated>
+    <updated>2017-03-29T08:49:59.077Z</updated>
     
     <content type="html"><![CDATA[<p>关键字：微服务, 架构, Event Sourcing, CQRS, Redis, TDD, 消息中间件, 缓存, RPC, 监控, 高性能, 高并发, 高可用, 机器学习, 深度学习, 人工智能。<br><a id="more"></a></p>
 <h3 id="Martin-Fowler谈如何理解事件驱动和CQRS-Martin-Fowler-薛命灯"><a href="#Martin-Fowler谈如何理解事件驱动和CQRS-Martin-Fowler-薛命灯" class="headerlink" title="Martin Fowler谈如何理解事件驱动和CQRS Martin Fowler/薛命灯"></a><a href="http://mp.weixin.qq.com/s?__biz=MzA5Nzc4OTA1Mw==&amp;mid=2659599045&amp;idx=1&amp;sn=02aee31a7e947626df37165e3484953f" target="_blank" rel="external">Martin Fowler谈如何理解事件驱动和CQRS</a> Martin Fowler/薛命灯</h3><p>原文地址:<a href="https://martinfowler.com/articles/201701-event-driven.html" target="_blank" rel="external">https://martinfowler.com/articles/201701-event-driven.html</a></p>
