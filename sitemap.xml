@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://ginobefunny.com/my2017/index.html</loc>
+    <loc>http://ginobefunny.com/joy_of_reading/index.html</loc>
     
-    <lastmod>2017-03-30T06:32:42.195Z</lastmod>
+    <lastmod>2017-03-30T09:29:44.135Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ginobefunny.com/joy_of_reading/index.html</loc>
+    <loc>http://ginobefunny.com/post/learning_amqp/</loc>
     
-    <lastmod>2017-03-29T09:51:02.818Z</lastmod>
+    <lastmod>2017-03-30T09:28:13.019Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://ginobefunny.com/my2017/index.html</loc>
+    
+    <lastmod>2017-03-30T06:32:42.195Z</lastmod>
     
   </url>
   

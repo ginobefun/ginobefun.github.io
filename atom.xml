@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-03-28T11:51:39.026Z</updated>
+  <updated>2017-03-30T09:28:13.019Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -14,6 +14,70 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AMQP学习小记</title>
+    <link href="http://ginobefunny.com/post/learning_amqp/"/>
+    <id>http://ginobefunny.com/post/learning_amqp/</id>
+    <published>2017-03-30T09:21:03.000Z</published>
+    <updated>2017-03-30T09:28:13.019Z</updated>
+    
+    <content type="html"><![CDATA[<p>阅读《RabbitMQ实战》一书第二章<strong>理解消息通信</strong>的读书笔记。<br><a id="more"></a></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/15_reading_201702/amqp.png" alt="思维导图"></p>
+<h2 id="消费者和生产者"><a href="#消费者和生产者" class="headerlink" title="消费者和生产者"></a>消费者和生产者</h2><ul>
+<li>生产者（producer）创建消息，然后发送到代理服务器（RabbitMQ）。</li>
+<li>消息包含两部分：有效载荷（payload）和标签（label）；有效载荷就是你想要传输的数据（可以是任何格式的任何内容）；标签描述了有效载荷，并且RabbitMQ用它来决定谁将获得消息的拷贝。</li>
+<li>消费者（consumer）连接到代理服务器上，并订阅到队列（queue）上；当消费者接收到消息时，它只得到消息的一部分：有效载荷（标签并没有随有效载荷一同传递）。</li>
+<li>信道（channel）建立在”真实的”TCP连接内的虚拟连接；不论是发布信息、订阅队列或是接收消息，都是通过信道完成的；不使用TCP连接主要是因为对于操作系统而言建立和销毁TCP会话非常昂贵的开销；在一条TCP连接上创建多少条信道是没有限制的。</li>
+</ul>
+<h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><ul>
+<li>AMQP消息路由必须有三部分：交换器、队列和绑定。生成者把消息发布到交换器上；消息最终到达队列，并被消费者接收；绑定决定了消息如何从路由器到特定的队列。</li>
+<li>消费者和生产者都可以通过queue.declare命令来创建队列。queue-name：队列名称，不指定则随机生产；exclusive：设置为true则为私有队列，只有当前消费者可以订阅；auto-delete：设置为true时最后一个消费者取消订阅将自动移除队列；passive：队列不存在时返回错误。</li>
+<li>消费者通过两种方式从特定队列中接收消息：basic.consume（消息一到达队列就自动接收，推荐的方式）和basic.get（从队列里主动获取单条消息）。</li>
+<li>当一个队列拥有多个消费者时，队列接收到的消息将以循环（round-robin）的方式发给消费者。每条信息只会发送给一个订阅的消费者。</li>
+<li>消费者接收的每一条信息都必须进行确认，可以使用basic.ack命令显式确认或在订阅队列时将auto_ack参数设置为true（一旦接收就自动确认）。如果确认前与RabbitMQ断开连接，则会重新分发给下一个订阅的消费者；如果由于bug等忘记确认的话，RabbitMQ将不会发生新的消息。如果想明确拒绝新消息的话可以使用basic.reject命令（requeue参数为true则发送给其他消费者，为false则从队列中移除）。</li>
+</ul>
+<h2 id="交换器和绑定"><a href="#交换器和绑定" class="headerlink" title="交换器和绑定"></a>交换器和绑定</h2><ul>
+<li>队列通过路由键（routing-key）绑定到交换器。如果消息不匹配任何绑定模式的话，将进入“黑洞”。</li>
+<li>四种类型的交换器：direct、fanout、topic和headers。direct类型以队列名称作为routing-key；fanout类型会把消息投递所有附件在此交换器上的队列；topic支持通过“*”和“#”符号匹配消费者发送的topic消息，并投递到指定队列。</li>
+</ul>
+<h2 id="多租户模式"><a href="#多租户模式" class="headerlink" title="多租户模式"></a>多租户模式</h2><ul>
+<li>每个RabbitMQ服务器都能创建虚拟主机（vhost），其本质是一个mini版的RabbitMQ服务器，拥有自己的队列、交换器和绑定，同时也拥有自己的权限机制。</li>
+<li>vhost之间是绝对隔离的。</li>
+</ul>
+<h2 id="持久化策略"><a href="#持久化策略" class="headerlink" title="持久化策略"></a>持久化策略</h2><ul>
+<li>队列消息持久化需要满足三个条件：1.发布消息时设置投递模式为2（持久）；2.发送到持久化的交换器（durable属性为true）；3.到达持久化的队列（durable属性为true）；</li>
+<li>RabbitMQ通过持久化日志文件（记录在磁盘上）记录和恢复持久化消息；但是持久化日志会导致性能大幅降低，而且內建的集群对于这种方式工作得并不好。</li>
+<li>虽然AMQP 0-9-1规范支持了事务，但是使用事务会降低大约2-10倍的吞吐量，而且使生产者应用程序产生同步。RabbitMQ使用了“发送方确认模式”来保证消息投递，其最大的好处是它是异步的方式。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;阅读《RabbitMQ实战》一书第二章&lt;strong&gt;理解消息通信&lt;/strong&gt;的读书笔记。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="OpenSource" scheme="http://ginobefunny.com/categories/OpenSource/"/>
+    
+    
+      <category term="分布式队列" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%98%9F%E5%88%97/"/>
+    
+      <category term="RabbitMQ" scheme="http://ginobefunny.com/tags/RabbitMQ/"/>
+    
+      <category term="AMQP" scheme="http://ginobefunny.com/tags/AMQP/"/>
+    
+      <category term="生产者" scheme="http://ginobefunny.com/tags/%E7%94%9F%E4%BA%A7%E8%80%85/"/>
+    
+      <category term="消费者" scheme="http://ginobefunny.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
+    
+      <category term="队列" scheme="http://ginobefunny.com/tags/%E9%98%9F%E5%88%97/"/>
+    
+      <category term="交换器" scheme="http://ginobefunny.com/tags/%E4%BA%A4%E6%8D%A2%E5%99%A8/"/>
+    
+      <category term="绑定" scheme="http://ginobefunny.com/tags/%E7%BB%91%E5%AE%9A/"/>
+    
+  </entry>
   
   <entry>
     <title>基于word2vec和Elasticsearch实现个性化搜索</title>
@@ -116,11 +180,11 @@ group by a.uid;
     
       <category term="word2vec" scheme="http://ginobefunny.com/tags/word2vec/"/>
     
-      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
-    
       <category term="搜索" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2/"/>
     
       <category term="推荐" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90/"/>
+    
+      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
     
   </entry>
   
@@ -4931,11 +4995,11 @@ Stack=2, Locals=4, Args_size=1
     
       <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
-      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
-    
       <category term="类加载器" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/"/>
     
       <category term="双亲委派" scheme="http://ginobefunny.com/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/"/>
+    
+      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
       <category term="执行引擎" scheme="http://ginobefunny.com/tags/%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/"/>
     
@@ -5123,11 +5187,11 @@ Stack=2, Locals=4, Args_size=1
     
       <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
+      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
+    
       <category term="类文件" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E6%96%87%E4%BB%B6/"/>
     
       <category term="常量池" scheme="http://ginobefunny.com/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/"/>
-    
-      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
   </entry>
   
@@ -5846,596 +5910,6 @@ sudo bin/plugin remove [plugin_name]    #Removing plugins
       <category term="垃圾收集" scheme="http://ginobefunny.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86/"/>
     
       <category term="内存溢出" scheme="http://ginobefunny.com/tags/%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>阅读随手记 201701</title>
-    <link href="http://ginobefunny.com/post/reading_record_201701/"/>
-    <id>http://ginobefunny.com/post/reading_record_201701/</id>
-    <published>2017-01-03T08:23:21.000Z</published>
-    <updated>2017-01-30T14:01:35.231Z</updated>
-    
-    <content type="html"><![CDATA[<p>关键字：架构, 微服务，消息中间件，性能调优，Elasticsearch，缓存，RPC，日志分析，平台化，DistributedLog，监控，负载均衡，高性能，高并发，高可用。<br><a id="more"></a></p>
-<h2 id="千万级规模高性能、高并发的网络架构经验分享"><a href="#千万级规模高性能、高并发的网络架构经验分享" class="headerlink" title="千万级规模高性能、高并发的网络架构经验分享"></a>千万级规模高性能、高并发的网络架构经验分享</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzYwNjQ3NA==&amp;mid=401628413&amp;idx=1&amp;sn=91abfbad4c7dc882e94939042a8785a4" target="_blank" rel="external">https://mp.weixin.qq.com/s?__biz=MzA3MzYwNjQ3NA==&amp;mid=401628413&amp;idx=1&amp;sn=91abfbad4c7dc882e94939042a8785a4</a></p>
-<h3 id="架构的本质"><a href="#架构的本质" class="headerlink" title="架构的本质"></a>架构的本质</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/essence_of_architecture.png" alt="架构的本质"></p>
-<h3 id="新浪微博整体架构"><a href="#新浪微博整体架构" class="headerlink" title="新浪微博整体架构"></a>新浪微博整体架构</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/weibo_architecture.png" alt="新浪微博整体架构"></p>
-<h3 id="微博架构的演变"><a href="#微博架构的演变" class="headerlink" title="微博架构的演变"></a>微博架构的演变</h3><p>不可能在第一代基础上通过简单的修修补补满足用户量快速增长的，同时线上业务又不能停， 这是我们常说的在飞机上换引擎的问题。建议在做服务化的时候，首先更多是偏向业务的梳理，同时要找准一个很好的切入点，既有架构和服务化上的提升，业务方也要有收益，比如提升性能或者降低维护成本同时升级过程要平滑，建议开始从原子化服务切入，比如基础的用户服务、基础的短消息服务、基础的推送服务。<br><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/weibo_architecture_improve.png" alt="新浪微博架构演变"></p>
-<h3 id="微博的技术挑战"><a href="#微博的技术挑战" class="headerlink" title="微博的技术挑战"></a>微博的技术挑战</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/weibo_architecture_challenge.png" alt="微博的技术挑战"></p>
-<h3 id="正交分解法解析架构"><a href="#正交分解法解析架构" class="headerlink" title="正交分解法解析架构"></a>正交分解法解析架构</h3><p>一个维度是水平的分层拆分，第二从垂直的维度会做拆分。水平的维度从接口层、服务层到数据存储层。垂直怎么拆分，会用业务架构、技术架构、监控平台、服务治理等等来处理。</p>
-<p>从业务架构来看，接口层有feed、用户关系、通讯接口；服务层，SOA里有基层服务、原子服务和组合服务，在微博我们只有原子服务和组合服务。原子服务不依赖于任何其他服务，组合服务由几个原子服务和自己的业务逻辑构建而成，资源层负责海量数据 的存储。</p>
-<p>技术框架解决独立于业务的海量高并发场景下的技术难题，由众多的技术组件共同构建而成。在接口层，微博使用JERSY框架，帮助你做参数的解析、参数的验证、序列化和反序列化；资源层，主要是缓存、DB相关的各类组件，比如Cache组件和对象库组件。</p>
-<p>监控平台和服务治理，完成系统服务的像素级监控，对分布式系统做提前诊断、预警以及治理。包含了SLA 规则的制定、服务监控、服务调用链监控、流量监控、错误异常监控、线上灰度发布上线系统、线上扩容缩容调度系统等。</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/weibo_architecture_explain.png" alt="正交分解法解析架构"></p>
-<h3 id="常见的设计原则"><a href="#常见的设计原则" class="headerlink" title="常见的设计原则"></a>常见的设计原则</h3><ul>
-<li>系统架构三个利器：RPC服务组件、消息中间件（交互异步化、流量削峰）、配置管理（灰度发布、降级）；</li>
-<li>无状态：接口层最重要的就是无状态，将有状态的数据剥离到数据库或缓存中；</li>
-<li>数据层比服务层更需要设计：存储、压缩、索引等；</li>
-<li>物理结构与逻辑结构的映射：几个垂直的业务组加上一个基础技术架构组，精细化团队分工，有利于提高沟通协作的效率；</li>
-<li>分布式系统，它最终的瓶颈一定落在CPU、内存、存储和网络上；</li>
-</ul>
-<h3 id="微博多级双机房缓存架构"><a href="#微博多级双机房缓存架构" class="headerlink" title="微博多级双机房缓存架构"></a>微博多级双机房缓存架构</h3><ul>
-<li>微博使用了双层缓存，上面是L1，每个L1上都是一组(包含4-6台机器)，左边的框相当于一个机房，右边又是一个机房。两个机房是互为主备，或者互为热备 </li>
-<li>L1缓存的作用：增加整个系统的QPS、以低成本灵活扩容的方式增加系统的带宽；</li>
-<li>第二级缓存更多的是从容量上来规划，保证请求以较小的比例穿透到后端的数据库中；<br><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/weibo_multilevel_cache.png" alt="多级双机房缓存"></li>
-</ul>
-<h3 id="Feed的存储架构"><a href="#Feed的存储架构" class="headerlink" title="Feed的存储架构"></a>Feed的存储架构</h3><ul>
-<li>内容表：每条内容一个索引，每天建一张表；</li>
-<li>一级索引的时候会先根据关注的用户，取他们的前条微博ID，然后聚合排序。在做哈希(分库分表)的时候，同时考虑了按照UID哈希（分库）和按照时间维度（分表）。</li>
-<li>二级索引，是我们里面一个比较特殊的场景，就是我要快速找到这个人所要发布的某一时段的微博时，通过二级索引快速定位。</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/weibo_feed_storage.png" alt="Feed的存储架构"></p>
-<h3 id="分布式服务追踪系统"><a href="#分布式服务追踪系统" class="headerlink" title="分布式服务追踪系统"></a>分布式服务追踪系统</h3><p>一个请求从用户过来之后，在后台不同的机器之间不停的调用并返回。当你发现一个问题的时候，这些日志落在不同的机器上，你也不知道问题到底出在哪儿，各个服务之间互相隔离，互相之间没有建立关联。所以导致排查问题基本没有任何手段，就是出了问题没法儿解决。<br><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/ack_of_distributed_service.png" alt="分布式服务痛点"></p>
-<p>解决办法是用一个请求ID，然后结合RPC框架，服务治理功能使日志联系起来。用JAVA的话就可以用AOP，要做到零侵入的原则，就是对所有相关的中间件打点，从接口层组件 (HTTP Client、HTTP Server)至到服务层组件(RPC Client、RPC Server)，还有数据访问中间件的，这样业务系统只需要少量的配置信息就可以实现全链路监控。</p>
-<h2 id="RPC的概念模型与实现解析"><a href="#RPC的概念模型与实现解析" class="headerlink" title="RPC的概念模型与实现解析"></a>RPC的概念模型与实现解析</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MzAxMTEyOTQ5OQ==&amp;mid=2650610547&amp;idx=1&amp;sn=2cae08dbf62d9a6c2f964ffd440c0077" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MzAxMTEyOTQ5OQ==&amp;mid=2650610547&amp;idx=1&amp;sn=2cae08dbf62d9a6c2f964ffd440c0077</a></p>
-<ul>
-<li>定义：RPC的全称是 Remote Procedure Call，是一种进程间通信方式。 它允许程序调用另一个地址空间（通常是共享网络的另一台机器上）的过程或函数，而不用程序员显式编码这个远程调用的细节。即程序员无论是调用本地的还是远程的函数，本质上编写的调用代码基本相同。</li>
-<li>起源：上世纪80年代由 Bruce Jay Nelson提出；</li>
-<li>目标：让构建分布式计算（应用）更容易，在提供强大的远程调用能力时不损失本地调用的语义简洁性。</li>
-<li>分类：同步调用和异步调用，区分在于是否等待服务端执行完成并返回结果。</li>
-<li>RPC理论模型：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/rpc_model.png" alt="RPC理论模型"></p>
-<p>这里User就是Client端。当User发起一个远程调用时，它实际是通过本地调用User-stub。 User-stub负责将调用的接口、方法和参数通过约定的协议规范进行编码并通过本地的RPCRuntime实例传输到远端的实例。远端RPCRuntime实例收到请求后交给 Server-stub进行解码后发起向本地端Server的调用，调用结果再返回给User端。</p>
-<ul>
-<li>RPC模型拆解</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/rpc_model.png" alt="RPC模型拆解"></p>
-<p>RPC服务端通过RpcServer去导出远程接口方法，而客户端通过RpcClient去导入远程接口方法。客户端像调用本地方法一样去调用远程接口方法，RPC框架提供接口的代理实现，实际的调用将委托给代理RpcProxy。代理封装调用信息并将调用转交给RpcInvoker去实际执行。在客户端的RpcInvoker通过连接器RpcConnector去维持与服务端的通道RpcChannel，并使用RpcProtocol执行协议编码并将编码后的请求消息通过通道发送给服务端。</p>
-<p>RPC服务端接收器RpcAcceptor接收客户端的调用请求，同样使用RpcProtocol执行协议解码。解码后的调用信息传递给RpcProcessor去控制处理调用过程，最后再委托调用给RpcInvoker去实际执行并返回调用结果。</p>
-<ul>
-<li>实现：微型RPC框架库<a href="https://github.com/mindwind/craft-atom" target="_blank" rel="external">craft-atom-rpc</a></li>
-</ul>
-<h2 id="Elastic-ON-Dev-China-Beijing-2016-Keynote"><a href="#Elastic-ON-Dev-China-Beijing-2016-Keynote" class="headerlink" title="Elastic{ON} Dev China Beijing 2016 Keynote"></a>Elastic{ON} Dev China Beijing 2016 Keynote</h2><p><a href="http://elasticsearch.cn/article/122" target="_blank" rel="external">http://elasticsearch.cn/article/122</a><br>阅读时结合：<a href="http://www.infoq.com/cn/news/2016/08/Elasticsearch-5-0-Elastic" target="_blank" rel="external">http://www.infoq.com/cn/news/2016/08/Elasticsearch-5-0-Elastic</a></p>
-<p>目前ELK下载次数已经达到75M次。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/elastic_development.png" alt="ELK发展情况"></p>
-<p>有75%的用户将ELK使用于多个场景，60%的用户使用其数据搜索和分析功能，40%的用户使用日志分析功能。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/elastic_cases.png" alt="ELK使用场景"></p>
-<p>统一发布5.0版本后，拥有了ELKB和Elastic Cloud的全栈产品线。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/ELKB_Stack.png" alt="ELKB产品线"></p>
-<p>Elasticsearch5.0率先集成了Lucene 6版本，其中最重要的特性就是 Dimensional Point Fields，多维浮点字段，ES里面相关的字段如date, numeric，ip 和 Geospatial 都将大大提升性能。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_1.png" alt="ElasticSearch优化1"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_2.png" alt="ElasticSearch优化2"></p>
-<p>ES5.0在Internal engine级别移除了用于避免同一文档并发更新的竞争锁，带来15%-20%的性能提升。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_3.png" alt="ElasticSearch优化3"></p>
-<p>ElasticSearch采用了更先进的Painless脚本。Painless使用白名单来限制函数与字段的访问，针对ES的场景来进行优化，只做ES数据的操作，更加轻量级，速度要快好几倍，并且支持Java静态类型，语法保持Groove类似，还支持Java的lambda表达式。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_4.png" alt="ElasticSearch优化4"></p>
-<p>毫秒级的Shrink API。它可将分片数进行收缩成它的因数，如之前你是15个分片，你可以收缩成5个或者3个又或者1个，那么我们就可以想象成这样一种场景，在写入压力非常大的收集阶段，设置足够多的索引，充分利用shard的并行写能力，索引写完之后收缩成更少的shard，提高查询性能。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_5.png" alt="ElasticSearch优化5"></p>
-<p>对日志类索引更友好的Rollover API。首先创建一个logs-0001的索引，它有一个别名是logs_write,然后我们给这个logs_write创建了一个rollover规则，即这个索引文档不超过1000个或者最多保存7天的数据，超过会自动切换别名到logs-0002,你也可以设置索引的setting、mapping等参数,剩下的es会自动帮你处理。这个特性对于存放日志数据的场景是极为友好的。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_6.png" alt="ElasticSearch优化6"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_7.png" alt="ElasticSearch优化7"></p>
-<p>新增了一个Wait for refresh功能。大家知道elasticsearch可以设置refresh时间来保证数据的实时性，refresh时间过于频繁会造成很大的开销，太小会造成数据的延时，之前提供了索引层面的_refresh接口，但是这个接口工作在索引层面，我们不建议频繁去调用，如果你有需要修改了某个文档，需要客户端实时可见怎么办？在 5.0中，Index、Bulk、Delete、Update这些数据新增和修改的接口能够在单个文档层面进行refresh控制了，有两种方案可选，一种是创建一个很小的段，然后进行刷新保证可见和消耗一定的开销，另外一种是请求等待es的定期refresh之后再返回。<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_8.png" alt="ElasticSearch优化8"></p>
-<p>新增Ingest Node。之前如果需要对数据进行加工，都是在索引之前进行处理，比如logstash可以对日志进行结构化和转换，现在直接在es就可以处理了，目前es提供了一些常用的诸如convert、grok之类的处理器，在使用的时候，先定义一个pipeline管道，里面设置文档的加工逻辑，在建索引的时候指定pipeline名称，那么这个索引就会按照预先定义好的pipeline来处理了。</p>
-<p>这是一个原始的日志：</p>
-<pre><code>{
-  &quot;message&quot;: &quot;55.3.244.1 GET /index.html 15824 0.043”
-}
-</code></pre><p>使用Ingest就可以这么定义一个pipeline：</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_9.png" alt="ElasticSearch优化9"></p>
-<p>通过我们的pipeline处理之后的文档长什么样呢，我们获取这个文档的内容看看：<br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_10.png" alt="ElasticSearch优化10"></p>
-<p>另一个和aggregation的改进也是非常大，Instant Aggregations。Elasticsearch已经在Shard层面提供了Aggregation缓存，如果你的数据没有变化，ES能够直接返回上次的缓存结果。</p>
-<p>新增了一个Sliced Scroll类型，现在Scroll接口可以并发来进行数据遍历了。每个Scroll请求，可以分成多个Slice请求，可以理解为切片，各Slice独立并行，利用Scroll重建或者遍历要快很多倍。</p>
-<p>ES现在提供了Profile API来进行查询的优化，只需要在查询的时候开启profile：true就可以了，一个查询执行过程中的每个组件的性能消耗都能收集到。</p>
-<p>还有一个和翻页相关的问题，就是深度分页，现在有一个新的 Search After 机制，其实和scroll类似，也是游标的机制，它的原理是对文档按照多个字段进行排序，然后利用上一个结果的最后一个文档作为起始值，拿size个文档，一般我们建议使用_uid这个字段，它的值是唯一的id。</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/es5_upgrade_11.png" alt="ElasticSearch优化11"></p>
-<p>新增Reindex。关于索引数据，大家之前经常重建，数据源在各种场景，重建起来很是头痛，那就不得不说说现在新加的Reindex接口了，Reindex可以直接在ElasticSearch集群里面对数据进行重建，如果你的mapping因为修改而需要重建，又或者索引设置修改需要重建的时候，借助Reindex可以很方便的异步进行重建，并且支持跨集群间的数据迁移。</p>
-<p>ES 5.0里面提供了第一个Java原生的REST客户端SDK，相比之前的TransportClient，版本依赖绑定，集群升级麻烦，不支持跨Java版本的调用等问题，新的基于HTTP协议的客户端对Elasticsearch的依赖解耦，没有jar包冲突，提供了集群节点自动发现、日志处理、节点请求失败自动进行请求轮询，充分发挥Elasticsearch的高可用能力，并且性能不相上下。</p>
-<p>另外还介绍了ELKB 5.0包括X-Pack组件的新特性，这里不做具体介绍，大家可以按照自己的兴趣阅读。</p>
-<h2 id="基于Kibana和ES的苏宁实时日志分析平台"><a href="#基于Kibana和ES的苏宁实时日志分析平台" class="headerlink" title="基于Kibana和ES的苏宁实时日志分析平台"></a>基于Kibana和ES的苏宁实时日志分析平台</h2><p><a href="http://elasticsearch.cn/article/122" target="_blank" rel="external">http://elasticsearch.cn/article/122</a></p>
-<h3 id="集群现状"><a href="#集群现状" class="headerlink" title="集群现状"></a>集群现状</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/suning_elk_1.png" alt="集群现状"> </p>
-<h3 id="日志平台架构演进"><a href="#日志平台架构演进" class="headerlink" title="日志平台架构演进"></a>日志平台架构演进</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/suning_elk_2.png" alt="日志平台架构演进"></p>
-<h3 id="优化总结-–-硬件"><a href="#优化总结-–-硬件" class="headerlink" title="优化总结 – 硬件"></a>优化总结 – 硬件</h3><ul>
-<li>优先独立物理理机；</li>
-<li>对于实时性要求非常高的需求，优先SSD；</li>
-<li>适当调整OS的max_file_descriptors，解决Too many open files 异常；</li>
-<li>单服务器运行多个node时，调整max user processes，否则容易易native thread<br>OOM；</li>
-<li>关闭swap交换或锁内存 ulimit -l unlimited/bootstrap.mlockall: true</li>
-</ul>
-<h3 id="优化总结-–-ES"><a href="#优化总结-–-ES" class="headerlink" title="优化总结 – ES"></a>优化总结 – ES</h3><ul>
-<li>根据数据量合理的规划索引pattern和shard数；</li>
-<li>disabled _all 节省存储空间、提升索引速度；</li>
-<li>不需要分词的字段设成 not_analyzed；</li>
-<li>对于不要求100%高可用的内部系统，可不设置副本，提升index速度和减少<br>存储；</li>
-<li>设置合理的refresh时间   index.refresh_interval: 300S</li>
-<li>设置合理的flush间隔     index.translog.flush_threshold_size: 4g; index.translog.flush_threshold_ops: 50000</li>
-<li>合理配置throttling      indices.store.throttle.max_bytes_per_sec: 200mb</li>
-<li>适当调整bulk队列        threadpool.bulk.queue_size: 1000</li>
-<li>有时可能因为gc时间过长，导致该数据节点被主节点踢出集群的情况，导致集群出现不健康的状态，为了解决这样的问题，我们适当的调整ping参数。(master)</li>
-</ul>
-<pre><code>discovery.zen.fd.ping_timeout: 40s
-discovery.zen.fd.ping_interval: 5s
-discovery.zen.fd.ping_retries: 5
-</code></pre><ul>
-<li>数据节点young gc频繁，适当调转新生代（-Xmn3g），降低young gc的频率。</li>
-<li>在进行检索和聚合操作时，ES会读取反向索引，并进行反向解析，然后进行排序，将结果保存在内存中。这个处理会消耗很多Heap，有必要进行限制，不然会很容易出现OOM。</li>
-</ul>
-<pre><code>Disabled analyzed field fielddata
-限制Field Data的Heap Size的使用
-indices.fielddata.cache.size: 40%
-indices.breaker.fielddata.limit: 50%
-</code></pre><h2 id="美团点评搜索平台化实践之路"><a href="#美团点评搜索平台化实践之路" class="headerlink" title="美团点评搜索平台化实践之路"></a>美团点评搜索平台化实践之路</h2><p><a href="http://elasticsearch.cn/article/122" target="_blank" rel="external">http://elasticsearch.cn/article/122</a></p>
-<h3 id="为什么需要平台化"><a href="#为什么需要平台化" class="headerlink" title="为什么需要平台化"></a>为什么需要平台化</h3><ul>
-<li>重复建设严重</li>
-<li>使用门槛高</li>
-<li>缺少整体解决方案</li>
-<li>长期演进不足</li>
-<li>平台化：提供一整套的技术、运维方案和开发组件，最大化简化应用开发，提高开发效率、降低成本、提高可靠性。</li>
-</ul>
-<h3 id="平台化解决的主要问题"><a href="#平台化解决的主要问题" class="headerlink" title="平台化解决的主要问题"></a>平台化解决的主要问题</h3><ul>
-<li>快速部署 -&gt; 代码库管理软件包；管理界面部署、重启、停止等操作；</li>
-<li>集群高可用 -&gt; 引用集群组概念；双机房+双集群；双集群写；双集群读；</li>
-<li>客户端使用门槛高 -&gt; 支持POJO功能；支持读写监控；支持多集群访问；</li>
-<li>开源插件安全性弱、扩展性难 -&gt; 独立研发管理平台；</li>
-<li>慢查询日志可视化和告警 -&gt; 通过Logstash抓取日志上报管理平台；管理平台提供查询、分析和统计；</li>
-</ul>
-<h3 id="平台技术架构"><a href="#平台技术架构" class="headerlink" title="平台技术架构"></a>平台技术架构</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/meituan_es_2.png" alt="ES平台技术架构"></p>
-<h2 id="百度对Elasticsearch的优化改进"><a href="#百度对Elasticsearch的优化改进" class="headerlink" title="百度对Elasticsearch的优化改进"></a>百度对Elasticsearch的优化改进</h2><p><a href="http://elasticsearch.cn/article/122" target="_blank" rel="external">http://elasticsearch.cn/article/122</a></p>
-<h3 id="分布式SQL查询层"><a href="#分布式SQL查询层" class="headerlink" title="分布式SQL查询层"></a>分布式SQL查询层</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_1.png" alt="分布式SQL查询层"></p>
-<ul>
-<li>提供标准SQL接口，方便使用，降低学习成本</li>
-<li>兼容Mysql协议，原Mysql/DDBS业务无缝迁移</li>
-<li>兼容原始的HTTP协议</li>
-</ul>
-<h3 id="权限管理"><a href="#权限管理" class="headerlink" title="权限管理"></a>权限管理</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_2.png" alt="权限管理"></p>
-<ul>
-<li>不同用户访问自己的表，增加database逻辑层，兼容ES和MySQL；</li>
-<li>权限级别： db， table</li>
-<li>用户级别：root， superuser，user</li>
-<li>权限类型：read_only，read_write</li>
-<li>白名单：IP（通配符）、hostname（BNS）</li>
-</ul>
-<h3 id="Online-schema-change"><a href="#Online-schema-change" class="headerlink" title="Online schema change"></a>Online schema change</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_3.png" alt="Baidu-ES reindex"></p>
-<h3 id="DistributedLog-数据一致性"><a href="#DistributedLog-数据一致性" class="headerlink" title="DistributedLog 数据一致性"></a>DistributedLog 数据一致性</h3><ul>
-<li>需求背景：部分业务对ES可靠性要求很高；不能容忍脑裂、数据不一致、丢数据等情况；</li>
-<li>需解决的问题：元数据一致性（脑裂）、强一致写、强一致读</li>
-<li>解决方法：DistributedLog</li>
-<li>元数据一致性（脑裂）：Master Leader向DL中写入Cluster State变更；其余的Master节点和所有的DataNode节点从DL中获取变更并向本地Apply；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_4.png" alt="元数据一致性"></p>
-<ul>
-<li>强一致写：Master指定Primary；Primary将日志写入DL；Replica从DL中读取日志并回放；Translog必须在Lucene引擎内部实现为原子操作（如果先写log，Lucene可能写入不成功；如果先写Lucene，log有可能写入不成功）</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_5.png" alt="强一致写"></p>
-<ul>
-<li>强一致读 Lease机制：Primary需要定时从Master获取Lease；读取时首先检查Lease，当Lease Expire时不再提供读取服务；查询只查primary；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_6.png" alt="强一致读"></p>
-<h3 id="多集群数据同步"><a href="#多集群数据同步" class="headerlink" title="多集群数据同步"></a>多集群数据同步</h3><ul>
-<li>需求背景：业务要求高可用，两地三中心部署；多个主备集群需实时同步增量数据；主备切换后的冲突处理；</li>
-<li>设计实现：每个Doc都有修改的timestmap和version信息；Mirror Maker根据timestamp获取index修改的增量信息；Mirror Maker将增量的更新发往目标集群的Index中；冲突时根据version来判断是否覆盖目标集群里的Doc；默认version使用timestmap；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_7.png" alt="多集群数据同步"></p>
-<h3 id="多租户资源隔离"><a href="#多租户资源隔离" class="headerlink" title="多租户资源隔离"></a>多租户资源隔离</h3><ul>
-<li>需求背景：多个业务使用公共集群，CPU、内存、IO、JVM等相互影响；云化部署；</li>
-<li>设计实现：每台物理机启动多个ES进程组成大集群；cgroup对每个ES进程进行CPU、内存、IO等隔离；引入tenement 概念，分配不同的ES节点为每个租户创建自己的虚拟集群；Allocation filter限制租户的index只能创建在自己的节点上；每个租户分配不同DB，隔离访问权限；username@tenement，租户命名空间隔离租户信息；根据租户ID隔离settings，templates、nodes等；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_8.png" alt="多租户资源隔离"></p>
-<h3 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_9.png" alt="整体架构"></p>
-<h3 id="整体规模"><a href="#整体规模" class="headerlink" title="整体规模"></a>整体规模</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/baidu_es_10.png" alt="整体规模"></p>
-<h2 id="万亿交易量级下的秒级监控"><a href="#万亿交易量级下的秒级监控" class="headerlink" title="万亿交易量级下的秒级监控"></a>万亿交易量级下的秒级监控</h2><p><a href="https://102.alibaba.com/newsInfo.htm?newsId=26" target="_blank" rel="external">https://102.alibaba.com/newsInfo.htm?newsId=26</a></p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/ali_monitor_1.png" alt="阿里监控体系"></p>
-<ul>
-<li>阿里监控体系：集团层面的占整体80%；各个事业群根据自身特性自主研发了多套监控系统；规模已达到千万量级的监控项、PB级的监控数据、亿级的报警通知；</li>
-<li>SunFire是一整套海量日志实时分析解决方案，以日志、REST接口、Shell脚本等作为数据采集来源，提供设备、应用、业务等各种视角的监控能力，从而快速发现、定位、分析和解决问题，为线上系统可用率提供有效保障；其利用文件传输、流式计算、分布式文件存储、数据可视化、数据建模等技术，提供实时、智能、可定制、多视角、全方位的监控体系；技术架构如下所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/ali_monitor_2.png" alt="SunFire技术架构"></p>
-<ul>
-<li>Agent组件负责日志原始数据的采集，按周期查询日志，要求低耗、智能。</li>
-<li>低耗的第一个要素就是避免跨机房传输，SunFire运行时组件自包含在机房内部，需要全量数据才从各机房查询合并；</li>
-<li>SunFire还利用了zero-copy，即文件传输可以不经过用户态，实现极低CPU占用的文件传输；</li>
-<li>要求按周期查询日志这个是Agent工程里最大的难题。RAF里通过指定offset和读取size可以很低耗地读取这部分内容，但是在计算平台周期任务驱动架构里，pull的方式无法提供offset，这个是通过二分法查找来猜；</li>
-<li>当日志滚动的时候也是靠穷举的方式来猜offset；</li>
-<li>支持两种查询服务：first query和ordinary query。一个周期的查询请求只有第一次需要猜offset。</li>
-<li>另外一个是Map Reduce的计算组件，负责对所有采集内容进行加工计算，具备故障自动恢复及弹性伸缩能力；</li>
-<li>计算组件的特性：纯异步（使用akka作为协程框架）、周期驱动、任务重试、输入共享；</li>
-<li>其他组件：存储（HBase、MongoDB）、展示、自我管控。</li>
-</ul>
-<h2 id="万亿级数据洪峰下的分布式消息引擎"><a href="#万亿级数据洪峰下的分布式消息引擎" class="headerlink" title="万亿级数据洪峰下的分布式消息引擎"></a>万亿级数据洪峰下的分布式消息引擎</h2><p><a href="https://102.alibaba.com/newsInfo.htm?newsId=21" target="_blank" rel="external">https://102.alibaba.com/newsInfo.htm?newsId=21</a></p>
-<ul>
-<li>低延迟探索之路：JVM停顿（尽量避免Full GC、关闭偏向锁、输出GC日志到内存文件系统、关闭JVM输出的jstat日志）、利用CAS将RocketMQ核心链路无锁化、通过内核参数（vm.extra_free_kbytes和vm.swappiness）调优避免内存延迟、消除Page Cache延迟（内存预分配、文件预热、读写分离）；</li>
-<li>容量保障三大法宝：降级、限流和熔断；</li>
-<li>RocketMQ高可用：基于多机房部署，利用分布式锁和通知机制，借助Controller组件，设计并实现了Master/Slave结构的高可用架构；消息的读请求会命中Master，然后通过异步方式复制到Slave；消息的读请求优先命中Master，有压力时转移到Slave；</li>
-</ul>
-<p>分布式系统通用高可用解决方案</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/ali_rocketmq_ha.png" alt="分布式系统通用高可用解决方案"></p>
-<p>RocketMQ高可用架构</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/ali_rocketmq.png" alt="分布式系统通用高可用解决方案"></p>
-<h2 id="万亿级调用系统：微信序列号生成器架构设计及演变"><a href="#万亿级调用系统：微信序列号生成器架构设计及演变" class="headerlink" title="万亿级调用系统：微信序列号生成器架构设计及演变"></a>万亿级调用系统：微信序列号生成器架构设计及演变</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650992918&amp;idx=1&amp;sn=be5121c3c57257291a30715ef7130a90&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650992918&amp;idx=1&amp;sn=be5121c3c57257291a30715ef7130a90&amp;scene=21</a></p>
-<ul>
-<li>微信立项之初就确立了利用数据版本号实现终端与后台数据增量同步的机制，确保消息可靠送达对方手机；这就需要一个高可用、高可靠的序列号生成器来产生同步数据用的版本号，这个生成器就是seqsvr；</li>
-<li>数据版本号有两个性质：递增的64位整型变量；每个用户都有自己独立的64位sequence空间（避免申请互斥）；</li>
-<li>架构原型（64位数组，每个用户保存最后一个seq） –&gt; 预分配中间层（放置一定步长的数据在内存，避免频繁更新）–&gt; 分号段共享存储（uid相连的用户属于同一号段，共享max_seq，减少重启时加载过长问题）；</li>
-<li>工程实现：存储层（StoreSrv）利用多机NRW策略保证数据持久化不丢失；每个缓存中间层（AllocSrv）负责若干个号段的seq分配；整个系统按uid范围分Set，每个Set都是一个完整的、独立的子系统。</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/wx_seq_1.png" alt="微信seqserv"></p>
-<h2 id="微信开源PhxSQL背后：强一致高可用分布式数据库的设计和实现哲学"><a href="#微信开源PhxSQL背后：强一致高可用分布式数据库的设计和实现哲学" class="headerlink" title="微信开源PhxSQL背后：强一致高可用分布式数据库的设计和实现哲学"></a>微信开源PhxSQL背后：强一致高可用分布式数据库的设计和实现哲学</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650994184&amp;idx=1&amp;sn=9be9eb8ab569ad281330b6ceeb490757&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650994184&amp;idx=1&amp;sn=9be9eb8ab569ad281330b6ceeb490757&amp;scene=21</a></p>
-<ul>
-<li>为何研发：解决强一致性、高可用和serializable事务隔离；完全兼容Mysql；</li>
-<li><a href="https://github.com/tencent-wechat/phxsql" target="_blank" rel="external">PhxSQL</a>是什么：建立在Paxos的一致性和Mysql的binlog流水的基础上的；提供两个服务端口：强一致读写端口和只读端口；</li>
-<li>PhxSQL的强一致性指线性一致性，高可用是指只要多余一半机器工作和互联即可在保证线性一致性的质量下正常工作，提供和ZooKeeper相同的强一致性和高可用性；</li>
-<li>设计原则：简单可逻辑证明的一致性模型（基于Paxos和binlog流水一致）；最小侵入Mysql原则；简单的架构、部署和运维；</li>
-<li>局限性：DDL命令可能存在一致性风险、写入请求量很大主机死机时会有一段时间不可写；另外不支持多写和分表分库。</li>
-</ul>
-<h2 id="章文嵩博士和他背后的负载均衡帝国"><a href="#章文嵩博士和他背后的负载均衡帝国" class="headerlink" title="章文嵩博士和他背后的负载均衡帝国"></a>章文嵩博士和他背后的负载均衡帝国</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650992803&amp;idx=1&amp;sn=e2a46917301941faacc324af29013877&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650992803&amp;idx=1&amp;sn=e2a46917301941faacc324af29013877&amp;scene=21</a></p>
-<ul>
-<li>常见的负载均衡技术：DNS轮询（易于实现，但存在会话粘连、DNS缓存滞后、容错、数据热点问题）；引入负载均衡器（集中分发、支持多种分发方式，但存在单点的问题）；健康监测（负载均衡的伴侣）；</li>
-<li>VIPServer：阿里中间层负载均衡产品；是基于P2P模式的七层负载均衡产品；提供动态域名解析和负载均衡服务；支持一系列流量智能调度和容灾策略、支持多种健康监测协议、支持精细的权重控制；提供多级容灾、具有对称调用、健康阈值保护等功能。</li>
-</ul>
-<h2 id="阿里双十一大促，技术准备只做了这两件事情？"><a href="#阿里双十一大促，技术准备只做了这两件事情？" class="headerlink" title="阿里双十一大促，技术准备只做了这两件事情？"></a>阿里双十一大促，技术准备只做了这两件事情？</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650995093&amp;idx=1&amp;sn=574f6d83a48c2c596943b1fbeb25e4a7&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650995093&amp;idx=1&amp;sn=574f6d83a48c2c596943b1fbeb25e4a7&amp;scene=21</a></p>
-<ul>
-<li>容量规划：在什么时候什么样的系统需要多少服务器？需要给出确定性、量化的数字；</li>
-<li>容量规划三阶段：经验判断、线上压测（测性能、估机器、模拟回放、线上分流）和场景化压测，目前还做了全链路压测；</li>
-<li>场景化容量评估：造流量，尽量模拟真实场景；流量隔离，通过负载均衡出一个在线集群；</li>
-<li>流量评估的流程：数据构造（构造基础数据、业务模型预测、构造压测请求） -&gt; 环节准备（配置压测方案、上传压测数据、业务预热、生效压测passtoken、小流量预跑验证） -&gt; 压测执行&amp;总结（压测用户登录、压测执行&amp;实时调速、动态弹性伸缩、压测报告&amp;问题总结）；</li>
-<li>容量评估的总结：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/ali_yace.png" alt="容量评估的总结"></p>
-<h2 id="Twitter再开源！这回是分布式高性能日志复制服务"><a href="#Twitter再开源！这回是分布式高性能日志复制服务" class="headerlink" title="Twitter再开源！这回是分布式高性能日志复制服务"></a>Twitter再开源！这回是分布式高性能日志复制服务</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650992712&amp;idx=1&amp;sn=727ce15ad3651ce43a710a165ed2495a&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650992712&amp;idx=1&amp;sn=727ce15ad3651ce43a710a165ed2495a&amp;scene=21</a></p>
-<ul>
-<li><a href="https://github.com/twitter/distributedlog" target="_blank" rel="external">DistributedLog</a>是一个高性能的日志复制服务，提供了持久化、复制以及强一致性的功能，这对于构建可靠的分布式系统都是至关重要的，如复制状态机、通用的发布订阅系统、分布式数据库以及分布式队列；</li>
-<li>DL会分类维护记录的序列并称其为Log，将记录写入DL Log的进程称之为Writer，从Log中读取并处理记录的进程称之为Reader，其整体架构如下所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/twitter_dl.png" alt="DistributedLog架构"></p>
-<ul>
-<li>Log：是有序的、不可变的日志记录，它的数据结构如下所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/twitter_dl_log.png" alt="Log的数据结构"></p>
-<ul>
-<li>日志记录：一个字节序列，会按照序列写入到日志流中，并且会分配一个DLSN的唯一序列号。应用程序还可以设置自己的序列号（称之为TransactionID），便于Reader从特定的日志记录读取；</li>
-<li>Log分段：Log会被分解为Log分段，每个分段包含了记录的子集，分布式地存储（如BookKeeper）。DL会基于配置好的策略轮询每个Log分段。</li>
-<li>命名空间：属于同一组织的Log流会归类在同一命名空间下，便于管理；</li>
-<li>Writer：序列号由Writer负责的，这意味着对于某个Log，在给定的时间点上，只能有一个激活的Writer；Writer由名为Write Proxy的服务层来提供和管理，Write Proxy用来接受大量客户端的fan-in写入；</li>
-<li>Reader：Reader会在一个给定的位置（DLSN或TransactionID）开始从Log中严格按顺序读取记录。在同一个Log中，不同的Reader可以在不同的起始位置读取记录。与其他的订阅发布系统不同，DL并不会记录和管理Reader的位置，它将跟踪的任务留给了应用程序本身；</li>
-<li>优势总结：高性能（毫秒级延迟）、持久化和一致性、各种工作负载、多租户、分层架构；</li>
-</ul>
-<h2 id="如何用十条命令在一分钟内检查Linux服务器性能"><a href="#如何用十条命令在一分钟内检查Linux服务器性能" class="headerlink" title="如何用十条命令在一分钟内检查Linux服务器性能"></a>如何用十条命令在一分钟内检查Linux服务器性能</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650994146&amp;idx=1&amp;sn=f6b0987a06831805b4c343c417121827&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650994146&amp;idx=1&amp;sn=f6b0987a06831805b4c343c417121827&amp;scene=21</a></p>
-<pre><code>## 以下命令uptime用于快速查看机器的负载情况，输出1min、5min、15min的平均负载请假
-[test@localhost ~]$ uptime   
- 13:56:36 up 32 days, 13:12,  1 user,  load average: 0.00, 0.02, 0.00
-
-## 以下命令用于输出系统日志的最后10行
-[test@localhost ~]$ dmesg | tail
-  alloc kstat_irqs on node -1
-bnx2 0000:01:00.0: irq 65 for MSI/MSI-X
-  alloc irq_desc for 66 on node -1
-  alloc kstat_irqs on node -1
-bnx2 0000:01:00.0: irq 66 for MSI/MSI-X
-  alloc irq_desc for 67 on node -1
-  alloc kstat_irqs on node -1
-bnx2 0000:01:00.0: irq 67 for MSI/MSI-X
-bnx2 0000:01:00.0: em1: using MSIX
-bnx2 0000:01:00.0: em1: NIC Copper Link is Up, 100 Mbps full duplex, receive &amp; transmit flow control ON
-
-## 以下命令用于输出一些系统核心指标，后面的参数1表示每秒输出一次统计信息。
-[test@localhost ~]$ vmstat 1
-procs -----------memory---------- ---swap-- -----io---- --system-- -----cpu-----
- r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st
- 0  0      0 9118956 221536 10690528    0    0     0    19    0    2  2  0 98  0  0    
- 0  0      0 9118816 221536 10690560    0    0     0     0 1180 2939  0  0 100  0  0    
- 0  0      0 9118816 221536 10690584    0    0     0   464 1199 2798  0  0 99  0  0    
- 0  0      0 9118824 221536 10690616    0    0     0     0 1089 2839  0  0 100  0  0    
-
-## 以下命令用于显示每个CPU的占用情况
-[test@localhost ~]$ mpstat -P ALL 1
-Linux 2.6.32-431.el6.x86_64 (localhost.localdomain)     01/19/2017     _x86_64_    (8 CPU)
-
-02:04:08 PM  CPU    %usr   %nice    %sys %iowait    %irq   %soft  %steal  %guest   %idle
-02:04:09 PM  all    0.25    0.00    0.25    0.00    0.00    0.00    0.00    0.00   99.50
-02:04:09 PM    0    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-02:04:09 PM    1    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-02:04:09 PM    2    0.00    0.00    1.00    0.00    0.00    0.00    0.00    0.00   99.00
-02:04:09 PM    3    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-02:04:09 PM    4    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-02:04:09 PM    5    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00  100.00
-02:04:09 PM    6    0.00    0.00    0.99    0.00    0.00    0.00    0.00    0.00   99.01
-02:04:09 PM    7    0.99    0.00    0.00    0.00    0.00    0.00    0.00    0.00   99.01
-
-## 以下命令用于输出进程的CPU占用率
-[test@localhost ~]$ pidstat 1
-Linux 2.6.32-431.el6.x86_64 (localhost.localdomain)     01/19/2017     _x86_64_    (8 CPU)
-
-02:05:38 PM       PID    %usr %system  %guest    %CPU   CPU  Command
-02:05:39 PM      2004    0.99    0.00    0.00    0.99     4  mysqld
-02:05:39 PM     14777    0.99    0.99    0.00    1.98     0  pidstat
-02:05:39 PM     25506    0.99    0.99    0.00    1.98     6  java
-02:05:39 PM     25922    0.99    0.99    0.00    1.98     6  java
-
-## 以下命令用于查看机器磁盘IO情况
-[test@localhost ~]$ iostat -xz 1
-Linux 2.6.32-431.el6.x86_64 (localhost.localdomain)     01/19/2017     _x86_64_    (8 CPU)
-
-avg-cpu:  %user   %nice %system %iowait  %steal   %idle
-           1.72    0.00    0.26    0.18    0.00   97.84
-
-Device:         rrqm/s   wrqm/s     r/s     w/s   rsec/s   wsec/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util
-sda               0.01    31.80    0.04    6.35     2.17   305.21    48.09     0.09   14.38    2.52   14.46   3.55   2.27
-
-## 以下命令用于查看系统内存的使用情况
-[test@localhost ~]$ free -m
-             total       used       free     shared    buffers     cached
-Mem:         32092      23216       8876          0        216      10458
--/+ buffers/cache:      12540      19551
-Swap:         4095          0       4095
-
-## 以下命令用于查看网络设备的吞吐率
-[test@localhost ~]$ sar -n DEV 1
-Linux 2.6.32-431.el6.x86_64 (localhost.localdomain)     01/19/2017     _x86_64_    (8 CPU)
-
-02:11:06 PM     IFACE   rxpck/s   txpck/s    rxkB/s    txkB/s   rxcmp/s   txcmp/s  rxmcst/s
-02:11:07 PM        lo    117.17    117.17      8.28      8.28      0.00      0.00      0.00
-02:11:07 PM       em1    108.08    120.20      8.11     24.58      0.00      0.00      5.05
-02:11:07 PM       em2      0.00      0.00      0.00      0.00      0.00      0.00      0.00
-
-## 以下命令用于查看TCP连接状态
-[test@localhost ~]$ sar -n TCP,ETCP 1
-Linux 2.6.32-431.el6.x86_64 (localhost.localdomain)     01/19/2017     _x86_64_    (8 CPU)
-
-02:12:25 PM  active/s passive/s    iseg/s    oseg/s
-02:12:26 PM     80.81      0.00    585.86    772.73
-
-02:12:25 PM  atmptf/s  estres/s retrans/s isegerr/s   orsts/s
-02:12:26 PM      0.00     80.81      0.00      0.00    105.05
-
-## top命令是前面好几个命令检查内容的汇总
-top
-</code></pre><h2 id="不谈架构，看看如何从代码层面优化系统性能！"><a href="#不谈架构，看看如何从代码层面优化系统性能！" class="headerlink" title="不谈架构，看看如何从代码层面优化系统性能！"></a>不谈架构，看看如何从代码层面优化系统性能！</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650993458&amp;idx=1&amp;sn=e959385bc0bddb4b7cfab84a1310f9e8&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650993458&amp;idx=1&amp;sn=e959385bc0bddb4b7cfab84a1310f9e8&amp;scene=21</a></p>
-<ul>
-<li>数据库死锁问题改进：使用Redis做分布式锁；使用主键防重方法；使用版本号机制防重；</li>
-<li>数据库事务占用时间过长：事务代码要尽量小，将不需要事务控制的代码移出；</li>
-<li>CPU时间被占满：C3P0在大并发下性能差，改成使用<a href="https://github.com/akka/akka" target="_blank" rel="external">AKKA</a>；</li>
-<li>日志打印问题：统一日志输出规范、日志输出行号有锁去除行号；</li>
-</ul>
-<h2 id="微服务那么热，创业公司怎么选用实践？"><a href="#微服务那么热，创业公司怎么选用实践？" class="headerlink" title="微服务那么热，创业公司怎么选用实践？"></a>微服务那么热，创业公司怎么选用实践？</h2><p><a href="http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650994360&amp;idx=1&amp;sn=dd2664e2db6bfc7427a4ea738899840e&amp;scene=21" target="_blank" rel="external">http://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650994360&amp;idx=1&amp;sn=dd2664e2db6bfc7427a4ea738899840e&amp;scene=21</a></p>
-<ul>
-<li>SOA没有大范围取代单体应用的原因：其好处主要来自项目模块化而非模块服务化；没有解决多服务运维这个核心问题；</li>
-<li><a href="http://www.martinfowler.com/articles/microservices.html" target="_blank" rel="external">微服务的九大特征</a>：服务即组件、按照业务域来组织微服务、按产品而非项目划分微服务、关注业务逻辑而非服务间通讯、分散式管理、分散式数据、基础设施自动化、容错、进化；</li>
-<li>何时不需要微服务：你的代码没有模块化、你的服务要求极高性能、你没有一个好的容器编排系统；</li>
-<li>技术选型：容器编排系统Kubernetes、编程语言Go、在线监控Prometheus+Grafana、离线数据分析fluentd+ODPS、同步通讯gRPC+HTTP Restful、异步通讯RabbitMQ、持续集成Jenkins、Docker私有仓库Harbor；</li>
-</ul>
-<h2 id="深入理解G1垃圾收集器"><a href="#深入理解G1垃圾收集器" class="headerlink" title="深入理解G1垃圾收集器"></a>深入理解G1垃圾收集器</h2><p><a href="http://ifeve.com/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3g1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/" target="_blank" rel="external">http://ifeve.com/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3g1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</a></p>
-<ul>
-<li>G1相比CMS的优势：压缩空间方面有优势、通过Region避免内存碎片、可设置预期停顿时间避免应用雪崩、可在Young GC中使用；</li>
-<li>一次完整的过程：YGC、并发阶段、混合模式、Full GC；</li>
-</ul>
-<pre><code>## YGC：在Eden充满时触发，回收之后所有值钱Eden的清空，至少有一个Survivor区，同时有一些数据移到了Old区；
-23.430: [GC pause (young), 0.23094400 secs]
-...
-[Eden: 1286M(1286M)-&gt;0B(1212M)
-Survivors: 78M-&gt;152M Heap: 1454M(4096M)-&gt;242M(4096M)]
-[Times: user=0.85 sys=0.05, real=0.23 secs]
-
-## 并发阶段：这个阶段主要是发现哪些区域包含可回收的垃圾最多
-## 首先是初始标记阶段，该阶段会Stop-The-World，执行一次YGC
-50.541: [GC pause (young) (initial-mark), 0.27767100 secs]
-[Eden: 1220M(1220M)-&gt;0B(1220M)
-Survivors: 144M-&gt;144M Heap: 3242M(4096M)-&gt;2093M(4096M)]
-[Times: user=1.02 sys=0.04, real=0.28 secs]
-
-## 接下来，G1开始扫描根区域（GC Root），这个过程是后台线程并行处理，不暂停应用线程
-50.819: [GC concurrent-root-region-scan-start]
-51.408: [GC concurrent-root-region-scan-end, 0.5890230]
-
-## 接下来，开始进入并发标记阶段，该阶段也是后台线程执行的
-111.382: [GC concurrent-mark-start]
-....
-120.905: [GC concurrent-mark-end, 9.5225160 sec]
-
-## 然后是二次标记阶段和清理阶段：这两个阶段会暂停应用线程，但实际很短
-120.910: [GC remark 120.959:
-[GC ref-PRC, 0.0000890 secs], 0.0718990 secs]
-[Times: user=0.23 sys=0.01, real=0.08 secs]
-120.985: [GC cleanup 3510M-&gt;3434M(4096M), 0.0111040 secs]
-[Times: user=0.04 sys=0.00, real=0.01 secs]
-
-## 再之后还有额外的一次并发清理阶段
-120.996: [GC concurrent-cleanup-start]
-120.996: [GC concurrent-cleanup-end, 0.0004520]
-
-## 混合GC：会同时进行YGC和清理上阶段标记为清理的区域，一直持续到几乎所有的标记区域垃圾对象都被回收
-79.826: [GC pause (mixed), 0.26161600 secs]
-....
-[Eden: 1222M(1222M)-&gt;0B(1220M)
-Survivors: 142M-&gt;144M Heap: 3200M(4096M)-&gt;1964M(4096M)]
-[Times: user=1.01 sys=0.00, real=0.26 secs]
-</code></pre><h2 id="京东分布式服务跟踪系统-CallGraph"><a href="#京东分布式服务跟踪系统-CallGraph" class="headerlink" title="京东分布式服务跟踪系统-CallGraph"></a>京东分布式服务跟踪系统-CallGraph</h2><p><a href="http://mp.weixin.qq.com/s/gy2a_nbYfUJq7DhlDFio6A" target="_blank" rel="external">http://mp.weixin.qq.com/s/gy2a_nbYfUJq7DhlDFio6A</a></p>
-<ul>
-<li>产生背景：SOA化和微服务；基于Google发表的分布式日志跟踪论文；相似的有淘宝鹰眼和新浪WatchMan；</li>
-<li>核心概念：调用链包含了从源头请求到最后底层系统的所有环节，中间通过全局唯一的TraceID透传；</li>
-<li>特性及使用场景：方法调用关系（单次调用的问题排查）、应用依赖关系（容量规划、调用来源、依赖度量、调用耗时、调用并行度、调用路由）、与业务数据集成（将公司业务与第三方业务进行关联）；</li>
-<li>设计目标：低侵入性、低性能影响、灵活的应用策略、时效性；</li>
-<li>实现架构：核心包（被各中间件引用，完成具体的埋点逻辑，日志存放在内存磁盘上由Agent收集发送到JMQ）、JMQ（充当日志数据管道）、Storm（对数据日志并行整理和计算）、存储（实时数据存储有JimDB/HBase/ES，离线数据存储包括HDFS和Spark）、CallGraph-UI（用户交互界面）、UCC（存放配置信息并同步到各服务器）、管理元数据（存放链路签名与应用映射关系等）；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_callgraph.png" alt="CallGraph实现架构"></p>
-<ul>
-<li>埋点和调用上下文透传：前端利用Web容器的Filter机制调用startTrace开启跟踪，调用endTrace结束跟踪；各中间件调用clientSend、serverRecv、serverSend和clientRecv等API；对于进程间的上下文透传，调用上下文放在ThreadLocal；对于异步调用，通过Java字节码增强方式织入，以透明的方式完成线程间上下文的透传。</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_callgraph2.png" alt="CallGraph透传"></p>
-<ul>
-<li>日志格式设计：固定部分（TraceID、RpcID、开始时间、调用类型、对端IP、调用耗时、调用结果等）、可变部分；</li>
-<li>高性能的链路日志输出：开辟专门的内存区域并虚拟成磁盘设备，产生的日志存放在这样的内存设备，完全不占用磁盘IO；专门的日志模块，输出采用批量、异步方式写入，并在日志量过大时采取丢弃日志；</li>
-<li>TP日志和链路日志分离：链路日志通常开启采样率机制，比如1000次调用只收集1次；但是对于TP指标来说，必须每次记录，因此这两种数据是独立处理互不影响；</li>
-<li>实时配置：通过CallGraph-UI和UCC实时配置，支持基于应用、应用分组、服务器IP多维度配置；</li>
-<li>秒级监控：针对业务对实时分析的需求，采用JimDB存放实时数据，针对来源分析、入口分析、链路分析等可以提供1小时内的实时分析结果；</li>
-<li>未来之路：延迟更低、完善错误发现和报警、借助深度学习挖掘价值。</li>
-</ul>
-<h2 id="京东消息中间件的演进"><a href="#京东消息中间件的演进" class="headerlink" title="京东消息中间件的演进"></a>京东消息中间件的演进</h2><p><a href="http://mp.weixin.qq.com/s/4dsdpL-9SqQWybb02tOpXQ" target="_blank" rel="external">http://mp.weixin.qq.com/s/4dsdpL-9SqQWybb02tOpXQ</a></p>
-<h3 id="第一代JMQ"><a href="#第一代JMQ" class="headerlink" title="第一代JMQ"></a>第一代JMQ</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_jmq1.png" alt="第一代MQ"></p>
-<ul>
-<li>选型：基于ActiveMQ做消息核心，基于MySQL和ZooKeeper做配置中心，管理监控平台自己研发；</li>
-<li>如何存储：ActiveMQ使用KahaDB存储引擎进行存储，BTree索引。为了保证可靠性，索引文件和日志文件都需要同步刷盘；一个Topic有多个订阅者，就为每个订阅者创建一个队列，broker会将消息复制多份；</li>
-<li>如何支持集群：当时原生的ActiveMQ客户端看是不支持服务集群化的，所以采用ZK进行扩展，使客户端支持了集群的同时还实现了对服务器动态扩展的支持；</li>
-<li>推还是拉：ActiveMQ采用的是push模式，消息由producer发送到broker端之后由broker推送给consumer；</li>
-<li>如何处理失败消息：原生ActiveMQ会在失败之后将消息放到死信队列，该队列的信息不能被消费者所获取；扩展的方式是拦截错误信息，写入重试服务库之后给队列返回消费成功的ACK，而后consumer通过一定策略消费重试库里面的消息；</li>
-<li>其他优化和扩展：生成消息轨迹、优化broker写逻辑提升性能、新的主从复制、新的主从选举、增加监控模块；</li>
-</ul>
-<h3 id="第二代JMQ"><a href="#第二代JMQ" class="headerlink" title="第二代JMQ"></a>第二代JMQ</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_jmq2.png" alt="第二代MQ"></p>
-<ul>
-<li>第一代JMQ的问题：新的跨机房部署问题、Broker的性能随消息积压而急剧下降、Broker对Topic的订阅复制影响性能、Broker逻辑复杂，无法扩展消息回放、顺序消息和广播消息等、重客户端等；</li>
-<li>开启了JMQ的自研：JMQ服务端（实现轻量级的存储模型、支持消息回放、支持重试、支持消息轨迹、支持顺序消息、支持广播信息等，并兼容AMQ客户端使用的OpenWire协议）、JMQ客户端（轻量级只和Broker通讯，支持动态接收参数、内置性能采集、支持跨机房）、管理控制平台、HTTP代理（基于Netty，支持跨语言）；</li>
-<li>如何解决IO问题：使用Netty 4.0减少服务端开发，在应用层自定义JMQ协议；</li>
-<li>如何存储消息：日志文件journal（主要存储消息内容，包括消息所在队列文件的位置）、消息队列文件queue（主要存储消息所在日志文件的全局偏移量）、消费位置文件offset（存储不同订阅者针对某个topic所消费到的队列的一个偏移量）都保存在Broker所在机器的本地磁盘上。</li>
-<li>如何容灾：采用一主一从，至少一个备份，主从分布在同一个数据中心、备份分布在其他数据中心，主从复制同步、备份异步复制。</li>
-<li>推还是拉：采用pull模式，由consumer主动发起请求去broker上取消息；</li>
-<li>如何处理失败消息：JMQ的broker直接就支持重试，consumer处理消息失败时直接向服务端发送一个重试消息命令，服务端接到命令后将此消息入库；consumer在拉取消息时，服务端根据一定策略从库里取出消息给consumer处理；</li>
-<li>如何管理元数据：客户端不再直接连接ZooKeeper，连接Broker获取元数据；</li>
-</ul>
-<h3 id="第三代JMQ"><a href="#第三代JMQ" class="headerlink" title="第三代JMQ"></a>第三代JMQ</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_jmq3.png" alt="第三代MQ"></p>
-<p>几个重要的目标：优化JMQ协议、优化复制模型、实现Kafka协议兼容、实现全局负载均衡、实现全新的选举方案、实现资源的弹性调度。</p>
-<h2 id="京东JIMDB建设之路"><a href="#京东JIMDB建设之路" class="headerlink" title="京东JIMDB建设之路"></a>京东JIMDB建设之路</h2><p><a href="http://mp.weixin.qq.com/s/IzYj3R1mfFpd1pq-xYhbQg" target="_blank" rel="external">http://mp.weixin.qq.com/s/IzYj3R1mfFpd1pq-xYhbQg</a></p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_jimdb.png" alt="京东JIMDB"></p>
-<ul>
-<li>JimDB的特性：一键创建集群实例、在线全自动弹性伸缩、部分复制扩容、在线平滑升级、全自动故障恢复、支持多语言接入、支持多种读取策略、溶强化部署、增量复制；</li>
-<li>主要包括：Server（提供KV服务，支持一主多从和读写分离）、Config Server（复制集群拓扑的维护）、Sentinel（用于判断服务端实例存活状态）、Failover（负责角色切换和故障实例的替换）、Scaler（当内存容量或者流量等达到阈值时对分片进行分裂扩容）、Info Collector（负责监控数据的采集）、Resource Manager（负责物理机资源的管理和容器的创建）；</li>
-<li>自研第一版主要解决以下问题：精确的故障检测和自动故障切换（机房不同机架部署多个探测实例，只要有一个探测到存活就是存活的，没有反馈存活且超过半数认为其死亡则认为死亡）、无损扩容（服务端数据按slot进行组织，迁移时以slot为单位进行迁移）、提供监控和报警等服务；</li>
-<li>自研第二版：自动弹性调度（利用监控指标和阈值进行扩容和缩容）、服务端升级（引入docker）、资源隔离（物理机分区，集群分区）、大KEY扫描、读策略优化；</li>
-<li>现有系统的完善和改进：完善弹性调度、新特性（丰富数据结构、版本号、支持HashTag）、丰富监控和性能统计数据、客户端增加本地缓存功能、新客户端支持异步发送、大KEY的应急处理、支持KEY按范围扫描等。</li>
-</ul>
-<h2 id="奇虎360开源其日志搜索引擎，可处理百万亿级的数据"><a href="#奇虎360开源其日志搜索引擎，可处理百万亿级的数据" class="headerlink" title="奇虎360开源其日志搜索引擎，可处理百万亿级的数据"></a>奇虎360开源其日志搜索引擎，可处理百万亿级的数据</h2><p><a href="http://mp.weixin.qq.com/s/JhJ709gBeVNjViIFbngoRQ" target="_blank" rel="external">http://mp.weixin.qq.com/s/JhJ709gBeVNjViIFbngoRQ</a></p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/qihu_poseidon.png" alt="Poseidon"></p>
-<ul>
-<li><a href="https://github.com/Qihoo360/poseidon" target="_blank" rel="external">Poseidon</a>系统是一个日志搜索平台，可以在百万亿条、100PB 大小的日志数据中快速分析和检索；</li>
-<li>设计目标：原始数据不要额外存储、当前的Map/Reduce作业不用变更、自定义分词策略、秒级查询相应；</li>
-<li>所用技术：倒排索引（构建日志搜索引擎的核心技术）、Hadoop（用于存放原始数据和索引数据，并用来运行Map/Reduce程序来构建索引）、Java（构建索引时是用Java开发的Map/Reduce程序）、Golang（检索程序是用Golang开发的）、Redis/Memcached（用于存储 Meta 元数据信息）；</li>
-</ul>
-<h2 id="为什么说传统分布式事务不再适用于微服务架构？"><a href="#为什么说传统分布式事务不再适用于微服务架构？" class="headerlink" title="为什么说传统分布式事务不再适用于微服务架构？"></a>为什么说传统分布式事务不再适用于微服务架构？</h2><p><a href="http://mp.weixin.qq.com/s/wPeDzVk7UKMFXNWyzUyugg" target="_blank" rel="external">http://mp.weixin.qq.com/s/wPeDzVk7UKMFXNWyzUyugg</a></p>
-<ul>
-<li>传统分布式事务不是微服务中数据一致性的最佳选择：单机数据库的ACID、分布式数据库的两阶段提交协议（2PC）；对于微服务，数据是微服务私有的且SQL和NoSQL混合使用，2PC很难适用；</li>
-<li>微服务架构中应满足数据最终一致性原则：所用副本经过一段时间后最终能够达成一致；</li>
-<li>微服务架构实现最终一致性的三种模式：可靠事件模式（保证可靠事件投递和避免重复消费）、业务补偿模式（使用一个额外的协调服务来协调各个需要保证一致性的微服务，关键在于业务流水的记录）和TCC模式（一个完整的TCC业务由一个主业务服务和若干个从业务服务组成，主业务服务发起并完成整个业务活动，从服务提供三个接口Try、Confirm和Cancel）；</li>
-<li>对账是最后的终极防线</li>
-</ul>
-<h2 id="兼顾高可靠和低延迟，Google打算用QUIC协议替代TCP-UDP"><a href="#兼顾高可靠和低延迟，Google打算用QUIC协议替代TCP-UDP" class="headerlink" title="兼顾高可靠和低延迟，Google打算用QUIC协议替代TCP/UDP"></a>兼顾高可靠和低延迟，Google打算用QUIC协议替代TCP/UDP</h2><p><a href="http://mp.weixin.qq.com/s/O01HkvvpluaqzTyoxd7d8g" target="_blank" rel="external">http://mp.weixin.qq.com/s/O01HkvvpluaqzTyoxd7d8g</a></p>
-<ul>
-<li>TCP协议连接建立的成本相对较高；UDP协议是无连接协议，这样的好处是在网络传输层无需对数据包进行确认，但存在的问题就是为了确保数据传输的可靠性，应用层协议需要自己完成包传输情况的确认；QUIC协议可以在1到2个数据包内，完成连接的创建（包括TLS）；</li>
-<li>QUIC协议的主要目的，是为了整合TCP协议的可靠性和UDP协议的速度和效率。对于Google来说优化TCP协议是一个长期目标，QUIC旨在创建几乎等同于TCP的独立连接，但有着低延迟，并对类似SPDY的多路复用流协议有更好的支持。如果QUIC协议的特性被证明是有效的，这些特性以后可能会被迁移入后续版本的TCP和TLS协议（它们都有很长的开发周期）。</li>
-<li>QUIC协议特性：避免前序包阻塞、减少数据包、向前纠错、会话重启和并行下载；</li>
-</ul>
-<h2 id="配置高性能ElasticSearch集群的9个小贴士"><a href="#配置高性能ElasticSearch集群的9个小贴士" class="headerlink" title="配置高性能ElasticSearch集群的9个小贴士"></a>配置高性能ElasticSearch集群的9个小贴士</h2><p><a href="http://mp.weixin.qq.com/s/jfXxpQXxvPzpFG_NOd6j0A" target="_blank" rel="external">http://mp.weixin.qq.com/s/jfXxpQXxvPzpFG_NOd6j0A</a></p>
-<ul>
-<li>规划索引、分片以及集群增长情况</li>
-<li>在配置前了解集群的拓扑结构：设置Master Node和Data Node；</li>
-<li>内存设置：”bootstrap.mloclall: true”允许ES节点不交换内存；</li>
-<li>discovery.zen属性控制ElasticSearch的发现协议：discover.zen.fd.ping_timeout属性控制超时、discovery.zen.minimum_master_nodes属性决定了有资格作为master的节点的最小数量、discovery.zen.ping.unicast.hosts属性指定一组通信主机；</li>
-<li>当心DELETE _all：通过设置action.destructive_requires_name:true来禁用；</li>
-<li>使用Doc Values：本质上是将ES转换成一个列式存储，从而使ES的许多分析类特性在性能上远超预期；</li>
-<li>ElasticSearch配额类属性设置指南：属性cluster.routing.allocation.cluster_concurrent_rebalance决定了允许并发再平衡的分片数量，属性cluster.routing.allocation.disk.threshold_enabled值为true（默认值），在分配分片到一个节点时将会把可用的磁盘空间算入配额内。</li>
-<li>Recovery属性允许快速重启</li>
-<li>线程池属性防止数据丢失</li>
-</ul>
-<h2 id="基于-Kafka-和-ElasticSearch，LinkedIn是如何构建实时日志分析系统的？"><a href="#基于-Kafka-和-ElasticSearch，LinkedIn是如何构建实时日志分析系统的？" class="headerlink" title="基于 Kafka 和 ElasticSearch，LinkedIn是如何构建实时日志分析系统的？"></a>基于 Kafka 和 ElasticSearch，LinkedIn是如何构建实时日志分析系统的？</h2><p><a href="http://mp.weixin.qq.com/s/4dkaOWtEw-weLBI73A0JzQ" target="_blank" rel="external">http://mp.weixin.qq.com/s/4dkaOWtEw-weLBI73A0JzQ</a></p>
-<ul>
-<li>V1方案是ELK（Log通过Logstash读出来放到Elasticsearch中，然后Kibana去读）；存在Logstash Agent维护不理想和log标准化问题；</li>
-<li>V2引入Kafka后，不需要每个host上都有Agent；通过Java Container Logger处理不同类型的日志；</li>
-<li>V3按照业务功能拆分ELK Cluster；将Logstash和Elasticsearch分开运行；</li>
-<li>V4引入Tribe解决跨数据中心Elasticsearch集群性能问题；</li>
-<li>V5采用冷热分区解决数据访问速度问题；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/linkin_log.png" alt="LinkedIn日志系统演进现状"></p>
-<h2 id="究竟啥才是互联网架构“高可用”"><a href="#究竟啥才是互联网架构“高可用”" class="headerlink" title="究竟啥才是互联网架构“高可用”"></a>究竟啥才是互联网架构“高可用”</h2><p><a href="http://mp.weixin.qq.com/s/7nfSvxZ4vJAxpIN5rCdaCw" target="_blank" rel="external">http://mp.weixin.qq.com/s/7nfSvxZ4vJAxpIN5rCdaCw</a></p>
-<ul>
-<li>单点是系统高可用的大敌，高可用保证的原则是集群化或者叫冗余。通过自动故障转移来实现系统的高可用；</li>
-<li>整个互联网分层系统架构的高可用，又是通过每一层的冗余+自动故障转移来综合实现的，具体的：<br>（1）【客户端层】到【反向代理层】的高可用，是通过反向代理层的冗余实现的，常见实践是keepalived + virtual IP自动故障转移<br>（2）【反向代理层】到【站点层】的高可用，是通过站点层的冗余实现的，常见实践是nginx与web-server之间的存活性探测与自动故障转移<br>（3）【站点层】到【服务层】的高可用，是通过服务层的冗余实现的，常见实践是通过service-connection-pool来保证自动故障转移<br>（4）【服务层】到【缓存层】的高可用，是通过缓存数据的冗余实现的，常见实践是缓存客户端双读双写，或者利用缓存集群的主从数据同步与sentinel保活与自动故障转移；更多的业务场景，对缓存没有高可用要求，可以使用缓存服务化来对调用方屏蔽底层复杂性<br>（5）【服务层】到【数据库“读”】的高可用，是通过读库的冗余实现的，常见实践是通过db-connection-pool来保证自动故障转移<br>（6）【服务层】到【数据库“写”】的高可用，是通过写库的冗余实现的，常见实践是keepalived + virtual IP自动故障转移</li>
-</ul>
-<h2 id="究竟啥才是互联网架构“高并发”"><a href="#究竟啥才是互联网架构“高并发”" class="headerlink" title="究竟啥才是互联网架构“高并发”"></a>究竟啥才是互联网架构“高并发”</h2><p><a href="http://mp.weixin.qq.com/s/AMPIwgParjbLUBuCxUCYmw" target="_blank" rel="external">http://mp.weixin.qq.com/s/AMPIwgParjbLUBuCxUCYmw</a></p>
-<p>高并发（High Concurrency）是互联网分布式系统架构设计中必须考虑的因素之一，它通常是指，通过设计保证系统能够同时并行处理很多请求。提高系统并发能力的方式，方法论上主要有两种：垂直扩展（Scale Up）与水平扩展（Scale Out）。前者垂直扩展可以通过提升单机硬件性能，或者提升单机架构性能，来提高并发性，但单机性能总是有极限的，互联网分布式架构设计高并发终极解决方案还是后者：水平扩展。<br>互联网分层架构中，各层次水平扩展的实践又有所不同：<br>（1）反向代理层可以通过“DNS轮询”的方式来进行水平扩展；<br>（2）站点层可以通过nginx来进行水平扩展；<br>（3）服务层可以通过服务连接池来进行水平扩展；<br>（4）数据库可以按照数据范围，或者数据哈希的方式来进行水平扩展；<br>各层实施水平扩展后，能够通过增加服务器数量的方式来提升系统的性能，做到理论上的性能无限。</p>
-<h2 id="自动化单元测试的落地方法，高效高质量部署并不难！"><a href="#自动化单元测试的落地方法，高效高质量部署并不难！" class="headerlink" title="自动化单元测试的落地方法，高效高质量部署并不难！"></a>自动化单元测试的落地方法，高效高质量部署并不难！</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650995338&amp;idx=1&amp;sn=a9b14ea359a00b48c9bb5483e058b860" target="_blank" rel="external">https://mp.weixin.qq.com/s?__biz=MjM5MDE0Mjc4MA==&amp;mid=2650995338&amp;idx=1&amp;sn=a9b14ea359a00b48c9bb5483e058b860</a></p>
-<ul>
-<li>是否值得：Martin Fowler在博客中解释了TestPyramid，单元测试是整个金字塔的基石；实施单元测试，并不代表你的生产效率能提高迅猛，反而有时候阻碍了瞬间的生产效率，但是它最直接的是提升产品质量，从而提升市场的形象，间接才会提升生产效率；</li>
-<li>关键部分：自动化单元测试有四个关键组成部分要做到统一，如下图所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/unit_test_key.png" alt="自动化单元测试的关键部分"></p>
-<ul>
-<li>遵循流程：自动化单元测试的典型工作流程如下：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/unit_test_flow.png" alt="典型工作流程"></p>
-<ul>
-<li>自动化单元测试原则：隔离UI操作；隔离数据库以及文件读写网络开销等操作；使用Mock替身与Spring容器隔离；设计简单的测试；定义测试套件的运行时间；</li>
-<li>落地实践：Jenkins配置构建触发器推荐使用PollSCM；在Maven的pom.xml中配置sonar服务器信息；所有单元测试继承MockitoTestContext父类使Mockito相关注解生效；</li>
-<li>最后，来一张图总结使用自动化单元测试前后的对比：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/unit_test_compare.png" alt="使用前后对比"></p>
-<h2 id="十分钟入门RocketMQ"><a href="#十分钟入门RocketMQ" class="headerlink" title="十分钟入门RocketMQ"></a>十分钟入门RocketMQ</h2><p><a href="http://jm.taobao.org/2017/01/12/rocketmq-quick-start-in-10-minutes/" target="_blank" rel="external">http://jm.taobao.org/2017/01/12/rocketmq-quick-start-in-10-minutes/</a></p>
-<ul>
-<li>消息中间件需要解决哪些问题：发布订阅、消息优先级、消息有序性、消息过滤、消息持久化、消息可靠性、低延时、消息必须投递一次、消息只能被发送和消费一次、Broker的buffer满了怎么办、回溯消费、消息堆积、分布式事务、定时消息、消息重试；</li>
-<li>RocketMQ的特点：是一个队列模型的消息中间件，具有高性能、高可靠、高实时、分布式特点；Producer、Consumer、队列都可以分布式；Producer向一些队列轮流发送消息，队列集合称为Topic，Consumer如果做广播消费，则一个consumer实例消费这个Topic对应的所有队列，如果做集群消费，则多个Consumer实例平均消费这个topic对应的队列集合；能够保证严格的消息顺序；提供丰富的消息拉取模式；高效的订阅者水平扩展能力；实时的消息订阅机制；亿级消息堆积能力；较少的依赖；</li>
-<li>RocketMQ物理部署结构：Name Server是一个几乎无状态节点，可集群部署，节点之间无任何信息同步；Broker部署相对复杂，Broker分为Master与Slave，一个Master可以对应多个Slave，但是一个Slave只能对应一个Master，Master与Slave的对应关系通过指定相同的BrokerName，不同的BrokerId来定义，BrokerId为0表示Master，非0表示Slave，Master也可以部署多个，每个Broker与Name Server集群中的所有节点建立长连接，定时注册Topic信息到所有Name Server；Producer与Name Server集群中的其中一个节点（随机选择）建立长连接，定期从Name Server取Topic路由信息，并向提供Topic服务的Master建立长连接，且定时向Master发送心跳，Producer完全无状态，可集群部署；Consumer与Name Server集群中的其中一个节点（随机选择）建立长连接，定期从Name Server取Topic路由信息，并向提供Topic服务的Master、Slave建立长连接，且定时向Master、Slave发送心跳，Consumer既可以从Master订阅消息，也可以从Slave订阅消息，订阅规则由Broker配置决定；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/rocketmq_1.png" alt="RocketMQ物理部署结构"></p>
-<ul>
-<li>RocketMQ逻辑部署结构：如下图所示，RocketMQ的逻辑部署结构有Producer Group和Consumer Group；</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/rocketmq_2.png" alt="RocketMQ逻辑部署结构"></p>
-<ul>
-<li>Rocket数据存储结构：如下图所示，采取了一种数据与索引分离的存储方法，有效降低文件资源、IO资源、内存资源的消耗。</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/rocketmq_3.png" alt="RocketMQ数据存储结构"></p>
-<h2 id="NetflixOSS：Hollow正式发布"><a href="#NetflixOSS：Hollow正式发布" class="headerlink" title="NetflixOSS：Hollow正式发布"></a>NetflixOSS：Hollow正式发布</h2><p><a href="http://www.infoq.com/cn/articles/netflixoss-hollow-officially-released" target="_blank" rel="external">http://www.infoq.com/cn/articles/netflixoss-hollow-officially-released</a></p>
-<ul>
-<li><a href="http://hollow.how/" target="_blank" rel="external">Hollow</a>是一种Java库，为中小规模的内存中数据集提供了一套全面的工具，适合从单一生成方到多个消耗方等不同场景下的数据只读访问；它会根据数据集调整自己的规模；</li>
-<li>Hollow在内存中保留一份完整的、可供使用的只读数据集，借此可规避从不完整的缓存中更新和逐出数据所产生的后果；</li>
-<li>Hollow不仅有助于改善性能，还可以大幅促进团队处理与数据有关的任务时的敏捷性；Hollow可根据指定的数据规模自动生成自定义API，可以极为迅速地将包含当前数据或过去时点的整个生成数据集分流到本地开发工作站，还包含大量已经开发完成可以使用的工具；</li>
-<li>数据集具体变化的时间线可拆分为多个离散的数据状态，每个状态都是数据在特定时间的一个完整快照；Hollow可自动生成不同状态之间的增量，因此消耗方只需做最少量的工作即可保持自己所用数据为最新版本；Hollow会自动进行数据去重，借此将消耗方所有数据集的堆占用空间将至最低；</li>
-<li>Hollow并未使用POJO作为内存中的具体呈现，而是使用了一种更紧凑的定长强类型数据编码方式；该编码方式可将数据集的堆占用空间和随时访问数据的CPU消耗降至最低；所有编码后的记录会打包为可重用的内存块（Slab），并在JVM堆的基础之上进行池化，借此避免服务器高负载时对GC行为产生影响；以下是Object类型记录在内存中布局方式的一种范例：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/hollow_1.png" alt="Hollow对象内存布局"></p>
-<ul>
-<li>Hollow技术的核心在于通过不同方式对数据创建的索引，以便可灵活访问数据中的相关记录，并构成强大的访问模式，而无须考虑数据模型最初的设计是否考虑过这种访问模式；</li>
-<li>Hollow的配套工具非常易于设置和使用，历史工具可用于检测记录在一段时间以来的变化情况；</li>
-</ul>
-<p><strong>免责声明：相关链接版本为原作者所有，如有侵权，请告知删除。</strong></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;关键字：架构, 微服务，消息中间件，性能调优，Elasticsearch，缓存，RPC，日志分析，平台化，DistributedLog，监控，负载均衡，高性能，高并发，高可用。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="Reading Record" scheme="http://ginobefunny.com/categories/Reading-Record/"/>
-    
-    
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
-    
-      <category term="微服务" scheme="http://ginobefunny.com/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/"/>
-    
-      <category term="DistributedLog" scheme="http://ginobefunny.com/tags/DistributedLog/"/>
-    
-      <category term="RPC" scheme="http://ginobefunny.com/tags/RPC/"/>
-    
-      <category term="性能调优" scheme="http://ginobefunny.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
-    
-      <category term="高性能" scheme="http://ginobefunny.com/tags/%E9%AB%98%E6%80%A7%E8%83%BD/"/>
-    
-      <category term="高并发" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/"/>
-    
-      <category term="高可用" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
-    
-      <category term="架构" scheme="http://ginobefunny.com/tags/%E6%9E%B6%E6%9E%84/"/>
-    
-      <category term="消息中间件" scheme="http://ginobefunny.com/tags/%E6%B6%88%E6%81%AF%E4%B8%AD%E9%97%B4%E4%BB%B6/"/>
-    
-      <category term="缓存" scheme="http://ginobefunny.com/tags/%E7%BC%93%E5%AD%98/"/>
-    
-      <category term="日志分析" scheme="http://ginobefunny.com/tags/%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/"/>
-    
-      <category term="平台化" scheme="http://ginobefunny.com/tags/%E5%B9%B3%E5%8F%B0%E5%8C%96/"/>
-    
-      <category term="监控" scheme="http://ginobefunny.com/tags/%E7%9B%91%E6%8E%A7/"/>
-    
-      <category term="负载均衡" scheme="http://ginobefunny.com/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/"/>
     
   </entry>
   

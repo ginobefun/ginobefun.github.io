@@ -4,6 +4,40 @@
 
     
     
+  <url>
+    <loc>http://ginobefunny.com/post/learning_amqp/</loc>
+    <lastmod>2017-03-30T09:28:13.019Z</lastmod>
+    <data>
+        <display>
+        <title>AMQP学习小记</title>
+        <pubTime>2017-03-30T09:21:03.000Z</pubTime>
+        
+        <tag>分布式队列</tag>
+         
+        <tag>RabbitMQ</tag>
+         
+        <tag>AMQP</tag>
+         
+        <tag>生产者</tag>
+         
+        <tag>消费者</tag>
+         
+        <tag>队列</tag>
+         
+        <tag>交换器</tag>
+         
+        <tag>绑定</tag>
+         
+         
+           
+             
+              <breadCrumb title="OpenSource" url="http://ginobefunny.com/categories/OpenSource/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
@@ -105,11 +139,11 @@
          
         <tag>word2vec</tag>
          
-        <tag>个性化</tag>
-         
         <tag>搜索</tag>
          
         <tag>推荐</tag>
+         
+        <tag>个性化</tag>
          
          
            
@@ -336,11 +370,11 @@
          
         <tag>虚拟机</tag>
          
+        <tag>字节码</tag>
+         
         <tag>类文件</tag>
          
         <tag>常量池</tag>
-         
-        <tag>字节码</tag>
          
          
            
@@ -448,11 +482,11 @@
          
         <tag>虚拟机</tag>
          
-        <tag>字节码</tag>
-         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
+         
+        <tag>字节码</tag>
          
         <tag>执行引擎</tag>
          
