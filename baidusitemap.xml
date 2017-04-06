@@ -4,6 +4,7 @@
 
     
     
+    
   <url>
     <loc>http://ginobefunny.com/post/learning_amqp/</loc>
     <lastmod>2017-03-30T09:28:13.019Z</lastmod>
@@ -37,7 +38,6 @@
     </data>
     </url>
 
-    
     
   <url>
     <loc>http://ginobefunny.com/post/reading_record_201703/</loc>
@@ -370,11 +370,11 @@
          
         <tag>虚拟机</tag>
          
-        <tag>字节码</tag>
-         
         <tag>类文件</tag>
          
         <tag>常量池</tag>
+         
+        <tag>字节码</tag>
          
          
            
@@ -404,13 +404,13 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>HotSpot</tag>
          
+        <tag>编译器</tag>
+         
         <tag>即时编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
@@ -482,17 +482,17 @@
          
         <tag>虚拟机</tag>
          
-        <tag>类加载器</tag>
-         
-        <tag>双亲委派</tag>
-         
         <tag>字节码</tag>
-         
-        <tag>执行引擎</tag>
          
         <tag>编译器</tag>
          
         <tag>解释器</tag>
+         
+        <tag>类加载器</tag>
+         
+        <tag>双亲委派</tag>
+         
+        <tag>执行引擎</tag>
          
          
            
