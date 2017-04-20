@@ -4,6 +4,30 @@
 
     
     
+  <url>
+    <loc>http://ginobefunny.com/post/reading_record_201704/</loc>
+    <lastmod>2017-04-20T06:51:53.422Z</lastmod>
+    <data>
+        <display>
+        <title>阅读随手记-201704</title>
+        <pubTime>2017-04-08T05:25:52.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>微服务</tag>
+         
+        <tag>架构</tag>
+         
+         
+           
+             
+              <breadCrumb title="Reading Record" url="http://ginobefunny.com/categories/Reading-Record/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
   <url>
     <loc>http://ginobefunny.com/post/learning_amqp/</loc>
@@ -404,13 +428,13 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>HotSpot</tag>
          
+        <tag>编译器</tag>
+         
         <tag>即时编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
@@ -484,15 +508,15 @@
          
         <tag>字节码</tag>
          
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
+         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
          
         <tag>执行引擎</tag>
-         
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
          
          
            

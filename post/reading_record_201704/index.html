@@ -1,0 +1,1124 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Elasticsearch,微服务,架构," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="关键字：微服务, 架构, Elasticsearch。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="阅读随手记-201704">
+<meta property="og:url" content="http://ginobefunny.com/post/reading_record_201704/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="关键字：微服务, 架构, Elasticsearch。">
+<meta property="og:updated_time" content="2017-04-20T06:51:53.422Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="阅读随手记-201704">
+<meta name="twitter:description" content="关键字：微服务, 架构, Elasticsearch。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/reading_record_201704/"/>
+
+
+
+
+
+  <title> 阅读随手记-201704 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/reading_record_201704/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                阅读随手记-201704
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-08T13:25:52+08:00">
+                2017-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Reading-Record/" itemprop="url" rel="index">
+                    <span itemprop="name">Reading Record</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>关键字：微服务, 架构, Elasticsearch。<br><a id="more"></a></p>
+<h3 id="Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇"><a href="#Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇" class="headerlink" title="Elasticsearch前沿：ES 5.x改进详解与ES6展望  曾勇"></a><a href="https://mp.weixin.qq.com/s/yVbZfE7oWGmnfmcFTeSV4w" target="_blank" rel="external">Elasticsearch前沿：ES 5.x改进详解与ES6展望</a>  曾勇</h3><ul>
+<li>如果你的场景是日志，那么基本上数据进去之后是不需要进行修改的，所以现在ES新增了一个append-only的索引模式，也就是当ES是自动生成ID的时候，ES可以跳过不必要的版本检测，<strong>大概可以提升20%左右的索引性能</strong>。</li>
+<li>在数据结构方面，新增了多个range字段类型，现在你可以计算连续数据的交并集，可以是时间范围，也可以是数值范围。</li>
+<li>下一个特性值得介绍的就是<strong>_all 字段的移除</strong>，去掉_all字段之后，磁盘占用少了不少，索引性能也有一些提升。</li>
+<li>现在有一个新的高亮器：Unified Highlighter，大家可能会问，目前ES默认已经提供了3种不同的高亮器，为什么还会有一个新的轮子呢，因为之前的用法有点复杂, 用户选择起来比较困难，新的unified highlighter目的就是简化高亮的使用，可以支持前面3种高亮类型的自动选择。</li>
+<li>还有一个是keyword类型可以通过normalizer来进行标准化了，keyword类型相比text类型就是不能分词，但是可能同样需要进行相应的标准化处理，比如统一转成小写，移除标点符号等等，使用方式和analyzer一样。</li>
+<li>另一个就是Multi-Word Synonyms，之前是不支持同义词中间有空格分割的，分词的时候会帮你切分开，搜索的时候不能正确处理词组这种同义词。</li>
+<li>同义词现在可以支持词组了，也就是说同义词如果是由多个词组成的，不会在分词的时候被傻傻的拆开，而是正确的处理。</li>
+<li>还一个就是字段折叠（ Field collapsing），这个特性比较有意思，你可以在搜索的时候，按某个字段作为维度进行去重，我这里写过一篇详细的博客，有兴趣的可以去看看：<a href="http://elasticsearch.cn/article/132" target="_blank" rel="external">http://elasticsearch.cn/article/132</a></li>
+<li>ES的搜索，对于一些耗时较长的查询，现在可以通过ES的任务管理机制来进行取消了，感兴趣的可以查看文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.3/search.html#global-search-cancellation" target="_blank" rel="external">https://www.elastic.co/guide/en/elasticsearch/reference/5.3/search.html#global-search-cancellation</a></li>
+<li>现在term aggs提供了一种分区的概念，你可以对一个字段，分n次进行聚合，分而治之，有兴趣的可以看看文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/5.3/search-aggregations-bucket-terms-aggregation.html#_filtering_values_with_partitions" target="_blank" rel="external">https://www.elastic.co/guide/en/elasticsearch/reference/5.3/search-aggregations-bucket-terms-aggregation.html#_filtering_values_with_partitions</a></li>
+<li>当你的集群变红的时候，新增的 /_cluster/allocation/explain 接口能够直接告诉你哪里出了问题；</li>
+<li>Java REST Client也有了更新，ES之前提供了一个偏底层的Java HTTP REST client，但是用起来太费劲，需要手动拼 JSON，现在Java REST Client分成了Java High Level REST Client和Java Low Level REST Client， High Level基于Low Level来实现，顾名思义，提供更多用户方便的接口调用，High Level REST Client将提供和Transport Client类似的接口，不用手动去拼接QueryDSL的JSON了，目测在 5.5 版本提供。</li>
+<li>以前的搜索的reduce操作都是要等到把每个分片的结果都拿到本地之后再做合并，现在新增的batched search reduce phases提供了分批进行reduce的行为，也就是不用全部拿到之后再做reduce，而是拿到足够的分配（默认512）之后就开始做reduce，然后拿到合并结果，释放相关的资源。</li>
+<li>ES 6.0展望：稀疏性Doc Values的支持；Index sorting，即在索引阶段的排序，即我们查询的时候有时候会根据某个字段的值进行排序，比如时间、编号等等；顺序号的支持，每个es的操作都有一个顺序编号，这个属于es内部的一个功能，可以提供快速的分片副本恢复或同步、跨数据中心的节点恢复、甚至提供一个Changes API 等；无缝滚动升级，使之能够从5的最后一个版本滚动升级到6的最后一个版本，不需要集群的完整重启。</li>
+</ul>
+<h3 id="Elasticsearch-5-x-字段折叠的使用-medcl"><a href="#Elasticsearch-5-x-字段折叠的使用-medcl" class="headerlink" title="Elasticsearch 5.x 字段折叠的使用 medcl"></a><a href="http://elasticsearch.cn/article/132" target="_blank" rel="external">Elasticsearch 5.x 字段折叠的使用</a> medcl</h3><ul>
+<li>什么是字段折叠，可以理解就是按特定字段进行合并去重，比如我们有一个菜谱搜索，我希望按菜谱的“菜系”字段进行折叠，即返回结果每个菜系都返回一个结果，也就是按菜系去重，我搜索关键字“鱼”，要去返回的结果里面各种菜系都有，有湘菜，有粤菜，有中餐，有西餐，别全是湘菜，就是这个意思，通过按特定字段折叠之后，来丰富搜索结果的多样性。</li>
+<li>有人肯定会想到，使用term agg+ top hits agg来实现啊，这种组合两种聚和的方式可以实现上面的功能，不过也有一些局限性，比如，不能分页、结果不够精确以及数据量大的情况下聚合比较慢。</li>
+<li>而新的的字段折叠的方式是怎么实现的的呢，有这些要点：折叠+取inner_hits分两阶段执行，所以top hits永远是精确的；字段折叠只在top hits层执行，不需要每次都在完整的结果集上对为每个折叠主键计算实际的doc values值，和term agg 相比要节省很多内存；因为只在top hits上进行折叠，所以相比组合聚合的方式，速度要快很多；折叠top docs不需要使用全局序列来转换string，相比agg这也节省了很多内存；分页成为可能，和常规搜索一样，具有相同的局限，先获取from+size的内容，再合并；search_after和scroll暂未实现，不过具备可行性；折叠只影响搜索结果，不影响聚合，搜索结果的total是所有的命中纪录数，去重的结果数未知（无法计算）。</li>
+<li>来个例子：</li>
+</ul>
+<pre><code>PUT recipes
+POST recipes/type/_mapping
+{
+  &quot;properties&quot;: {
+    &quot;name&quot;:{
+      &quot;type&quot;: &quot;text&quot;
+    },
+    &quot;rating&quot;:{
+      &quot;type&quot;: &quot;float&quot;
+    },&quot;type&quot;:{
+      &quot;type&quot;: &quot;keyword&quot;
+    }
+  }
+}
+
+
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;清蒸鱼头&quot;,&quot;rating&quot;:1,&quot;type&quot;:&quot;湘菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;剁椒鱼头&quot;,&quot;rating&quot;:2,&quot;type&quot;:&quot;湘菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;红烧鲫鱼&quot;,&quot;rating&quot;:3,&quot;type&quot;:&quot;湘菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;鲫鱼汤（辣）&quot;,&quot;rating&quot;:3,&quot;type&quot;:&quot;湘菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;鲫鱼汤（微辣）&quot;,&quot;rating&quot;:4,&quot;type&quot;:&quot;湘菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;鲫鱼汤（变态辣）&quot;,&quot;rating&quot;:5,&quot;type&quot;:&quot;湘菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;广式鲫鱼汤&quot;,&quot;rating&quot;:5,&quot;type&quot;:&quot;粤菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;鱼香肉丝&quot;,&quot;rating&quot;:2,&quot;type&quot;:&quot;川菜&quot;
+}
+POST recipes/type/
+{
+  &quot;name&quot;:&quot;奶油鲍鱼汤&quot;,&quot;rating&quot;:2,&quot;type&quot;:&quot;西菜&quot;
+} 
+
+GET recipes/type/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;name&quot;: &quot;鱼&quot;
+    }
+  },
+  &quot;collapse&quot;: {
+    &quot;field&quot;: &quot;type&quot;,
+    &quot;inner_hits&quot;: {
+      &quot;name&quot;: &quot;top_rated&quot;,
+      &quot;size&quot;: 2,
+      &quot;sort&quot;: [
+        {
+          &quot;rating&quot;: &quot;desc&quot;
+        }
+      ]
+    }
+  },
+  &quot;sort&quot;: [
+    {
+      &quot;rating&quot;: {
+        &quot;order&quot;: &quot;desc&quot;
+      }
+    }
+  ],
+  &quot;size&quot;: 2,
+  &quot;from&quot;: 0
+}
+</code></pre><h3 id="如何做出搜索和推荐深度融合的兴趣引擎架构-田明军"><a href="#如何做出搜索和推荐深度融合的兴趣引擎架构-田明军" class="headerlink" title="如何做出搜索和推荐深度融合的兴趣引擎架构 田明军"></a><a href="https://mp.weixin.qq.com/s/7DOj5Hed3Q4Crr8ng4TeBw" target="_blank" rel="external">如何做出搜索和推荐深度融合的兴趣引擎架构</a> 田明军</h3><h3 id="携程实时用户行为系统实践-陈清渠"><a href="#携程实时用户行为系统实践-陈清渠" class="headerlink" title="携程实时用户行为系统实践  陈清渠"></a><a href="https://mp.weixin.qq.com/s/OJdlpP62YWGmVnBWsfpVZw" target="_blank" rel="external">携程实时用户行为系统实践</a>  陈清渠</h3>
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat.jpg" alt="Gino Zhang wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫一扫，关注我的微信公众号</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          
+            <a href="/tags/微服务/" rel="tag"># 微服务</a>
+          
+            <a href="/tags/架构/" rel="tag"># 架构</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/learning_amqp/" rel="next" title="AMQP学习小记">
+                <i class="fa fa-chevron-left"></i> AMQP学习小记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/reading_record_201704/"
+           data-title="阅读随手记-201704" data-url="http://ginobefunny.com/post/reading_record_201704/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">117</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/ginobefun" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/0ffaa3601861" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-gift"></i>
+                  
+                  JianShu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangnan.tech/" title="王楠的博客" target="_blank">王楠的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://toutiao.io/subjects/160373" title="开发者头条" target="_blank">开发者头条</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.yohobuy.com/" title="Yoho!Buy" target="_blank">Yoho!Buy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://theme-next.iissnan.com/" title="Hexo Next Theme" target="_blank">Hexo Next Theme</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch前沿：ES 5.x改进详解与ES6展望  曾勇</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch-5-x-字段折叠的使用-medcl"><span class="nav-number">2.</span> <span class="nav-text">Elasticsearch 5.x 字段折叠的使用 medcl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何做出搜索和推荐深度融合的兴趣引擎架构-田明军"><span class="nav-number">3.</span> <span class="nav-text">如何做出搜索和推荐深度融合的兴趣引擎架构 田明军</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#携程实时用户行为系统实践-陈清渠"><span class="nav-number">4.</span> <span class="nav-text">携程实时用户行为系统实践  陈清渠</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
