@@ -94,9 +94,9 @@
 <meta property="og:description" content="关键字：微服务, 架构, Elasticsearch。">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/cqrs-arch.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/DDD_Aggregation_Example.png">
-<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/LaW7jDBKBg20ygGehFf5yZsSibbeicKAhQIfHvSlSVf2vUCq6XB4L1ST5qpfHmpccJr8GE9JsV4nC2v5T0IA6cFw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:image" content="http://mmbiz.qpic.cn/mmbiz_png/LaW7jDBKBg20ygGehFf5yZsSibbeicKAhQgA63ZZZx0WjJJQF8d7lROgAjrxKdD41F4XqyOasDpU60kPPGgJFCEQ/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1">
-<meta property="og:updated_time" content="2017-04-25T09:54:06.621Z">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Actor_Model.jpg">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/CQRS_ES_Arch.jpg">
+<meta property="og:updated_time" content="2017-04-25T10:04:01.469Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="阅读随手记-201704">
 <meta name="twitter:description" content="关键字：微服务, 架构, Elasticsearch。">
@@ -545,11 +545,11 @@ GET recipes/type/_search
 <li><strong>Event Sourcing VS CRUD</strong>：对于CRUD，DB的记录可变，可以增删改；对于ES，没有更新、删除，只有Append Event，不可变。</li>
 <li><strong>Actor Model</strong>：其核心思想是对象直接不会直接调用来通信，而是通过发消息来通信。每个Actor都有一个Mailbox，它收到的所有的消息都会先放入Mailbox中，然后Actor内部单线程处理Mailbox中的消息。从而保证对同一个Actor的任何消息的处理，都是线性的，无并发冲突。从全局上来看，就是整个系统中，有很多的Actor，每个Actor都在处理自己Mailbox中的消息，Actor之间通过发消息来通信。Akka框架就是实现Actor模型的并行开发框架，并且Akka框架融入了聚合、In-Memory、Event Sourcing这些概念。Actor非常适合作为DDD聚合根。Actor的状态修改是由事件驱动的，事件被持久化起来，然后通过Event Sourcing的技术，还原特定Actor的最新状态到内存。</li>
 </ul>
-<p><img src="http://mmbiz.qpic.cn/mmbiz_png/LaW7jDBKBg20ygGehFf5yZsSibbeicKAhQIfHvSlSVf2vUCq6XB4L1ST5qpfHmpccJr8GE9JsV4nC2v5T0IA6cFw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="Actor Model"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Actor_Model.jpg" alt="Actor Model"></p>
 <ul>
 <li>下图是<strong>CQRS架构的典型架构图</strong>。CQRS架构的核心出发点是将整个系统的架构分割为读和写两部分，从而方便我们对读写两端进行分开优化；CQRS架构的一致性模型为最终一致性。采用CQRS架构的一个前提是，你的系统要接受系统使用者查询到的数据可能不是最新的，而是有几个毫秒的延迟。</li>
 </ul>
-<p><img src="http://mmbiz.qpic.cn/mmbiz_png/LaW7jDBKBg20ygGehFf5yZsSibbeicKAhQgA63ZZZx0WjJJQF8d7lROgAjrxKdD41F4XqyOasDpU60kPPGgJFCEQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1" alt="CQRS架构"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/CQRS_ES_Arch.jpg" alt="CQRS架构"></p>
 <ul>
 <li><strong>CQRS架构的适用场景</strong>：当我们的应用的写模型和读模型差别比较大时；当我们希望实践DDD时，因为CQRS架构可以让我们实现领域模型不受任何ORM框架带来的对象和数据库的阻抗失衡的影响；当我们希望对系统的查询性能和写入性能分开进行优化时，尤其是读/写比非常高的系统，CQ分离是必须的；当我们希望我们的系统同时满足高并发的写、高并发的读的时候；因为CQRS架构可以做到C端最大化的写，Q端非常方便的提供可扩展的读模型。</li>
 <li><strong>C端的命令执行流程</strong>：发送命令到分布式MQ；然后命令的订阅者处理命令；订阅者内部根据不同的命令调用不同的Command Handler进行处理；Command Handler内部根据命令所指定的聚合根ID从In-Memory内存中直接获取聚合根对象的引用，然后操作聚合根对象；聚合根对象状态发生变化并产生事件；框架负责自动持久化事件到Event Storage；框架负责将事件发布到Event MQ；Event订阅者订阅事件，然后调用对应的Event Handler进行处理，如更新Data Storage；</li>
