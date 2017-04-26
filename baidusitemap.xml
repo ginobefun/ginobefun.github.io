@@ -5,7 +5,7 @@
     
   <url>
     <loc>http://ginobefunny.com/post/reading_record_201704/</loc>
-    <lastmod>2017-04-25T10:04:01.469Z</lastmod>
+    <lastmod>2017-04-26T03:02:49.207Z</lastmod>
     <data>
         <display>
         <title>阅读随手记-201704</title>
@@ -161,11 +161,11 @@
         
         <tag>Elasticsearch</tag>
          
-        <tag>word2vec</tag>
-         
         <tag>搜索</tag>
          
         <tag>推荐</tag>
+         
+        <tag>word2vec</tag>
          
         <tag>个性化</tag>
          
@@ -428,13 +428,13 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>HotSpot</tag>
          
+        <tag>编译器</tag>
+         
         <tag>即时编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
@@ -508,15 +508,15 @@
          
         <tag>字节码</tag>
          
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
+         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
          
         <tag>执行引擎</tag>
-         
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
          
          
            
