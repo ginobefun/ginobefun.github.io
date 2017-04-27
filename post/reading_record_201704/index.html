@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="微服务,Elasticsearch,架构," />
+  <meta name="keywords" content="Elasticsearch,微服务,架构," />
 
 
 
@@ -124,7 +124,7 @@
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Elastic_Job_Structure.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Elastic_Job_Cloud_Structure.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Serverless_example.jpg">
-<meta property="og:updated_time" content="2017-04-27T07:25:34.794Z">
+<meta property="og:updated_time" content="2017-04-27T07:34:34.893Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="阅读随手记 201704">
 <meta name="twitter:description" content="关键字：微服务, 架构, Elasticsearch。">
@@ -757,7 +757,8 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
 <h3 id="2017年会是Serverless爆发之年吗？-麦克周"><a href="#2017年会是Serverless爆发之年吗？-麦克周" class="headerlink" title="2017年会是Serverless爆发之年吗？ 麦克周"></a><a href="https://mp.weixin.qq.com/s/vQ22_disiOIbfOHz95Ls-w" target="_blank" rel="external">2017年会是Serverless爆发之年吗？</a> 麦克周</h3><ul>
 <li>开发人员进行业务开发时，仍然需要关心很多和服务器相关的服务端开发工作，比如缓存、消息服务、Web应用服务器、数据库，以及对服务器进行性能优化，还需要考虑存储和计算资源，考虑负载均衡和横向扩展能力，考虑服务器容灾稳定性等非专业逻辑的开发。这些服务器的运维和开发知识、经验极大地限制了开发者进行业务开发的效率。</li>
 <li>2014年，云厂商AWS推出了“无服务器”的范式服务。最初“无服务器”意在帮助开发者摆脱运行后端应用程序所需的服务器设备的设置和管理工作。这项技术的目标并不是为了实现真正意义上的“无服务器”，而是指由第三方供应商负责后端基础结构的维护，以服务的方式为开发者提供所需功能。现在，无服务器架构是指大量依赖第三方服务(也叫做后端即服务，即“BaaS”)或暂存容器中运行的自定义代码(函数即服务，即“FaaS”)的应用程序，函数是无服务器架构中抽象语言运行时的最小单位，在这种架构中，我们并不看重运行一个函数需要多少CPU或RAM或任何其他资源，而是更看重运行函数所需的时间，我们也只为这些函数的运行时间付费。无服务器架构中函数可以多种方式触发，如定期运行函数的定时器、HTTP请求或某些相关服务中的某个事件。</li>
-<li>Serverless案例：以带有服务功能逻辑的传统面向客户端的三层应用为例，如果采用Serverless架构来对该应用进行改造，则架构如图所示：</li>
+<li>Serverless案例：以带有服务功能逻辑的传统面向客户端的三层应用为例，如果采用Serverless架构来对该应用进行改造，则架构如图所示：删除认证逻辑，用第三方BaaS服务替代；使用另外一个BaaS，允许客户端直接访问第三方上面的数据子库；以前运行在服务端的逻辑转移到客户端中，例如跟踪用户访问，客户端则慢慢转化为单页面应用；计算敏感或者需要访问大量数据的功能，例如搜索这类应用，我们不需要运行一个专用服务，而是通过FaaS模块，通过API Gateway对HTTP访问提供响应；最后，可以将其他功能用另外一个FaaS功能取代，因为安全原因放在服务端还不如在客户端重新实现，当然前端还是API Gateway。</li>
+<li>Serverless架构原则： 按需使用计算服务执行代码；编写单一用途的无状态函数；设计基于推送的、事件驱动的管道；创建更强大的前端；与第三方服务集成；</li>
 </ul>
 <p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Serverless_example.jpg" alt="Serverless案例"></p>
 <h3 id="Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰"><a href="#Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰" class="headerlink" title="Java 9新特性介绍及Jigsaw一览 QCON/杨晓峰"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">Java 9新特性介绍及Jigsaw一览</a> QCON/杨晓峰</h3><h3 id="打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云"><a href="#打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云" class="headerlink" title="打造高性能高可用的搜索服务——爱奇艺搜索架构实践 QCON/陈爱云"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">打造高性能高可用的搜索服务——爱奇艺搜索架构实践</a> QCON/陈爱云</h3><h3 id="高速发展业务的架构应对实践-QCON-陈霖"><a href="#高速发展业务的架构应对实践-QCON-陈霖" class="headerlink" title="高速发展业务的架构应对实践 QCON/陈霖"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">高速发展业务的架构应对实践</a> QCON/陈霖</h3><h3 id="美团点评旅游推荐系统的演进-QCON-郑刚"><a href="#美团点评旅游推荐系统的演进-QCON-郑刚" class="headerlink" title="美团点评旅游推荐系统的演进 QCON/郑刚"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">美团点评旅游推荐系统的演进</a> QCON/郑刚</h3><h3 id="深度学习在电子商务中的应用-QCON-程进兴"><a href="#深度学习在电子商务中的应用-QCON-程进兴" class="headerlink" title="深度学习在电子商务中的应用 QCON/程进兴"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">深度学习在电子商务中的应用</a> QCON/程进兴</h3><h3 id="微信红包后台系统可用性设计实践-QCON-michaelfang"><a href="#微信红包后台系统可用性设计实践-QCON-michaelfang" class="headerlink" title="微信红包后台系统可用性设计实践 QCON/michaelfang"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">微信红包后台系统可用性设计实践</a> QCON/michaelfang</h3><h3 id="异步场景下的全栈溯源-QCON-杨金全"><a href="#异步场景下的全栈溯源-QCON-杨金全" class="headerlink" title="异步场景下的全栈溯源 QCON/杨金全"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">异步场景下的全栈溯源</a> QCON/杨金全</h3><h3 id="异构系统链路追踪——滴滴-trace-实践-QCON"><a href="#异构系统链路追踪——滴滴-trace-实践-QCON" class="headerlink" title="异构系统链路追踪——滴滴 trace 实践 QCON"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">异构系统链路追踪——滴滴 trace 实践</a> QCON</h3><h3 id="任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="任何人都能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650718466&amp;idx=1&amp;sn=016f111001e8354d49dd4ce279d283cd" target="_blank" rel="external">任何人都能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="小白也能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650723520&amp;idx=1&amp;sn=d204284574e9e56682b6ed6f9dcaff01" target="_blank" rel="external">小白也能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="Leaf——美团点评分布式ID生成系统-照东"><a href="#Leaf——美团点评分布式ID生成系统-照东" class="headerlink" title="Leaf——美团点评分布式ID生成系统 照东"></a><a href="http://tech.meituan.com/MT_Leaf.html" target="_blank" rel="external">Leaf——美团点评分布式ID生成系统</a> 照东</h3><h3 id="DevOps详解-Jerome-Kehrli-大愚若智"><a href="#DevOps详解-Jerome-Kehrli-大愚若智" class="headerlink" title="DevOps详解  Jerome Kehrli/大愚若智"></a><a href="http://www.infoq.com/cn/articles/detail-analysis-of-devops" target="_blank" rel="external">DevOps详解</a>  Jerome Kehrli/大愚若智</h3><h3 id="在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛"><a href="#在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛" class="headerlink" title="在Elasticsearch中应用机器学习排序LTR  OpenSource Connections/杨振涛"></a><a href="http://www.infoq.com/cn/articles/we-are-bringing-learning-to-rank-to-elasticsearch" target="_blank" rel="external">在Elasticsearch中应用机器学习排序LTR</a>  OpenSource Connections/杨振涛</h3><h3 id="LTR在个性化电商搜索领域的应用-吴晨"><a href="#LTR在个性化电商搜索领域的应用-吴晨" class="headerlink" title="LTR在个性化电商搜索领域的应用  吴晨"></a><a href="http://www.infoq.com/cn/presentations/learning-to-rank-in-the-field-of-personalized-electric-business-search" target="_blank" rel="external">LTR在个性化电商搜索领域的应用</a>  吴晨</h3><p><strong>免责声明：相关链接版本为原作者所有，如有侵权，请告知删除。</strong></p>
@@ -796,9 +797,9 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
       
         <div class="post-tags">
           
-            <a href="/tags/微服务/" rel="tag"># 微服务</a>
-          
             <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          
+            <a href="/tags/微服务/" rel="tag"># 微服务</a>
           
             <a href="/tags/架构/" rel="tag"># 架构</a>
           
