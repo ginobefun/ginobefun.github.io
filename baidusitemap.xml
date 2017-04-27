@@ -11,9 +11,9 @@
         <title>阅读随手记 201704</title>
         <pubTime>2017-04-08T05:25:52.000Z</pubTime>
         
-        <tag>Elasticsearch</tag>
-         
         <tag>微服务</tag>
+         
+        <tag>Elasticsearch</tag>
          
         <tag>架构</tag>
          
@@ -163,11 +163,11 @@
          
         <tag>word2vec</tag>
          
+        <tag>个性化</tag>
+         
         <tag>搜索</tag>
          
         <tag>推荐</tag>
-         
-        <tag>个性化</tag>
          
          
            
@@ -428,13 +428,13 @@
          
         <tag>字节码</tag>
          
-        <tag>HotSpot</tag>
-         
         <tag>编译器</tag>
          
-        <tag>即时编译器</tag>
-         
         <tag>解释器</tag>
+         
+        <tag>HotSpot</tag>
+         
+        <tag>即时编译器</tag>
          
          
            
@@ -508,15 +508,15 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
          
         <tag>执行引擎</tag>
+         
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
@@ -624,8 +624,6 @@
         
         <tag>读书笔记</tag>
          
-        <tag>Elasticsearch</tag>
-         
         <tag>微服务</tag>
          
         <tag>DistributedLog</tag>
@@ -639,6 +637,8 @@
         <tag>高并发</tag>
          
         <tag>高可用</tag>
+         
+        <tag>Elasticsearch</tag>
          
         <tag>架构</tag>
          
