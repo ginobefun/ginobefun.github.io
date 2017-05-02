@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-04-27T07:34:34.893Z</updated>
+  <updated>2017-05-02T06:57:37.683Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://ginobefunny.com/post/reading_record_201704/"/>
     <id>http://ginobefunny.com/post/reading_record_201704/</id>
     <published>2017-04-08T05:25:52.000Z</published>
-    <updated>2017-04-27T07:34:34.893Z</updated>
+    <updated>2017-05-02T06:57:37.683Z</updated>
     
     <content type="html"><![CDATA[<p>关键字：微服务, 架构, Elasticsearch。<br><a id="more"></a></p>
 <h3 id="Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇"><a href="#Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇" class="headerlink" title="Elasticsearch前沿：ES 5.x改进详解与ES6展望  曾勇"></a><a href="https://mp.weixin.qq.com/s/yVbZfE7oWGmnfmcFTeSV4w" target="_blank" rel="external">Elasticsearch前沿：ES 5.x改进详解与ES6展望</a>  曾勇</h3><ul>
@@ -336,7 +336,107 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
 <li>Serverless架构原则： 按需使用计算服务执行代码；编写单一用途的无状态函数；设计基于推送的、事件驱动的管道；创建更强大的前端；与第三方服务集成；</li>
 </ul>
 <p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Serverless_example.jpg" alt="Serverless案例"></p>
-<h3 id="Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰"><a href="#Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰" class="headerlink" title="Java 9新特性介绍及Jigsaw一览 QCON/杨晓峰"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">Java 9新特性介绍及Jigsaw一览</a> QCON/杨晓峰</h3><h3 id="打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云"><a href="#打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云" class="headerlink" title="打造高性能高可用的搜索服务——爱奇艺搜索架构实践 QCON/陈爱云"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">打造高性能高可用的搜索服务——爱奇艺搜索架构实践</a> QCON/陈爱云</h3><h3 id="高速发展业务的架构应对实践-QCON-陈霖"><a href="#高速发展业务的架构应对实践-QCON-陈霖" class="headerlink" title="高速发展业务的架构应对实践 QCON/陈霖"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">高速发展业务的架构应对实践</a> QCON/陈霖</h3><h3 id="美团点评旅游推荐系统的演进-QCON-郑刚"><a href="#美团点评旅游推荐系统的演进-QCON-郑刚" class="headerlink" title="美团点评旅游推荐系统的演进 QCON/郑刚"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">美团点评旅游推荐系统的演进</a> QCON/郑刚</h3><h3 id="深度学习在电子商务中的应用-QCON-程进兴"><a href="#深度学习在电子商务中的应用-QCON-程进兴" class="headerlink" title="深度学习在电子商务中的应用 QCON/程进兴"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">深度学习在电子商务中的应用</a> QCON/程进兴</h3><h3 id="微信红包后台系统可用性设计实践-QCON-michaelfang"><a href="#微信红包后台系统可用性设计实践-QCON-michaelfang" class="headerlink" title="微信红包后台系统可用性设计实践 QCON/michaelfang"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">微信红包后台系统可用性设计实践</a> QCON/michaelfang</h3><h3 id="异步场景下的全栈溯源-QCON-杨金全"><a href="#异步场景下的全栈溯源-QCON-杨金全" class="headerlink" title="异步场景下的全栈溯源 QCON/杨金全"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">异步场景下的全栈溯源</a> QCON/杨金全</h3><h3 id="异构系统链路追踪——滴滴-trace-实践-QCON"><a href="#异构系统链路追踪——滴滴-trace-实践-QCON" class="headerlink" title="异构系统链路追踪——滴滴 trace 实践 QCON"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">异构系统链路追踪——滴滴 trace 实践</a> QCON</h3><h3 id="任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="任何人都能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650718466&amp;idx=1&amp;sn=016f111001e8354d49dd4ce279d283cd" target="_blank" rel="external">任何人都能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="小白也能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650723520&amp;idx=1&amp;sn=d204284574e9e56682b6ed6f9dcaff01" target="_blank" rel="external">小白也能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="Leaf——美团点评分布式ID生成系统-照东"><a href="#Leaf——美团点评分布式ID生成系统-照东" class="headerlink" title="Leaf——美团点评分布式ID生成系统 照东"></a><a href="http://tech.meituan.com/MT_Leaf.html" target="_blank" rel="external">Leaf——美团点评分布式ID生成系统</a> 照东</h3><h3 id="DevOps详解-Jerome-Kehrli-大愚若智"><a href="#DevOps详解-Jerome-Kehrli-大愚若智" class="headerlink" title="DevOps详解  Jerome Kehrli/大愚若智"></a><a href="http://www.infoq.com/cn/articles/detail-analysis-of-devops" target="_blank" rel="external">DevOps详解</a>  Jerome Kehrli/大愚若智</h3><h3 id="在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛"><a href="#在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛" class="headerlink" title="在Elasticsearch中应用机器学习排序LTR  OpenSource Connections/杨振涛"></a><a href="http://www.infoq.com/cn/articles/we-are-bringing-learning-to-rank-to-elasticsearch" target="_blank" rel="external">在Elasticsearch中应用机器学习排序LTR</a>  OpenSource Connections/杨振涛</h3><h3 id="LTR在个性化电商搜索领域的应用-吴晨"><a href="#LTR在个性化电商搜索领域的应用-吴晨" class="headerlink" title="LTR在个性化电商搜索领域的应用  吴晨"></a><a href="http://www.infoq.com/cn/presentations/learning-to-rank-in-the-field-of-personalized-electric-business-search" target="_blank" rel="external">LTR在个性化电商搜索领域的应用</a>  吴晨</h3><p><strong>免责声明：相关链接版本为原作者所有，如有侵权，请告知删除。</strong></p>
+<h3 id="Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰"><a href="#Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰" class="headerlink" title="Java 9新特性介绍及Jigsaw一览 QCON/杨晓峰"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">Java 9新特性介绍及Jigsaw一览</a> QCON/杨晓峰</h3><ul>
+<li>Jigsaw的目标：提供两方面的基本能力（可靠的配置替换脆弱的classpath机制以及强），带来的好处（可扩展性+可维护性+安全）；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Java9_Jigsaw.png" alt="Jigsaw项目"></p>
+<ul>
+<li>模块系统组成：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Java9_Jigsaw_modular.png" alt="模块系统组成"></p>
+<ul>
+<li>JDK自身的代码被划分为一组模块：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Java9_Jigsaw_JDK_modular.png" alt="JDK自身模块组成"></p>
+<ul>
+<li>典型的模块描述文件：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Java9_Jigsaw_modular_descriptor.png" alt="模块描述文件"></p>
+<ul>
+<li>可见性：完全public、只对特定的模块public、只在模块内public、protected、package内可见、private；</li>
+<li>Java模块的分类：命名模块、自动命名模块、匿名模块；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Java9_Jigsaw_module_type.png" alt="Java模块的分类"></p>
+<ul>
+<li>升级影响：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Java9_Jigsaw_upgrade.png" alt="Java模块的分类"></p>
+<h3 id="打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云"><a href="#打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云" class="headerlink" title="打造高性能高可用的搜索服务——爱奇艺搜索架构实践 QCON/陈爱云"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">打造高性能高可用的搜索服务——爱奇艺搜索架构实践</a> QCON/陈爱云</h3><ul>
+<li>视频搜索难点和痛点：索引量大、高并发、低延时、索引更新速度快；</li>
+<li>爱奇艺搜索架构：应用网络抖动（优先访问本机redis）；搜索分级（热门索引和全量索引机器4：1，热门索引可以服务80%的请求，节省机器）；索引更新（全量数据7天更新一次、增量数据每天更新、实时数据实时更新）；从同步到异步（包括http和rpc）；性能优化（基于CPU和内存的优化）；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Aqy_search.png" alt="爱奇艺搜索架构"></p>
+<ul>
+<li>高可用：异地多活、降级（client根据server的成功率和响应时间降级，server根据队列长度、平均处理时间和CPU判断是否需要降级，两种降级方法，取长时间缓存和去除一些不重要的计算）、限流、扩容（使用docker自动扩容，使用jenkins一键部署）、监控系统、Trace系统。</li>
+</ul>
+<h3 id="高速发展业务的架构应对实践-QCON-陈霖"><a href="#高速发展业务的架构应对实践-QCON-陈霖" class="headerlink" title="高速发展业务的架构应对实践 QCON/陈霖"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">高速发展业务的架构应对实践</a> QCON/陈霖</h3><ul>
+<li>外卖产品特点：交易量大，峰值集中；交易过程复杂；履约流程较长；</li>
+<li>百度外卖架构：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/bdwm_structure.png" alt="百度外卖架构"></p>
+<ul>
+<li>服务分层情况：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/bdwm_service_split.png" alt="服务分层情况"></p>
+<ul>
+<li>基础服务优化：流量接入层（七层负载均衡、流量镜像、业务限流）；Redis异地多活（非强一致性、实时读写本region数据、通过MQ同步aof并在当前region进行merge）；服务治理（统一RPC框架、超时重试、过载保护、柔性服务、分布式跟踪、全局超时控制）。</li>
+</ul>
+<h3 id="美团点评旅游推荐系统的演进-QCON-郑刚"><a href="#美团点评旅游推荐系统的演进-QCON-郑刚" class="headerlink" title="美团点评旅游推荐系统的演进 QCON/郑刚"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">美团点评旅游推荐系统的演进</a> QCON/郑刚</h3><ul>
+<li>旅游推荐面临的问题：本异地差距大、推荐形式多样、季节性明显、需求个性化；</li>
+<li>用户画像 </li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/recom_user_feature.png" alt="用户画像"></p>
+<ul>
+<li>基于用户画像的推荐</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/recom_by_user_feature.png" alt="基于用户画像的推荐"></p>
+<ul>
+<li>问题建模</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/recom_question_model.png" alt="问题建模"></p>
+<ul>
+<li>特征工程</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/recom_feature_engineering.png" alt="特征工程"></p>
+<ul>
+<li>模型训练</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/recom_model_training.png" alt="模型训练"></p>
+<ul>
+<li>从海量大数据的离线计算到高并发在线服务的推荐引擎架构设计</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/recom_structure.png" alt="推荐引擎架构设计"></p>
+<ul>
+<li>总结</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/recom_summary.png" alt="总结"></p>
+<h3 id="深度学习在电子商务中的应用-QCON-程进兴"><a href="#深度学习在电子商务中的应用-QCON-程进兴" class="headerlink" title="深度学习在电子商务中的应用 QCON/程进兴"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">深度学习在电子商务中的应用</a> QCON/程进兴</h3><ul>
+<li>目前商品搜索中的语义词汇差异问题：如理发器、理发推子、电推子；血糖计和血糖仪；</li>
+<li>矢量化搜索模型：传统搜索基于文字匹配，商品包含搜索词或者不包含搜索词；利用深度学习技术，将搜索词和商品全部数值矢量化，将文字匹配转化为数值矢量计算；词语矢量化是进一步进行各种深度学习的基础；</li>
+<li>基于词语聚类的矢量化模型：Word2vec等工具可以有效地将词语转化为向量；将句子／段落／文章有效转化为向量则有很大的挑战；电商搜索中遇到的主要是句子／短文分析，可以将短文中的词语聚类，挑选具有代表性的词语聚类结果，来表示整个短文；传统聚类（如Kmeans)在几何距离的基础上进行聚类，效果不好，利用随机过程做词语聚类可以解决这一问题；</li>
+<li>基于用户反馈的矢量化：把搜索词和商品文档各自作为整体看待，直接学习训练各自的矢量值；通过分析用户每次访问的行为顺序，构建有“搜索词”和“商品文档”组成的句子；训练集是采用苏宁易购的用户搜索日志作为来源，在经过数据清理之后，按照搜索的时间顺序，结合商品的点击，商品放入购物车，商品的购买这些用户行为，而建立的矢量化训练数据；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/suning_vector_model.png" alt="基于用户反馈的矢量化模型"></p>
+<h3 id="微信红包后台系统可用性设计实践-QCON-michaelfang"><a href="#微信红包后台系统可用性设计实践-QCON-michaelfang" class="headerlink" title="微信红包后台系统可用性设计实践 QCON/michaelfang"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">微信红包后台系统可用性设计实践</a> QCON/michaelfang</h3><ul>
+<li>微信红包的系统流程：发、包、抢、拆；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/wechat_rp_flow.png" alt="微信红包的系统流程"></p>
+<ul>
+<li>微信红包的系统架构</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/wechat_rp_structure.png" alt="微信红包的系统架构"></p>
+<ul>
+<li>可用性影响因素：计划外（系统级故障、数据和中介故障、其他）；计划外（日常任务、运维相关、升级相关）；</li>
+<li>可用性设计方向：降低意外故障影响（业务逻辑层：部署方案、异步化、降级与柔性；订单存储层：SET化、DB故障自愈能力建设）、平行扩缩容；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/wechat_rp_expand.png" alt="改进后的平行扩容"></p>
+<h3 id="异构系统链路追踪——滴滴-trace-实践-QCON"><a href="#异构系统链路追踪——滴滴-trace-实践-QCON" class="headerlink" title="异构系统链路追踪——滴滴 trace 实践 QCON"></a><a href="http://2017.qconbeijing.com/" target="_blank" rel="external">异构系统链路追踪——滴滴 trace 实践</a> QCON</h3><p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_background.png" alt="背景"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_reqirement.png" alt="诉求"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_method.png" alt="方案"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_mechanism.png" alt="Trace机制"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_implement.png" alt="Trace落地"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_development.png" alt="规划"></p>
+<h3 id="任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="任何人都能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650718466&amp;idx=1&amp;sn=016f111001e8354d49dd4ce279d283cd" target="_blank" rel="external">任何人都能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="小白也能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650723520&amp;idx=1&amp;sn=d204284574e9e56682b6ed6f9dcaff01" target="_blank" rel="external">小白也能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="Leaf——美团点评分布式ID生成系统-照东"><a href="#Leaf——美团点评分布式ID生成系统-照东" class="headerlink" title="Leaf——美团点评分布式ID生成系统 照东"></a><a href="http://tech.meituan.com/MT_Leaf.html" target="_blank" rel="external">Leaf——美团点评分布式ID生成系统</a> 照东</h3><h3 id="DevOps详解-Jerome-Kehrli-大愚若智"><a href="#DevOps详解-Jerome-Kehrli-大愚若智" class="headerlink" title="DevOps详解  Jerome Kehrli/大愚若智"></a><a href="http://www.infoq.com/cn/articles/detail-analysis-of-devops" target="_blank" rel="external">DevOps详解</a>  Jerome Kehrli/大愚若智</h3><h3 id="在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛"><a href="#在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛" class="headerlink" title="在Elasticsearch中应用机器学习排序LTR  OpenSource Connections/杨振涛"></a><a href="http://www.infoq.com/cn/articles/we-are-bringing-learning-to-rank-to-elasticsearch" target="_blank" rel="external">在Elasticsearch中应用机器学习排序LTR</a>  OpenSource Connections/杨振涛</h3><h3 id="LTR在个性化电商搜索领域的应用-吴晨"><a href="#LTR在个性化电商搜索领域的应用-吴晨" class="headerlink" title="LTR在个性化电商搜索领域的应用  吴晨"></a><a href="http://www.infoq.com/cn/presentations/learning-to-rank-in-the-field-of-personalized-electric-business-search" target="_blank" rel="external">LTR在个性化电商搜索领域的应用</a>  吴晨</h3><p><strong>免责声明：相关链接版本为原作者所有，如有侵权，请告知删除。</strong></p>
 <p><strong>随手记系列：</strong></p>
 <ul>
 <li><a href="http://ginobefunny.com/post/reading_record_201703/">阅读随手记 201703</a></li>
@@ -528,11 +628,11 @@ group by a.uid;
     
       <category term="word2vec" scheme="http://ginobefunny.com/tags/word2vec/"/>
     
+      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
+    
       <category term="搜索" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2/"/>
     
       <category term="推荐" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90/"/>
-    
-      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
     
   </entry>
   
