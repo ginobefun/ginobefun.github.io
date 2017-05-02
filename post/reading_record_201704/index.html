@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Elasticsearch,微服务,架构," />
+  <meta name="keywords" content="Elasticsearch,搜索引擎,推荐系统,分布式队列,微服务,Kafka,机器学习,高可用,架构,CQRS,人工智能,Java 9,Event Source," />
 
 
 
@@ -86,12 +86,12 @@
 
 
 
-<meta name="description" content="关键字：微服务, 架构, Elasticsearch。">
+<meta name="description" content="关键字：微服务, 架构, Elasticsearch, 分布式队列, 搜索引擎, 推荐系统, 机器学习, 人工智能, Java 9, CQRS, Event Source, Kafka, 高可用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="阅读随手记 201704">
 <meta property="og:url" content="http://ginobefunny.com/post/reading_record_201704/index.html">
 <meta property="og:site_name" content="GinoBeFunny">
-<meta property="og:description" content="关键字：微服务, 架构, Elasticsearch。">
+<meta property="og:description" content="关键字：微服务, 架构, Elasticsearch, 分布式队列, 搜索引擎, 推荐系统, 机器学习, 人工智能, Java 9, CQRS, Event Source, Kafka, 高可用。">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/search_recom_flow.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/search_recom_structure.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/Logic_View.png">
@@ -150,10 +150,14 @@
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_mechanism.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_implement.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_development.png">
-<meta property="og:updated_time" content="2017-05-02T06:57:37.683Z">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_biz_tag.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_biz_usecase.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_snowflake.png">
+<meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_snowflake_timing.png">
+<meta property="og:updated_time" content="2017-05-02T09:34:39.170Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="阅读随手记 201704">
-<meta name="twitter:description" content="关键字：微服务, 架构, Elasticsearch。">
+<meta name="twitter:description" content="关键字：微服务, 架构, Elasticsearch, 分布式队列, 搜索引擎, 推荐系统, 机器学习, 人工智能, Java 9, CQRS, Event Source, Kafka, 高可用。">
 <meta name="twitter:image" content="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/search_recom_flow.png">
 
 
@@ -473,7 +477,7 @@
       
 
       
-        <p>关键字：微服务, 架构, Elasticsearch。<br><a id="more"></a></p>
+        <p>关键字：微服务, 架构, Elasticsearch, 分布式队列, 搜索引擎, 推荐系统, 机器学习, 人工智能, Java 9, CQRS, Event Source, Kafka, 高可用。<br><a id="more"></a></p>
 <h3 id="Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇"><a href="#Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇" class="headerlink" title="Elasticsearch前沿：ES 5.x改进详解与ES6展望  曾勇"></a><a href="https://mp.weixin.qq.com/s/yVbZfE7oWGmnfmcFTeSV4w" target="_blank" rel="external">Elasticsearch前沿：ES 5.x改进详解与ES6展望</a>  曾勇</h3><ul>
 <li>如果你的场景是日志，那么基本上数据进去之后是不需要进行修改的，所以现在ES新增了一个append-only的索引模式，也就是当ES是自动生成ID的时候，ES可以跳过不必要的版本检测，<strong>大概可以提升20%左右的索引性能</strong>。</li>
 <li>在数据结构方面，新增了多个range字段类型，现在你可以计算连续数据的交并集，可以是时间范围，也可以是数值范围。</li>
@@ -664,7 +668,7 @@ GET recipes/type/_search
 <h3 id="北大AI公开课第7讲-徐伟：AGI-2050年前实现可能性超50-机器学习研究会"><a href="#北大AI公开课第7讲-徐伟：AGI-2050年前实现可能性超50-机器学习研究会" class="headerlink" title="北大AI公开课第7讲 徐伟：AGI 2050年前实现可能性超50% 机器学习研究会"></a><a href="https://mp.weixin.qq.com/s/mBfXDpqabIFdksCYTixcaw" target="_blank" rel="external">北大AI公开课第7讲 徐伟：AGI 2050年前实现可能性超50%</a> 机器学习研究会</h3><p>视频回放链接：<a href="http://www.iqiyi.com/l_19rrbkb3az.html" target="_blank" rel="external">http://www.iqiyi.com/l_19rrbkb3az.html</a></p>
 <h3 id="北大AI公开课第8讲-李航：自然语言处理——理想与现实、机遇与挑战-机器学习研究会"><a href="#北大AI公开课第8讲-李航：自然语言处理——理想与现实、机遇与挑战-机器学习研究会" class="headerlink" title="北大AI公开课第8讲 李航：自然语言处理——理想与现实、机遇与挑战  机器学习研究会"></a><a href="https://mp.weixin.qq.com/s/Kxu_4QUdWQrjue9W1TvfDg" target="_blank" rel="external">北大AI公开课第8讲 李航：自然语言处理——理想与现实、机遇与挑战</a>  机器学习研究会</h3><p>课程回放链接：<a href="http://www.iqiyi.com/w_19rtxrunb9.html" target="_blank" rel="external">http://www.iqiyi.com/w_19rtxrunb9.html</a></p>
 <h3 id="北大AI公开课第9讲-叶杰平：深度学习在交通领域应用潜力巨大-新智元"><a href="#北大AI公开课第9讲-叶杰平：深度学习在交通领域应用潜力巨大-新智元" class="headerlink" title="北大AI公开课第9讲 叶杰平：深度学习在交通领域应用潜力巨大  新智元"></a><a href="https://mp.weixin.qq.com/s/RvX1LHAZ9jokCtQ8jt6XHQ" target="_blank" rel="external">北大AI公开课第9讲 叶杰平：深度学习在交通领域应用潜力巨大</a>  新智元</h3><p>课程回放链接：<a href="http://www.iqiyi.com/l_19rrc5qodr.html" target="_blank" rel="external">http://www.iqiyi.com/l_19rrc5qodr.html</a></p>
-<h3 id="机器学习演化史，方法、应用场景与发展趋势-新智元"><a href="#机器学习演化史，方法、应用场景与发展趋势-新智元" class="headerlink" title="机器学习演化史，方法、应用场景与发展趋势  新智元"></a><a href="https://mp.weixin.qq.com/s/B4RV1iO9fciguqP9J1hCxQ" target="_blank" rel="external">机器学习演化史，方法、应用场景与发展趋势</a>  新智元</h3><h4 id="机器学习演化史：各学派发展融合，最终让自动机器成为可能"><a href="#机器学习演化史：各学派发展融合，最终让自动机器成为可能" class="headerlink" title="机器学习演化史：各学派发展融合，最终让自动机器成为可能"></a>机器学习演化史：各学派发展融合，最终让自动机器成为可能</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/ML_evolution.png" alt="机器学习演化史"></p>
+<h3 id="任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="任何人都能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650718466&amp;idx=1&amp;sn=016f111001e8354d49dd4ce279d283cd" target="_blank" rel="external">任何人都能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="小白也能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650723520&amp;idx=1&amp;sn=d204284574e9e56682b6ed6f9dcaff01" target="_blank" rel="external">小白也能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="机器学习演化史，方法、应用场景与发展趋势-新智元"><a href="#机器学习演化史，方法、应用场景与发展趋势-新智元" class="headerlink" title="机器学习演化史，方法、应用场景与发展趋势  新智元"></a><a href="https://mp.weixin.qq.com/s/B4RV1iO9fciguqP9J1hCxQ" target="_blank" rel="external">机器学习演化史，方法、应用场景与发展趋势</a>  新智元</h3><h4 id="机器学习演化史：各学派发展融合，最终让自动机器成为可能"><a href="#机器学习演化史：各学派发展融合，最终让自动机器成为可能" class="headerlink" title="机器学习演化史：各学派发展融合，最终让自动机器成为可能"></a>机器学习演化史：各学派发展融合，最终让自动机器成为可能</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/ML_evolution.png" alt="机器学习演化史"></p>
 <ul>
 <li>符号学派（Symbolists）是使用基于规则的符号系统做推理的人。这种方法主要的缺陷在于其脆弱性，因为在边缘情况下，一个僵化的知识库似乎总是不适用，但在现实中存在这种模糊性和不确定性是不可避免的。爱用方法：<strong>规则和决策树</strong>；</li>
 <li>贝叶斯学派（Bayesians）是使用概率规则及其依赖关系进行推理的一派。这种方法与符号学方法的相似之处在于可以以某种方式得到对结果的解释，另一个优点是存在可以在结果中表示的不确定性的量度。爱用方法：<strong>朴素贝叶斯或马尔科夫</strong>；</li>
@@ -887,7 +891,46 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
 <p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_mechanism.png" alt="Trace机制"></p>
 <p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_implement.png" alt="Trace落地"></p>
 <p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/didi_trace_development.png" alt="规划"></p>
-<h3 id="任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="任何人都能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650718466&amp;idx=1&amp;sn=016f111001e8354d49dd4ce279d283cd" target="_blank" rel="external">任何人都能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><a href="#小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心" class="headerlink" title="小白也能看懂的TensorFlow介绍 Soon Hin Khor/机器之心"></a><a href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650723520&amp;idx=1&amp;sn=d204284574e9e56682b6ed6f9dcaff01" target="_blank" rel="external">小白也能看懂的TensorFlow介绍</a> Soon Hin Khor/机器之心</h3><h3 id="Leaf——美团点评分布式ID生成系统-照东"><a href="#Leaf——美团点评分布式ID生成系统-照东" class="headerlink" title="Leaf——美团点评分布式ID生成系统 照东"></a><a href="http://tech.meituan.com/MT_Leaf.html" target="_blank" rel="external">Leaf——美团点评分布式ID生成系统</a> 照东</h3><h3 id="DevOps详解-Jerome-Kehrli-大愚若智"><a href="#DevOps详解-Jerome-Kehrli-大愚若智" class="headerlink" title="DevOps详解  Jerome Kehrli/大愚若智"></a><a href="http://www.infoq.com/cn/articles/detail-analysis-of-devops" target="_blank" rel="external">DevOps详解</a>  Jerome Kehrli/大愚若智</h3><h3 id="在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛"><a href="#在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛" class="headerlink" title="在Elasticsearch中应用机器学习排序LTR  OpenSource Connections/杨振涛"></a><a href="http://www.infoq.com/cn/articles/we-are-bringing-learning-to-rank-to-elasticsearch" target="_blank" rel="external">在Elasticsearch中应用机器学习排序LTR</a>  OpenSource Connections/杨振涛</h3><h3 id="LTR在个性化电商搜索领域的应用-吴晨"><a href="#LTR在个性化电商搜索领域的应用-吴晨" class="headerlink" title="LTR在个性化电商搜索领域的应用  吴晨"></a><a href="http://www.infoq.com/cn/presentations/learning-to-rank-in-the-field-of-personalized-electric-business-search" target="_blank" rel="external">LTR在个性化电商搜索领域的应用</a>  吴晨</h3><p><strong>免责声明：相关链接版本为原作者所有，如有侵权，请告知删除。</strong></p>
+<h3 id="Leaf——美团点评分布式ID生成系统-照东"><a href="#Leaf——美团点评分布式ID生成系统-照东" class="headerlink" title="Leaf——美团点评分布式ID生成系统 照东"></a><a href="http://tech.meituan.com/MT_Leaf.html" target="_blank" rel="external">Leaf——美团点评分布式ID生成系统</a> 照东</h3><ul>
+<li>在复杂分布式系统中，往往需要对大量的数据和消息进行唯一标识。业务系统对ID号的要求有全局唯一性、趋势递增、单调递增、信息安全、可用性要求极高；ID生成系统应该做到如下几点：平均延迟和TP999延迟都要尽可能低；可用性5个9；高QPS。</li>
+<li>常见方法介绍：UUID（性能非常高但不易于存储）；类snowflake方案（整个ID都是趋势递增的而且灵活，缺点是强依赖机器时钟）；数据库生成（单调递增且简单，缺点是强依赖DB且会有性能瓶颈）；</li>
+<li>Leaf-segment数据库方案：利用proxy server批量获取，每次获取一个segment(step决定大小)号段的值，用完之后再去数据库获取新的号段，可以大大的减轻数据库的压力；各个业务不同的发号需求用biz_tag字段来区分，每个biz-tag的ID获取相互隔离，互不影响，如果以后有性能需求需要对数据库扩容，不需要上述描述的复杂的扩容操作，只需要对biz_tag分库分表就行。数据库表设计如下：</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_biz_tag.png" alt="biz_tag表设计"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_biz_usecase.png" alt="使用场景"></p>
+<ul>
+<li>Leaf-segment数据库方案的优点：Leaf服务可以很方便的线性扩展，性能完全能够支撑大多数业务场景；ID号码是趋势递增的8byte的64位数字，满足上述数据库存储的主键要求；容灾性高，Leaf服务内部有号段缓存，即使DB宕机，短时间内Leaf仍能正常对外提供服务；可以自定义max_id的大小，非常方便业务从原有的ID方式上迁移过来。</li>
+<li>Leaf-segment数据库方案的缺点：ID号码不够随机，能够泄露发号数量的信息，不太安全；TP999数据波动大，当号段使用完之后还是会hang在更新数据库的I/O上，tg999数据会出现偶尔的尖刺（优化：采用双buffer的方式，Leaf服务内部有两个号段缓存区segment，当前号段已下发10%时，如果下一个号段未更新，则另启一个更新线程去更新下一个号段，当前号段全部下发完后，如果下个号段准备好了则切换到下个号段为当前segment接着下发，循环往复）；DB宕机会造成整个系统不可用（优化：采用一主两从的方式，同时分机房部署，Master和Slave之间采用半同步方式同步数据）；</li>
+<li>Leaf-snowflake方案：完全沿用snowflake方案的bit位设计，即是“1+41+10+12”的方式组装ID号。使用Zookeeper持久顺序节点的特性自动对snowflake节点配置wokerID。Leaf-snowflake是按照下面几个步骤启动的：启动Leaf-snowflake服务，连接Zookeeper，在leaf_forever父节点下检查自己是否已经注册过（是否有该顺序子节点）；如果有注册过直接取回自己的workerID（zk顺序节点生成的int类型ID号），启动服务；如果没有注册过，就在该父节点下面创建一个持久顺序节点，创建成功后取回顺序号当做自己的workerID号，启动服务。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_snowflake.png" alt="Leaf-snowflake设计"></p>
+<ul>
+<li>Leaf-snowflake方案要点：弱依赖ZooKeeper（除了每次会去ZK拿数据以外，也会在本机文件系统上缓存一个workerID文件，当ZooKeeper出现问题，恰好机器出现问题需要重启时，能保证服务能够正常启动）；解决时钟问题（如果机器的时钟发生了回拨，那么就会有可能生成重复的ID号，需要解决时钟回退的问题，见下图）。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/18_reading_201704/leaf_snowflake_timing.png" alt="解决时钟问题"></p>
+<h3 id="DevOps详解-Jerome-Kehrli-大愚若智"><a href="#DevOps详解-Jerome-Kehrli-大愚若智" class="headerlink" title="DevOps详解  Jerome Kehrli/大愚若智"></a><a href="http://www.infoq.com/cn/articles/detail-analysis-of-devops" target="_blank" rel="external">DevOps详解</a>  Jerome Kehrli/大愚若智</h3><ul>
+<li>DevOps并不是某一套工具，DevOps是一种方法论，其中包含一系列基本原则和实践，而所用的工具只是为了对这样的实践提供支持。</li>
+<li>DevOps是一种方法论，是一系列可以帮助开发者和运维人员在实现各自目标的前提下，向自己的客户或用户交付最大化价值及最高质量成果的基本原则和实践。</li>
+<li>DevOps鼓励软件开发者和IT运维人员之间所进行的沟通、协作、集成和自动化，借此有助于改善双方在交付软件过程中的速度和质量。</li>
+<li>DevOps团队更侧重于通过标准化开发环境和自动化交付流程改善交付工作的可预测性、效率、安全性，以及可维护性。理想情况下，DevOps可以为开发者提供更可控的生产环境，帮助他们更好地理解生产基础架构。</li>
+<li>那么核心原则到底是什么？基础架构即代码、持续交付、协作；</li>
+</ul>
+<h3 id="到底什么时候该使用MQ？-58沈剑"><a href="#到底什么时候该使用MQ？-58沈剑" class="headerlink" title="到底什么时候该使用MQ？ 58沈剑"></a><a href="https://mp.weixin.qq.com/s/Brd-j3IcljcY7BV01r712Q" target="_blank" rel="external">到底什么时候该使用MQ？</a> 58沈剑</h3><ul>
+<li>MQ是一个互联网架构中常见的解耦利器。</li>
+<li>什么时候不使用MQ？上游实时关注执行结果；</li>
+<li>什么时候使用MQ？数据驱动的任务依赖、上游不关心多下游执行结果、异步返回执行时间长；</li>
+</ul>
+<h3 id="换IP的是你，凭啥重启的却是我？-58沈剑"><a href="#换IP的是你，凭啥重启的却是我？-58沈剑" class="headerlink" title="换IP的是你，凭啥重启的却是我？ 58沈剑"></a><a href="https://mp.weixin.qq.com/s/mCop7WB0wi4mhGy4AHF7tQ" target="_blank" rel="external">换IP的是你，凭啥重启的却是我？</a> 58沈剑</h3><ul>
+<li>缘起：数据库换了一个ip，此时往往连接此数据库的上游需要修改配置重启，这是一个“架构耦合”的问题，是一个架构设计上“反向依赖”的问题；</li>
+<li>常见的“反向依赖”与优化方案：公共库导致耦合（业务垂直拆分、服务化）；服务化不彻底导致耦合（业务特性代码上浮，业务共性代码下沉，彻底解耦）；notify的不合理实现导致的耦合（通过MQ实现解耦）；配置中的ip导致上下游耦合（通过内网域名而不是ip来进行下游连接）；下游扩容导致上下游耦合；</li>
+</ul>
+<h3 id="“配置”也有架构演进？看完深有痛感-58沈剑"><a href="#“配置”也有架构演进？看完深有痛感-58沈剑" class="headerlink" title="“配置”也有架构演进？看完深有痛感 58沈剑"></a><a href="https://mp.weixin.qq.com/s/vBr_OrbogMARHtCt8ZaxGg" target="_blank" rel="external">“配置”也有架构演进？看完深有痛感</a> 58沈剑</h3><ul>
+<li>缘起：服务化分层后依赖关系会变得非常复杂，为了保证高可用，一个底层服务往往是若干个节点形成一个集群提供服务，当服务集群增减节点的时候，是否存在“反向依赖”，是否“耦合”，是否上游调用方需要修改配置重启，是否能做到上游无感知，即“配置的架构变迁”。</li>
+<li>“配置私藏”是配置文件架构的最初级阶段，上游调用下游，每个上游都有一个专属的私有配置文件，记录被调用下游的每个节点配置信息。调用方很痛，容量变化的是你，凭啥修改配置重启的是我？这是一个典型的“反向依赖”架构设计，上下游通过配置耦合，值得优化；服务方很痛，ta不知道有多少个上游调用了自己；</li>
+<li>“全局配置”法：对于通用的服务，建立全局配置文件，消除配置私藏：运维层面制定规范，新建全局配置文件，例如/opt/globalconf/global.conf，如果配置较多，注意做好配置的垂直拆分；对于服务方，如果是通用的服务，集群信息配置在global.conf里；对于调用方，调用方禁止配置私藏，必须从global.conf里读取通用下游配置。不足是如果调用方一直不重启，就没有办法将流量迁移到新集群上去了。可以通过文件监控组件和动态连接池组件实现自动流量迁移。</li>
+<li>全局配置文件是一个能够快速落地的，解决“修改配置重启”问题的方案，但它仍然解决不了，服务提供方“不知道有多少个上游调用了自己”这个问题，这个可以采用“配置中心”来解决。对比“全局配置”与“配置中心”的架构图，会发现配置由静态的文件 升级为动态的服务：整个配置中心子系统由zk、conf-center服务，DB配置存储与，conf-web配置后台组成；所有下游服务的配置，通过后台设置在配置中心里；所有上游需要拉取配置，需要去配置中心注册，拉取下游服务配置信息。不足是系统复杂度相对较高，对配置中心的可靠性要求较高，一处挂全局挂。</li>
+</ul>
+<p><strong>免责声明：相关链接版本为原作者所有，如有侵权，请告知删除。</strong></p>
 <p><strong>随手记系列：</strong></p>
 <ul>
 <li><a href="http://ginobefunny.com/post/reading_record_201703/">阅读随手记 201703</a></li>
@@ -925,9 +968,29 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
           
             <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
           
+            <a href="/tags/搜索引擎/" rel="tag"># 搜索引擎</a>
+          
+            <a href="/tags/推荐系统/" rel="tag"># 推荐系统</a>
+          
+            <a href="/tags/分布式队列/" rel="tag"># 分布式队列</a>
+          
             <a href="/tags/微服务/" rel="tag"># 微服务</a>
           
+            <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          
+            <a href="/tags/机器学习/" rel="tag"># 机器学习</a>
+          
+            <a href="/tags/高可用/" rel="tag"># 高可用</a>
+          
             <a href="/tags/架构/" rel="tag"># 架构</a>
+          
+            <a href="/tags/CQRS/" rel="tag"># CQRS</a>
+          
+            <a href="/tags/人工智能/" rel="tag"># 人工智能</a>
+          
+            <a href="/tags/Java-9/" rel="tag"># Java 9</a>
+          
+            <a href="/tags/Event-Source/" rel="tag"># Event Source</a>
           
         </div>
       
@@ -1056,7 +1119,7 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">117</span>
+                <span class="site-state-item-count">119</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -1180,7 +1243,7 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch前沿：ES 5.x改进详解与ES6展望  曾勇</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch-5-x-字段折叠的使用-medcl"><span class="nav-number">2.</span> <span class="nav-text">Elasticsearch 5.x 字段折叠的使用 medcl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何做出搜索和推荐深度融合的兴趣引擎架构-田明军"><span class="nav-number">3.</span> <span class="nav-text">如何做出搜索和推荐深度融合的兴趣引擎架构 田明军</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#携程实时用户行为系统实践-陈清渠"><span class="nav-number">4.</span> <span class="nav-text">携程实时用户行为系统实践  陈清渠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark技术在京东智能供应链预测的应用-杨冬越-郭景瞻"><span class="nav-number">5.</span> <span class="nav-text">Spark技术在京东智能供应链预测的应用 杨冬越 郭景瞻</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对CQRS的基础理解-张逸"><span class="nav-number">6.</span> <span class="nav-text">对CQRS的基础理解 张逸</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我对CQRS-EventSourcing架构的思考-汤雪华"><span class="nav-number">7.</span> <span class="nav-text">我对CQRS/EventSourcing架构的思考 汤雪华</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第6讲-王俊：DNA是生命数字化的过程，AI改变生命科学-新智元"><span class="nav-number">8.</span> <span class="nav-text">北大AI公开课第6讲 王俊：DNA是生命数字化的过程，AI改变生命科学 新智元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第7讲-徐伟：AGI-2050年前实现可能性超50-机器学习研究会"><span class="nav-number">9.</span> <span class="nav-text">北大AI公开课第7讲 徐伟：AGI 2050年前实现可能性超50% 机器学习研究会</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第8讲-李航：自然语言处理——理想与现实、机遇与挑战-机器学习研究会"><span class="nav-number">10.</span> <span class="nav-text">北大AI公开课第8讲 李航：自然语言处理——理想与现实、机遇与挑战  机器学习研究会</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第9讲-叶杰平：深度学习在交通领域应用潜力巨大-新智元"><span class="nav-number">11.</span> <span class="nav-text">北大AI公开课第9讲 叶杰平：深度学习在交通领域应用潜力巨大  新智元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#机器学习演化史，方法、应用场景与发展趋势-新智元"><span class="nav-number">12.</span> <span class="nav-text">机器学习演化史，方法、应用场景与发展趋势  新智元</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#机器学习演化史：各学派发展融合，最终让自动机器成为可能"><span class="nav-number">12.1.</span> <span class="nav-text">机器学习演化史：各学派发展融合，最终让自动机器成为可能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#机器学习：工作原理及适用场景"><span class="nav-number">12.2.</span> <span class="nav-text">机器学习：工作原理及适用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际应用机器学习：什么才是特定任务的正确算法？"><span class="nav-number">12.3.</span> <span class="nav-text">实际应用机器学习：什么才是特定任务的正确算法？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于微服务的发展方向，我们和5位专家聊了聊-Mark-Little-薛命灯"><span class="nav-number">13.</span> <span class="nav-text">关于微服务的发展方向，我们和5位专家聊了聊 Mark Little/薛命灯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka数据可靠性深度解读-朱忠华"><span class="nav-number">14.</span> <span class="nav-text">kafka数据可靠性深度解读 朱忠华</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聊聊分布式定时任务中间件架构及其实现-张亮"><span class="nav-number">15.</span> <span class="nav-text">聊聊分布式定时任务中间件架构及其实现 张亮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017年会是Serverless爆发之年吗？-麦克周"><span class="nav-number">16.</span> <span class="nav-text">2017年会是Serverless爆发之年吗？ 麦克周</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰"><span class="nav-number">17.</span> <span class="nav-text">Java 9新特性介绍及Jigsaw一览 QCON/杨晓峰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云"><span class="nav-number">18.</span> <span class="nav-text">打造高性能高可用的搜索服务——爱奇艺搜索架构实践 QCON/陈爱云</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高速发展业务的架构应对实践-QCON-陈霖"><span class="nav-number">19.</span> <span class="nav-text">高速发展业务的架构应对实践 QCON/陈霖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#美团点评旅游推荐系统的演进-QCON-郑刚"><span class="nav-number">20.</span> <span class="nav-text">美团点评旅游推荐系统的演进 QCON/郑刚</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度学习在电子商务中的应用-QCON-程进兴"><span class="nav-number">21.</span> <span class="nav-text">深度学习在电子商务中的应用 QCON/程进兴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微信红包后台系统可用性设计实践-QCON-michaelfang"><span class="nav-number">22.</span> <span class="nav-text">微信红包后台系统可用性设计实践 QCON/michaelfang</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异构系统链路追踪——滴滴-trace-实践-QCON"><span class="nav-number">23.</span> <span class="nav-text">异构系统链路追踪——滴滴 trace 实践 QCON</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><span class="nav-number">24.</span> <span class="nav-text">任何人都能看懂的TensorFlow介绍 Soon Hin Khor/机器之心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><span class="nav-number">25.</span> <span class="nav-text">小白也能看懂的TensorFlow介绍 Soon Hin Khor/机器之心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leaf——美团点评分布式ID生成系统-照东"><span class="nav-number">26.</span> <span class="nav-text">Leaf——美团点评分布式ID生成系统 照东</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DevOps详解-Jerome-Kehrli-大愚若智"><span class="nav-number">27.</span> <span class="nav-text">DevOps详解  Jerome Kehrli/大愚若智</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在Elasticsearch中应用机器学习排序LTR-OpenSource-Connections-杨振涛"><span class="nav-number">28.</span> <span class="nav-text">在Elasticsearch中应用机器学习排序LTR  OpenSource Connections/杨振涛</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LTR在个性化电商搜索领域的应用-吴晨"><span class="nav-number">29.</span> <span class="nav-text">LTR在个性化电商搜索领域的应用  吴晨</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch前沿：ES-5-x改进详解与ES6展望-曾勇"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch前沿：ES 5.x改进详解与ES6展望  曾勇</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Elasticsearch-5-x-字段折叠的使用-medcl"><span class="nav-number">2.</span> <span class="nav-text">Elasticsearch 5.x 字段折叠的使用 medcl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何做出搜索和推荐深度融合的兴趣引擎架构-田明军"><span class="nav-number">3.</span> <span class="nav-text">如何做出搜索和推荐深度融合的兴趣引擎架构 田明军</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#携程实时用户行为系统实践-陈清渠"><span class="nav-number">4.</span> <span class="nav-text">携程实时用户行为系统实践  陈清渠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spark技术在京东智能供应链预测的应用-杨冬越-郭景瞻"><span class="nav-number">5.</span> <span class="nav-text">Spark技术在京东智能供应链预测的应用 杨冬越 郭景瞻</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对CQRS的基础理解-张逸"><span class="nav-number">6.</span> <span class="nav-text">对CQRS的基础理解 张逸</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我对CQRS-EventSourcing架构的思考-汤雪华"><span class="nav-number">7.</span> <span class="nav-text">我对CQRS/EventSourcing架构的思考 汤雪华</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第6讲-王俊：DNA是生命数字化的过程，AI改变生命科学-新智元"><span class="nav-number">8.</span> <span class="nav-text">北大AI公开课第6讲 王俊：DNA是生命数字化的过程，AI改变生命科学 新智元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第7讲-徐伟：AGI-2050年前实现可能性超50-机器学习研究会"><span class="nav-number">9.</span> <span class="nav-text">北大AI公开课第7讲 徐伟：AGI 2050年前实现可能性超50% 机器学习研究会</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第8讲-李航：自然语言处理——理想与现实、机遇与挑战-机器学习研究会"><span class="nav-number">10.</span> <span class="nav-text">北大AI公开课第8讲 李航：自然语言处理——理想与现实、机遇与挑战  机器学习研究会</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#北大AI公开课第9讲-叶杰平：深度学习在交通领域应用潜力巨大-新智元"><span class="nav-number">11.</span> <span class="nav-text">北大AI公开课第9讲 叶杰平：深度学习在交通领域应用潜力巨大  新智元</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任何人都能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><span class="nav-number">12.</span> <span class="nav-text">任何人都能看懂的TensorFlow介绍 Soon Hin Khor/机器之心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小白也能看懂的TensorFlow介绍-Soon-Hin-Khor-机器之心"><span class="nav-number">13.</span> <span class="nav-text">小白也能看懂的TensorFlow介绍 Soon Hin Khor/机器之心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#机器学习演化史，方法、应用场景与发展趋势-新智元"><span class="nav-number">14.</span> <span class="nav-text">机器学习演化史，方法、应用场景与发展趋势  新智元</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#机器学习演化史：各学派发展融合，最终让自动机器成为可能"><span class="nav-number">14.1.</span> <span class="nav-text">机器学习演化史：各学派发展融合，最终让自动机器成为可能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#机器学习：工作原理及适用场景"><span class="nav-number">14.2.</span> <span class="nav-text">机器学习：工作原理及适用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实际应用机器学习：什么才是特定任务的正确算法？"><span class="nav-number">14.3.</span> <span class="nav-text">实际应用机器学习：什么才是特定任务的正确算法？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关于微服务的发展方向，我们和5位专家聊了聊-Mark-Little-薛命灯"><span class="nav-number">15.</span> <span class="nav-text">关于微服务的发展方向，我们和5位专家聊了聊 Mark Little/薛命灯</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kafka数据可靠性深度解读-朱忠华"><span class="nav-number">16.</span> <span class="nav-text">kafka数据可靠性深度解读 朱忠华</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聊聊分布式定时任务中间件架构及其实现-张亮"><span class="nav-number">17.</span> <span class="nav-text">聊聊分布式定时任务中间件架构及其实现 张亮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2017年会是Serverless爆发之年吗？-麦克周"><span class="nav-number">18.</span> <span class="nav-text">2017年会是Serverless爆发之年吗？ 麦克周</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-9新特性介绍及Jigsaw一览-QCON-杨晓峰"><span class="nav-number">19.</span> <span class="nav-text">Java 9新特性介绍及Jigsaw一览 QCON/杨晓峰</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打造高性能高可用的搜索服务——爱奇艺搜索架构实践-QCON-陈爱云"><span class="nav-number">20.</span> <span class="nav-text">打造高性能高可用的搜索服务——爱奇艺搜索架构实践 QCON/陈爱云</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#高速发展业务的架构应对实践-QCON-陈霖"><span class="nav-number">21.</span> <span class="nav-text">高速发展业务的架构应对实践 QCON/陈霖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#美团点评旅游推荐系统的演进-QCON-郑刚"><span class="nav-number">22.</span> <span class="nav-text">美团点评旅游推荐系统的演进 QCON/郑刚</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#深度学习在电子商务中的应用-QCON-程进兴"><span class="nav-number">23.</span> <span class="nav-text">深度学习在电子商务中的应用 QCON/程进兴</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#微信红包后台系统可用性设计实践-QCON-michaelfang"><span class="nav-number">24.</span> <span class="nav-text">微信红包后台系统可用性设计实践 QCON/michaelfang</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异构系统链路追踪——滴滴-trace-实践-QCON"><span class="nav-number">25.</span> <span class="nav-text">异构系统链路追踪——滴滴 trace 实践 QCON</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leaf——美团点评分布式ID生成系统-照东"><span class="nav-number">26.</span> <span class="nav-text">Leaf——美团点评分布式ID生成系统 照东</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DevOps详解-Jerome-Kehrli-大愚若智"><span class="nav-number">27.</span> <span class="nav-text">DevOps详解  Jerome Kehrli/大愚若智</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#到底什么时候该使用MQ？-58沈剑"><span class="nav-number">28.</span> <span class="nav-text">到底什么时候该使用MQ？ 58沈剑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#换IP的是你，凭啥重启的却是我？-58沈剑"><span class="nav-number">29.</span> <span class="nav-text">换IP的是你，凭啥重启的却是我？ 58沈剑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#“配置”也有架构演进？看完深有痛感-58沈剑"><span class="nav-number">30.</span> <span class="nav-text">“配置”也有架构演进？看完深有痛感 58沈剑</span></a></li></ol></div>
             
 
           </div>
