@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://ginobefunny.com/my2017/index.html</loc>
+    
+    <lastmod>2017-05-02T02:41:07.208Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://ginobefunny.com/post/reading_record_201704/</loc>
     
     <lastmod>2017-04-27T07:34:34.893Z</lastmod>
@@ -12,13 +19,6 @@
     <loc>http://ginobefunny.com/joy_of_reading/index.html</loc>
     
     <lastmod>2017-04-26T07:10:21.035Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://ginobefunny.com/my2017/index.html</loc>
-    
-    <lastmod>2017-04-21T06:42:18.605Z</lastmod>
     
   </url>
   
@@ -282,14 +282,14 @@
   </url>
   
   <url>
-    <loc>http://ginobefunny.com/images/4_es_score/score_cross_fields.json</loc>
+    <loc>http://ginobefunny.com/images/4_es_score/score_best_fields.json</loc>
     
     <lastmod>2016-10-13T11:02:24.000Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://ginobefunny.com/images/4_es_score/score_best_fields.json</loc>
+    <loc>http://ginobefunny.com/images/4_es_score/score_cross_fields.json</loc>
     
     <lastmod>2016-10-13T11:02:24.000Z</lastmod>
     
