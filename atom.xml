@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-05-02T09:34:39.170Z</updated>
+  <updated>2017-05-25T12:34:20.262Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -14,6 +14,128 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>分布式调用跟踪系统调研笔记</title>
+    <link href="http://ginobefunny.com/post/learning_distributed_systems_tracing/"/>
+    <id>http://ginobefunny.com/post/learning_distributed_systems_tracing/</id>
+    <published>2017-05-25T12:26:51.000Z</published>
+    <updated>2017-05-25T12:34:20.262Z</updated>
+    
+    <content type="html"><![CDATA[<p>随着微服务架构的流行，服务之间的调用关系愈加复杂，如何跟踪它们之间的调用关系以及对依赖进行分析显得更加重要。而分布式调用跟踪系统就是为了解决这个问题而生的，本文为调研学习已有DST系统的学习笔记。<br><a id="more"></a></p>
+<h1 id="分布式调用链跟踪系统设计目标"><a href="#分布式调用链跟踪系统设计目标" class="headerlink" title="分布式调用链跟踪系统设计目标"></a>分布式调用链跟踪系统设计目标</h1><ul>
+<li>低侵入性 – 作为非业务组件，应当尽可能少侵入或者无侵入其他业务系统，对于使用方透明，减少开发人员的负担；</li>
+<li>灵活的应用策略 – 可以（最好随时）决定所收集数据的范围和粒度；</li>
+<li>时效性 – 从数据的收集和产生，到数据计算和处理，再到最终展现，都要求尽可能快；</li>
+<li>决策支持 – 这些数据是否能在决策支持层面发挥作用，特别是从 DevOps 的角度；</li>
+<li>可视化才是王道。</li>
+</ul>
+<h1 id="Twitter-zipkin"><a href="#Twitter-zipkin" class="headerlink" title="Twitter zipkin"></a>Twitter zipkin</h1><p>SEE：<a href="http://zipkin.io/pages/architecture.html" target="_blank" rel="external">http://zipkin.io/pages/architecture.html</a><br>SEE：<a href="https://github.com/openzipkin/zipkin" target="_blank" rel="external">https://github.com/openzipkin/zipkin</a></p>
+<ul>
+<li>Zipkin 是一款开源的分布式实时数据追踪系统），基于Google Dapper的论文设计而来，由Twitter公司开发贡献。其主要功能是聚集来自各个异构系统的实时监控数据，用来追踪微服务架构下的系统延时问题。应用系统需要进行instrument以向Zipkin报告数据。Zipkin的用户界面可以呈现一幅关联图表，以显示有多少被追踪的请求通过了每一层应用。</li>
+<li>Zipkin以Trace结构表示对一次请求的追踪，又把每个Trace拆分为若干个有依赖关系的Span。在微服务架构中，一次用户请求可能会由后台若干个服务负责处理，那么每个处理请求的服务就可以理解为一个Span。当然这个服务也可能继续请求其他的服务，因此Span是一个树形结构，以体现服务之间的调用关系。</li>
+<li>Zipkin的Span模型几乎完全仿造了Dapper中Span模型的设计，Zipkin中的Span主要包含三个数据部分：基础数据（包括traceId、spanId、parentId、name、timestamp和duration，主要用于跟踪树中节点的关联和界面展示）、 Annotation（用来记录请求特定事件相关信息）、BinaryAnnotation（提供一些额外信息，一般以key-value对出现）。</li>
+<li>Zipkin架构组成：Zipkin的收集器负责将各系统报告过来的追踪数据进行接收；而数据存储默认使用Cassandra，也可以替换为 MySQL等；查询服务用来向其他服务提供数据查询的能力，而Web服务是官方默认提供的一个图形用户界面。</li>
+</ul>
+<p><img src="http://zipkin.io/public/img/architecture-1.png" alt="Zipkin架构"></p>
+<h1 id="淘宝EagleEye"><a href="#淘宝EagleEye" class="headerlink" title="淘宝EagleEye"></a>淘宝EagleEye</h1><p>SEE：<a href="https://www.slideshare.net/terryice/eagleeye-with-taobaojavaone" target="_blank" rel="external">https://www.slideshare.net/terryice/eagleeye-with-taobaojavaone</a><br>SEE：<a href="http://jm.taobao.org/2014/03/04/3465/" target="_blank" rel="external">http://jm.taobao.org/2014/03/04/3465/</a><br>SEE：<a href="http://www.myroute.cn/show.php?md=%2Fali%2FeagleEye%2FeagleEye%E6%BA%90%E7%A0%81%E5%88%9D%E6%8E%A2.md" target="_blank" rel="external">http://www.myroute.cn/show.php?md=%2Fali%2FeagleEye%2FeagleEye%E6%BA%90%E7%A0%81%E5%88%9D%E6%8E%A2.md</a></p>
+<ul>
+<li>日趋复杂的分布式系统：RPC、消息通讯、数据库分表分库、分布式缓存、分布式文件系统……</li>
+<li>EagleEye是基于日志的分布式调用跟踪系统，脱胎于Google Dapper论文。其核心是调用链，每次请求都生成一个全局唯一的ID（TraceId），通过它将不同系统的“孤立的”日志串在一起，重组还原出更多有价值的信息。目前已覆盖了淘宝主要的有网络通信的中间件，包括前端请求接入Tengine、分布式会话tbsession、远程服务调用框架HSF、异步消息通讯Notify、数据库中间件TDDL、分布式缓存Tair、分布式文件系统TFS、特定功能的客户端如搜索等；</li>
+<li>处理过程：在前端请求到达服务器时，应用容器在执行实际业务处理之前，会先执行EagleEye的埋点逻辑（类似Filter的机制），埋点逻辑为这个前端请求分配一个全局唯一的调用链ID。这个ID在EagleEye 里面被称为 TraceId，埋点逻辑把TraceId 放在一个调用上下文对象里面，而调用上下文对象会存储在ThreadLocal里面。调用上下文里还有一个ID非常重要，在EagleEye里面被称作RpcId。RpcId用于区分同一个调用链下的多个网络调用的发生顺序和嵌套层次关系。对于前端收到请求，生成的RpcId固定都是0。当这个前端执行业务处理需要发起RPC调用时，淘宝的RPC调用客户端HSF会首先从当前线程ThreadLocal上面获取之前EagleEye设置的调用上下文。然后，把RpcId递增一个序号。在EagleEye里使用多级序号来表示RpcId，比如前端刚接到请求之后的RpcId是0，那么它第一次调用RPC服务A时，会把RpcId改成0.1。之后，调用上下文会作为附件随这次请求一起发送到远程的HSF服务器。服务的逻辑全部处理完毕之后，HSF在返回响应对象之前，会把这次调用情况以及TraceId、RpcId都打印到它的访问日志之中，同时会从ThreadLocal清理掉调用上下文。</li>
+<li>EagleEye的使用场景：调用链跟踪（与异常监控集成）；链路分析（容量规划、调用来源、依赖度量、调用耗时、调用并行度、调用路由情况）；透明数据传输（本身需要传递TraceID等上下文信息、透明传输业务数据）；</li>
+<li>EagleEye的实现之埋点和输出日志：中间件创建调用上下文生成日志埋点、放在ThreadLocal对业务透明、在网络请求中传递；TraceID、RpcID（Dapper里的SpanID）、开始时间、耗时、调用类型、IP、处理结果等；性能影响改进（利用无锁环形队列做日志异步写入来避免hang住业务线程、调节日志输出缓冲大小控制每秒写日志的IO次数、做采样和开关控制）；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/19_apm/EagleEye_1.png" alt="埋点和输出日志"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/19_apm/EagleEye_2.png" alt="调用链示意图"></p>
+<ul>
+<li>EagleEye的实现之收集和存储日志：EagleEye的埋点日志会输出到统一的日志目录下，与业务无关的RPC日志会写文件eagleeye.log，业务埋点日志会写文件biz-eagleeye.log。随后，tlog服务器会通过每台应用机器上的哈勃agent实时的不断抓取EagleEye日志，按照日志类型不同，将会有不同的处理方式：</li>
+</ul>
+<pre><code>1. 全量原始日志都会直接存到HDFS中；
+2. 带有实时标记的EagleEye原始日志，放入HBase中存储；
+3. 业务日志有一部分会被直接处理，存储到HBase，有一部分会作为消息发送出去，由感兴趣的业务系统订阅处理；
+4. 全量日志存储到HDFS之后，EagleEye服务器会每小时创建MapReduce任务，在云梯上完成对全量日志的调用链合并、分析
+以及统计，合并好的调用链依旧保存在HDFS，分析和统计的结果也输出到HDFS，EagleEye服务器在任务执行完毕之后，会将
+结果拉取到本地建立索引，并保存到HBase。在保存完毕后，就可以在EagleEye的数据展现页面看到分析结果了。
+5. 另外，EagleEye 还做了调用的实时统计，有分钟级别的实时链路大盘、应用大盘、服务大盘和入口大盘，帮助快速定位故障问题所在。
+</code></pre><p><img src="http://oi46mo3on.bkt.clouddn.com/19_apm/EagleEye_3.png" alt="收集和存储日志"></p>
+<ul>
+<li>EagleEye的实现之分析调用链：基于入口对调用链做链路分析；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/19_apm/EagleEye_4.png" alt="分析调用链"></p>
+<h1 id="微博Watchman"><a href="#微博Watchman" class="headerlink" title="微博Watchman"></a>微博Watchman</h1><p>SEE： <a href="http://www.infoq.com/cn/articles/weibo-watchman" target="_blank" rel="external">http://www.infoq.com/cn/articles/weibo-watchman</a></p>
+<ul>
+<li>Watchman系统架构</li>
+</ul>
+<p><img src="http://cdn1.infoqstatic.com/statics_s1_20170523-0350/resource/articles/weibo-watchman/zh/resources/6-1.png" alt="Watchman系统架构图"></p>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/19_apm/WatchMan.png" alt="系统组成"></p>
+<ul>
+<li>watchman-runtime组件利用字节码增强的方式在载入期织入增强逻辑（load-time weaving），为了跨进程/线程传递请求上下文，对于跨线程watchman-enhance组件通过javaagent的方式在应用启动并载入class时修改了JDK自身的几种线程池（ThreadPool或几类Executor）实现，在客户代码提交（execute或submit）时对传入的runnable/callable对象包上具有追踪能力的实现（proxy-pattern），并且从父线程上去继承或初始化请求上下文（request-context）；</li>
+<li>而对于跨进程的RPC场景，则动态增强传输层的客户端和服务端的逻辑。微博平台使用的Motan RPC框架有着类似filter-chain的流程，watchman-aspect会插入自己的filter实现；实现的逻辑就是在RPC请求前获取请求方的请求上下文，序列化后装配近请求体中，服务方获取请求后，再从请求体中反序列化请求上下文，同时设置到线程上下文中（ThreadLocal）。</li>
+<li>普通Java调用的处理方式（埋点/追踪）则是通过AspectJ的静态织入，相信广大读者对AspectJ都不陌生，它提供非常强大的AOP的能力，我们使用AspectJ来定义几类切面，分别针对WeiboAuth、HTTP接口、资源客户端的下行方法等。再利用AspectJ的语法定义各个切点，形如：</li>
+</ul>
+<pre><code>@AfterReturning(value=&quot;execution(public $type $signature($param))&quot;,returning=&quot;$return&quot;)
+</code></pre><ul>
+<li>watchman-core组件内置几类策略，分别用来控制收集数据的范围、收集数据的采样率、以及几种控制策略。</li>
+<li>watchman-aspect组件通过异步日志（async-logger）会在各个节点上输出日志文件，如何将这些分散的日志源源不断的收集汇总并计算？通过watchman-prism组件（基于Scribe），将日志推送到watchman-stream组件（基于Storm），利用这两个业界成熟的系统以流式的方式处理数据，stream中bolt会根据需求进行聚合、统计等计算（针对性能数据），规范化、排序（针对调用链数据），之后写入HBase中。这个过程通过benchmark反映出的结果来看，完全能达到准实时的要求（30s左右）。</li>
+<li>服务质量保障是Watchman系统的另一特点，在面向服务的架构（SOA）中，各个服务的提供方需要给出SLA（service level agreement）数据，量化服务的各种指标（如吞吐、承载）和服务质量（如99.99% &lt;50ms）。运行时watchman-stream将不断计算得出的性能数据与通过watchman-registry获得的各服务的SLA数据进行比对。结果会反映到Dashboard上，这里与运维的告警系统等集成，可以及时将状况推送出去。</li>
+</ul>
+<h1 id="京东CallGraph"><a href="#京东CallGraph" class="headerlink" title="京东CallGraph"></a>京东CallGraph</h1><ul>
+<li>产生背景：SOA化和微服务；基于Google发表的分布式日志跟踪论文；相似的有淘宝鹰眼和新浪WatchMan；</li>
+<li>核心概念：调用链包含了从源头请求到最后底层系统的所有环节，中间通过全局唯一的TraceID透传；</li>
+<li>特性及使用场景：方法调用关系（单次调用的问题排查）、应用依赖关系（容量规划、调用来源、依赖度量、调用耗时、调用并行度、调用路由）、与业务数据集成（将公司业务与第三方业务进行关联）；</li>
+<li>设计目标：低侵入性、低性能影响、灵活的应用策略、时效性；</li>
+<li>实现架构：核心包（被各中间件引用，完成具体的埋点逻辑，日志存放在内存磁盘上由Agent收集发送到JMQ）、JMQ（充当日志数据管道）、Storm（对数据日志并行整理和计算）、存储（实时数据存储有JimDB/HBase/ES，离线数据存储包括HDFS和Spark）、CallGraph-UI（用户交互界面）、UCC（存放配置信息并同步到各服务器）、管理元数据（存放链路签名与应用映射关系等）；</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_callgraph.png" alt="CallGraph实现架构"></p>
+<ul>
+<li>埋点和调用上下文透传：前端利用Web容器的Filter机制调用startTrace开启跟踪，调用endTrace结束跟踪；各中间件调用clientSend、serverRecv、serverSend和clientRecv等API；对于进程间的上下文透传，调用上下文放在ThreadLocal；对于异步调用，通过Java字节码增强方式织入，以透明的方式完成线程间上下文的透传。</li>
+</ul>
+<p><img src="http://oi46mo3on.bkt.clouddn.com/9_reading_201701/jd_callgraph2.png" alt="CallGraph透传"></p>
+<ul>
+<li>日志格式设计：固定部分（TraceID、RpcID、开始时间、调用类型、对端IP、调用耗时、调用结果等）、可变部分；</li>
+<li>高性能的链路日志输出：开辟专门的内存区域并虚拟成磁盘设备，产生的日志存放在这样的内存设备，完全不占用磁盘IO；专门的日志模块，输出采用批量、异步方式写入，并在日志量过大时采取丢弃日志；</li>
+<li>TP日志和链路日志分离：链路日志通常开启采样率机制，比如1000次调用只收集1次；但是对于TP指标来说，必须每次记录，因此这两种数据是独立处理互不影响；</li>
+<li>实时配置：通过CallGraph-UI和UCC实时配置，支持基于应用、应用分组、服务器IP多维度配置；</li>
+<li>秒级监控：针对业务对实时分析的需求，采用JimDB存放实时数据，针对来源分析、入口分析、链路分析等可以提供1小时内的实时分析结果；</li>
+<li>未来之路：延迟更低、完善错误发现和报警、借助深度学习挖掘价值。</li>
+</ul>
+<h1 id="美团MTrace"><a href="#美团MTrace" class="headerlink" title="美团MTrace"></a>美团MTrace</h1><p>SEE：<a href="https://www.slideshare.net/meituan/08-63406714" target="_blank" rel="external">https://www.slideshare.net/meituan/08-63406714</a><br>SEE：<a href="http://tech.meituan.com/mt-mtrace.html" target="_blank" rel="external">http://tech.meituan.com/mt-mtrace.html</a></p>
+<ul>
+<li>MTrace，美团点评内部的分布式会话跟踪系统，其核心理念就是调用链：通过一个全局的ID将分布在各个服务节点上的同一次请求串联起来，还原原有的调用关系、追踪系统问题、分析调用数据、统计系统指标。这套系统借鉴了2010年Google发表的一篇论文《dapper》，并参考了Twitter的Zipkin以及阿里的Eagle Eye的实现。</li>
+<li>使用场景：网络优化（通过IP查询一次分布式请求是否有跨机房调用）；瓶颈查询（通过可视化了解整个系统调用的耗时，优化整个系统的效率）；优化链路（一个服务对相同接口多次请求进行优化，比如改成批量接口或者提高整个系统调用的并行度）；异常log绑定（可以将请求的参数、异常log等信息通过traceId进行绑定，很容易地就把这些信息聚合到了一起，方便业务端查询问题）；透明传输数据（put和putOnce）；</li>
+<li>系统架构：提供统一的SDK，在各个中间件中埋点，生成traceID等核心数据，上报服务的调用数据信息。尽量在各个统一的中间件中进行显式埋点，虽然会导致代码间耦合度增加，但是方便后续定位问题。Agent仅仅会转发数据，由Agent判断将数据转发到哪里，这样就可以通过Agent做数据路由、流量控制等操作。数据埋点的四个阶段：Client Send、Server Recieve、Server Send和Client Recieve；上下文归档，会把上下文数据异步上传到后端，为了减轻对业务端的影响，上下文上报采用的是异步队列的方式，数据不会落地，直接通过网络形式传递到后端服务，在传递之前会对数据做一层压缩，主要是压缩比很可观，可以达到10倍以上，所以就算牺牲一点CPU资源也是值得的。在SDK与后端服务之间加了一层Kafka，这样做既可以实现两边工程的解耦，又可以实现数据的延迟消费。调用链路数据的实时查询主要是通过Hbase，使用traceID作为RowKey，能天然的把一整条调用链聚合在一起，提高查询效率。离线数据主要是使用Hive，可以通过SQL进行一些结构化数据的定制分析。前端展示，主要遇到的问题是NTP同步的问题，因为调用链的数据是从不同机器上收集上来的，那么聚合展示的时候就会有NTP时间戳不同步的问题。</li>
+</ul>
+<p><img src="http://tech.meituan.com/img/mt-mtrace/mtrace6.png" alt="MTrace系统架构"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><ol>
+<li>分布式调用链跟踪的核心基本都是Google Dapper论文所述，使用全局TraceID表示一条调用链，连接各个服务调用（用SPAN表示），通过分析SPAN之间的父子关系形成跟踪树。另外通过中间件的埋点和业务自定义的Annotation，记录日志并采用收集器进行离线和在线分析，从而实现调用链跟踪、优化决策等信息。</li>
+<li>实现的核心在于埋点、日志收集、调用链分析，难点在于调用链分析，如何实现可视化以及和告警系统等对接是判断是否好用的核心标准。</li>
+<li>另外，为了最低限度降低对业务的影响，采样率、开关控制和日志优化手段也很有必要。</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;随着微服务架构的流行，服务之间的调用关系愈加复杂，如何跟踪它们之间的调用关系以及对依赖进行分析显得更加重要。而分布式调用跟踪系统就是为了解决这个问题而生的，本文为调研学习已有DST系统的学习笔记。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="OpenSource" scheme="http://ginobefunny.com/categories/OpenSource/"/>
+    
+    
+      <category term="分布式调用跟踪" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E8%B0%83%E7%94%A8%E8%B7%9F%E8%B8%AA/"/>
+    
+      <category term="zipkin" scheme="http://ginobefunny.com/tags/zipkin/"/>
+    
+      <category term="EagleEye" scheme="http://ginobefunny.com/tags/EagleEye/"/>
+    
+      <category term="Watchman" scheme="http://ginobefunny.com/tags/Watchman/"/>
+    
+      <category term="CallGraph" scheme="http://ginobefunny.com/tags/CallGraph/"/>
+    
+      <category term="MTrace" scheme="http://ginobefunny.com/tags/MTrace/"/>
+    
+  </entry>
   
   <entry>
     <title>阅读随手记 201704</title>
@@ -496,8 +618,6 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
     
       <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
     
-      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
-    
       <category term="推荐系统" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/"/>
     
       <category term="分布式队列" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%98%9F%E5%88%97/"/>
@@ -510,13 +630,15 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
     
       <category term="高可用" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
     
-      <category term="架构" scheme="http://ginobefunny.com/tags/%E6%9E%B6%E6%9E%84/"/>
+      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
     
-      <category term="CQRS" scheme="http://ginobefunny.com/tags/CQRS/"/>
+      <category term="架构" scheme="http://ginobefunny.com/tags/%E6%9E%B6%E6%9E%84/"/>
     
       <category term="人工智能" scheme="http://ginobefunny.com/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
       <category term="Java 9" scheme="http://ginobefunny.com/tags/Java-9/"/>
+    
+      <category term="CQRS" scheme="http://ginobefunny.com/tags/CQRS/"/>
     
       <category term="Event Source" scheme="http://ginobefunny.com/tags/Event-Source/"/>
     
@@ -1453,15 +1575,15 @@ query = function(batch view . realtime view)
     
       <category term="监控" scheme="http://ginobefunny.com/tags/%E7%9B%91%E6%8E%A7/"/>
     
-      <category term="Event Sourcing" scheme="http://ginobefunny.com/tags/Event-Sourcing/"/>
+      <category term="人工智能" scheme="http://ginobefunny.com/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
       <category term="CQRS" scheme="http://ginobefunny.com/tags/CQRS/"/>
+    
+      <category term="Event Sourcing" scheme="http://ginobefunny.com/tags/Event-Sourcing/"/>
     
       <category term="Redis" scheme="http://ginobefunny.com/tags/Redis/"/>
     
       <category term="TDD" scheme="http://ginobefunny.com/tags/TDD/"/>
-    
-      <category term="人工智能" scheme="http://ginobefunny.com/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
   </entry>
   
@@ -4966,9 +5088,9 @@ and must have the same mapping.
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
     
@@ -5121,9 +5243,9 @@ and must have the same mapping.
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
     
@@ -5131,13 +5253,13 @@ and must have the same mapping.
     
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
-      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
-    
       <category term="HotSpot" scheme="http://ginobefunny.com/tags/HotSpot/"/>
     
+      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
       <category term="即时编译器" scheme="http://ginobefunny.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E5%99%A8/"/>
+    
+      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
     
   </entry>
   
@@ -5494,25 +5616,25 @@ Stack=2, Locals=4, Args_size=1
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
     
       <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
-      <category term="类加载器" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/"/>
-    
-      <category term="双亲委派" scheme="http://ginobefunny.com/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/"/>
-    
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
-    
-      <category term="执行引擎" scheme="http://ginobefunny.com/tags/%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/"/>
     
       <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
     
       <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
+    
+      <category term="类加载器" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8/"/>
+    
+      <category term="双亲委派" scheme="http://ginobefunny.com/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE/"/>
+    
+      <category term="执行引擎" scheme="http://ginobefunny.com/tags/%E6%89%A7%E8%A1%8C%E5%BC%95%E6%93%8E/"/>
     
   </entry>
   
@@ -5686,19 +5808,19 @@ Stack=2, Locals=4, Args_size=1
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
     
       <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
-      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
-    
       <category term="类文件" scheme="http://ginobefunny.com/tags/%E7%B1%BB%E6%96%87%E4%BB%B6/"/>
     
       <category term="常量池" scheme="http://ginobefunny.com/tags/%E5%B8%B8%E9%87%8F%E6%B1%A0/"/>
+    
+      <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
   </entry>
   
@@ -6061,9 +6183,9 @@ sudo bin/plugin remove [plugin_name]    #Removing plugins
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="性能调优" scheme="http://ginobefunny.com/tags/%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98/"/>
     
@@ -6072,168 +6194,6 @@ sudo bin/plugin remove [plugin_name]    #Removing plugins
       <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
     
       <category term="性能监控" scheme="http://ginobefunny.com/tags/%E6%80%A7%E8%83%BD%E7%9B%91%E6%8E%A7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</title>
-    <link href="http://ginobefunny.com/post/deep_in_jvm_notes_part2/"/>
-    <id>http://ginobefunny.com/post/deep_in_jvm_notes_part2/</id>
-    <published>2017-01-08T01:29:44.000Z</published>
-    <updated>2017-01-31T09:49:23.821Z</updated>
-    
-    <content type="html"><![CDATA[<p>国内JVM相关书籍NO.1，Java程序员必读。读书笔记第二部分对应原书的第三章，主要介绍JVM的垃圾回收算法、实现。<br><a id="more"></a></p>
-<h2 id="第三章-垃圾收集器与内存分配策略"><a href="#第三章-垃圾收集器与内存分配策略" class="headerlink" title="第三章 垃圾收集器与内存分配策略"></a>第三章 垃圾收集器与内存分配策略</h2><h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>思考GC需要完成的3件事情：</p>
-<ul>
-<li>哪些内存需要回收？</li>
-<li>什么时候回收？</li>
-<li>如何回收？</li>
-</ul>
-<p>再回头看看第二章介绍的Java内存运行时区域的各个部分：</p>
-<ul>
-<li>程序计时器、虚拟机栈、本地方法栈：随线程而灭，栈帧随方法而进行出栈和入栈，每一个栈帧分配的内存在类结构确定就已知，因此这几个区域不需要考虑回收；</li>
-<li>对于Java堆和方法区，只有程序运行期间才知道会创建哪些对象，内存的分配和回收都是动态的，垃圾收集器所关注的是这部分内存；</li>
-</ul>
-<h4 id="对象已死吗？"><a href="#对象已死吗？" class="headerlink" title="对象已死吗？"></a>对象已死吗？</h4><p>在垃圾收集器进行回收前，第一件事就是确定这些对象哪些还存活，哪些已经死去。</p>
-<h4 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h4><p>给对象添加引用计数器，当有地方引用它时就加1，引用失效就减1，为0时就认为对象不再被使用可回收。该算法失效简单，判断高效，但并不被主流虚拟机采用，主要原因是它很难解决对象之间相互循环引用的问题。</p>
-<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p>通过一系列的称为“GC Roots”的对象作为起点，从这些节点开始向下搜索，搜索所走过的路径称为引用链（Reference Chain），如果一个对象到GC Roots没有引用链相连，则该对象是不可用的。</p>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_roots_reference_chain.png" alt="可达性分析"></p>
-<p>在Java语言中，可作为GC Roots的对象包括：</p>
-<ul>
-<li>虚拟机栈（栈帧中的本地变量表）中引用的对象；</li>
-<li>方法区中类静态属性引用的对象；</li>
-<li>方法区中常量引用的对象；</li>
-<li>本地方法栈中JNI（即一般说的Native方法）引用的对象；</li>
-</ul>
-<h4 id="再谈引用"><a href="#再谈引用" class="headerlink" title="再谈引用"></a>再谈引用</h4><p>在JDK 1.2之后，Java对引用的概念进行了扩充，将引用分为强引用、软引用、弱引用和虚引用，这4种引用强度依次减弱。</p>
-<h4 id="生存还是死亡"><a href="#生存还是死亡" class="headerlink" title="生存还是死亡"></a>生存还是死亡</h4><p>要真正宣告一个对象死亡，至少要经历两次标记过程：如果对象在进行可达性分析后发现没有与GC Roots相连接的引用链，那它将会被第一次标记并且进行一次筛选，筛选的条件是此对象是否有必要执行finalize方法（如没有重写finalize方法或者已经被调用过则认为没有必要执行）；如果有必要执行则将该对象放置在F-Queue队列中，并在稍后由一个由虚拟机自己建立的、低优先级的Finalizer线程去执行它；稍后GC将对F-Queue中的对象进行第二次标记，如果对象还是没有被引用，则会被回收。</p>
-<p>但是作者不建议通过finalize方法“拯救”对象，因为它运行代价高、不确定性大、无法保证各个对象的调用顺序。</p>
-<h4 id="回收方法区"><a href="#回收方法区" class="headerlink" title="回收方法区"></a>回收方法区</h4><p>永久代的垃圾收集主要回收两部分内容：废弃常量和无用的类。</p>
-<p>一个无用的类需要满足以下三个条件：</p>
-<ul>
-<li>该类的所有实例都已经被回收；</li>
-<li>加载该类的ClassLoader已经被回收；</li>
-<li>该类对象的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法；</li>
-</ul>
-<p>在大量使用反射、动态代理、CGLib等ByteCode框架、动态生成JSP以及OSGI这类频繁自定义ClassLoader的场景都需要虚拟机具备类卸载的功能（HotSpot提供-Xnoclassgc参数控制），以保证永久代不会溢出。</p>
-<h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><ul>
-<li>标记-清除算法：首先标记出所有需要回收的对象，然后统一回收所有被标记的对象；缺点是效率不高且容易产生大量不连续的内存碎片；</li>
-<li>复制算法：将可用内存分为大小相等的两块，每次只使用其中一块；当这一块用完了，就将还活着的对象复制到另一块上，然后把已使用过的内存清理掉。在HotSpot里，考虑到大部分对象存活时间很短将内存分为Eden和两块Survivor，默认比例为8:1:1。代价是存在部分内存空间浪费，适合在新生代使用；</li>
-<li>标记-整理算法：首先标记出所有需要回收的对象，然后让所有存活的对象都向一端移动，然后直接清理掉端边界以外的内存。适用于老年代。</li>
-<li>分代收集算法：一般把Java堆分新生代和老年代，在新生代用复制算法，在老年代用标记-清理或标记-整理算法，是现代虚拟机通常采用的算法。</li>
-</ul>
-<h3 id="HotSpot的算法实现"><a href="#HotSpot的算法实现" class="headerlink" title="HotSpot的算法实现"></a>HotSpot的算法实现</h3><h4 id="枚举根节点"><a href="#枚举根节点" class="headerlink" title="枚举根节点"></a>枚举根节点</h4><ul>
-<li>由于要确保在一致性的快照中进行可达性分析，从而导致GC进行时必须要停顿所有Java执行线程；</li>
-<li>在HotSpot里通过一组OopMap数据结构来知道哪些地方存放着对象引用；</li>
-</ul>
-<h4 id="安全点"><a href="#安全点" class="headerlink" title="安全点"></a>安全点</h4><ul>
-<li>HotSpot只在特定的位置记录了OopMap，这些位置称为安全点（SafePoint）；</li>
-<li>即程序执行时并非在所有地方都能停顿下来开始GC，只有到达安全点时才能暂停；</li>
-<li>对于安全点基本上是以程序“是否具有让程序长时间执行的特征”（比如方法调用、循环跳转、异常跳转等）为标准进行选定的；</li>
-<li>另外还需要考虑如果在GC时让所有线程都跑到最近的安全点上，有两种方案：抢先式中断和主动式中断（主流选择）；</li>
-</ul>
-<h4 id="安全区域"><a href="#安全区域" class="headerlink" title="安全区域"></a>安全区域</h4><ul>
-<li>如果程序没有分配CPU时间（如线程处于Sleep或Blocked），此时就需要安全区域（Safe Region），其是指在一段代码片段之中，引用关系不会发生变化；</li>
-<li>线程执行到安全区域时，首先标识自己已经进入了安全区域，这样JVM在GC时就不管这些线程了；</li>
-</ul>
-<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><ul>
-<li>垃圾收集算法是内存回收的方法论，垃圾收集器就是内存回收的具体实现。</li>
-<li>这里讨论JDK 1.7 Update 14之后的HotSpot虚拟机（此时G1仍处于实验状态），包含的虚拟机如下图所示（存在连线的表示可以搭配使用）：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_for_hotspot.png" alt="HotSpot垃圾收集器"></p>
-<h4 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_serial.png" alt="Serial收集器"></p>
-<ul>
-<li>最基本、发展历史最悠久，在JDK 1.3之前是新生代收集的唯一选择；</li>
-<li>是一个单线程（并非指一个收集线程，而是会暂停索引工作线程）的收集器；</li>
-<li>现在依然是虚拟机运行在Client模式下的默认新生代收集器，主要就是因为它简单而高效（没有线程交互的开销）；</li>
-</ul>
-<h4 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_parnew.png" alt="ParNew收集器"></p>
-<ul>
-<li>其实就是Serial收集器的多线程版本；</li>
-<li>ParNew收集器在单CPU环境中绝对不会有比Serial收集器更好的效果；</li>
-<li>是许多运行在Server模式下虚拟机首选的新生代收集器，重要原因就是除了Serial收集器外，只有它能与CMS收集器配合工作；</li>
-<li>并行（Parallel）：指多条垃圾收集线程并行工作，但此时用户线程仍处于等待状态；</li>
-<li>并发（Concurrent）：指用户线程与垃圾收集线程同时执行，用户线程在继续执行而垃圾收集程序运行在另外一个CPU上；</li>
-</ul>
-<h4 id="Parallel-Scavenge收集器"><a href="#Parallel-Scavenge收集器" class="headerlink" title="Parallel Scavenge收集器"></a>Parallel Scavenge收集器</h4><ul>
-<li>新生代收集器，使用复制算法，并行的多线程收集器；</li>
-<li>与其他收集器关注于尽可能缩短垃圾收集时用户线程停顿时间不同，它的目标是达到一个可控制的吞吐量；</li>
-<li>高吞吐量可以高效率利用CPU时间，适合在后台运算而不需要太多交互的任务；</li>
-<li>-XX:MaxGCPauseMillis参数可以设置最大停顿时间，而停顿时间缩短是以牺牲吞吐量和新生代空间来换取的；</li>
-<li>另外它还支持GC自适应的调节策略；</li>
-</ul>
-<h4 id="Serial-Old收集器"><a href="#Serial-Old收集器" class="headerlink" title="Serial Old收集器"></a>Serial Old收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_serial_old.png" alt="Serial Old收集器"></p>
-<ul>
-<li>是Serial收集器的老年代版本，同样是单线程，使用标记-整理算法；</li>
-<li>主要是给Client模式下的虚拟机使用的；</li>
-<li>在Server模式下主要是给JDK 1.5及之前配合Parallel Scavenge使用或作为CMS收集器的后备预案；</li>
-</ul>
-<h4 id="Parallel-Old收集器"><a href="#Parallel-Old收集器" class="headerlink" title="Parallel Old收集器"></a>Parallel Old收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_parallel_old.png" alt="Parallel Old收集器"></p>
-<ul>
-<li>是Parallel Scavenge的老年代版本，使用多线程和标记-整理算法；</li>
-<li>是JDK 1.6中才开始提供的；</li>
-</ul>
-<h4 id="CMS收集器"><a href="#CMS收集器" class="headerlink" title="CMS收集器"></a>CMS收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_cms.png" alt="CMS收集器"></p>
-<ul>
-<li>是一种以获取最短回收停顿时间为目标的收集器，特别适合互联网站或者B/S的服务端；</li>
-<li>主要包括4个步骤：初始标记、并发标记、重新标记和并发清除；</li>
-<li>还有3个明显的缺点：CMS收集器对CPU非常敏感、无法处理浮动垃圾、大量内存碎片产生；</li>
-</ul>
-<h4 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_g1.png" alt="G1收集器"></p>
-<ul>
-<li>一款面向服务端应用的垃圾收集器，后续会替换掉CMS垃圾收集器；</li>
-<li>特点：并行与并发（充分利用多核多CPU缩短Stop-The-World时间）、分代收集（独立管理整个Java堆，但针对不同年龄的对象采取不同的策略）、空间整合（基于标记-整理）、可预测的停顿（将堆分为大小相等的独立区域，避免全区域的垃圾收集）；</li>
-<li>关于Region：新生代和老年代不再物理隔离，只是部分Region的集合；G1跟踪各个Region垃圾堆积的价值大小，在后台维护一个优先列表，根据允许的收集时间优先回收价值最大的Region；Region之间的对象引用以及其他收集器中的新生代与老年代之间的对象引用，采用Remembered Set来避免全堆扫描；</li>
-<li>分为几个步骤：初始标记（标记一下GC Roots能直接关联的对象并修改TAMS值，需要STW但耗时很短）、并发标记（从GC Root从堆中对象进行可达性分析找存活的对象，耗时较长但可以与用户线程并发执行）、最终标记（为了修正并发标记期间产生变动的那一部分标记记录，这一期间的变化记录在Remembered Set Log里，然后合并到Remembered Set里，该阶段需要STW但是可并行执行）、筛选回收（对各个Region回收价值排序，根据用户期望的GC停顿时间制定回收计划来回收）；</li>
-</ul>
-<h4 id="理解GC日志"><a href="#理解GC日志" class="headerlink" title="理解GC日志"></a>理解GC日志</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_log.png" alt="GC日志"></p>
-<ul>
-<li>最前面的数字代表GC发生的时间（虚拟机启动以后的秒杀）；</li>
-<li>“[GC”和“[Full GC”说明停顿类型，有Full代表的是Stop-The-World的；</li>
-<li>“[DefNew”、“[Tenured”和“[Perm”表示GC发生的区域；</li>
-<li>方括号内部的“3324K -&gt; 152K(3712K)” 含义是 “GC前该内存已使用容量 -&gt; GC后该内存区域已使用容量(该区域总容量)”;</li>
-<li>方括号之外的“3324K -&gt; 152K(11904)” 含义是 “GC前Java堆已使用容量 -&gt; GC后Java堆已使用容量(Java堆总容量)”;</li>
-<li>再往后“0.0025925 secs”表示该内存区域GC所占用的时间；</li>
-</ul>
-<h4 id="垃圾收集器参数总结"><a href="#垃圾收集器参数总结" class="headerlink" title="垃圾收集器参数总结"></a>垃圾收集器参数总结</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param1.png" alt="垃圾收集器参数1"><br><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param2.png" alt="垃圾收集器参数2"></p>
-<h3 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h3><ul>
-<li>对象优先在新生代分配</li>
-<li>大对象直接进入老年代</li>
-<li>长期存活的对象将进入老年代</li>
-<li>动态对象年龄判断：如果在Survivor空间中相同年龄所有对象大小总和大于Survivor空间的一半，大于或等于该年龄的对象直接进入老年代；</li>
-<li>空间分配担保：发生Minor GC前，虚拟机会先检查老年代最大可用连续空间是否大于新生代所有对象总空间，如果不成立，虚拟机会查看HandlePromotionFailure设置值是否允许担保失败，如果允许继续检查老年代最大可用的连续空间是否大于历次晋升到老年代的平均大小，如果大于会尝试进行一次Minor GC；如果小于或者不允许冒险，会进行一次Full GC；</li>
-</ul>
-<h3 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h3><p>本章介绍了垃圾回收算法、几款JDK 1.7中提供的垃圾收集器特点以及运作原理。内存回收与垃圾收集器在很多时候都是影响系统性能、并发能力的主要因素之一，然而没有固定收集器和参数组合，也没有最优的调优方法，需要根据实践了解各自的行为、优势和劣势。</p>
-<p><strong>系列读书笔记</strong></p>
-<ul>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part1">《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part2">《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part3">《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part4">《深入理解Java虚拟机》读书笔记4：类文件结构</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part5">《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part6">《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part7">《深入理解Java虚拟机》读书笔记7：高效并发</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;国内JVM相关书籍NO.1，Java程序员必读。读书笔记第二部分对应原书的第三章，主要介绍JVM的垃圾回收算法、实现。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
-    
-    
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
-    
-      <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
-    
-      <category term="垃圾收集" scheme="http://ginobefunny.com/tags/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86/"/>
-    
-      <category term="内存分配" scheme="http://ginobefunny.com/tags/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
     
   </entry>
   
