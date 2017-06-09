@@ -3,6 +3,7 @@
 
 
     
+    
   <url>
     <loc>http://ginobefunny.com/post/learning_distributed_systems_tracing/</loc>
     <lastmod>2017-05-25T12:34:20.262Z</lastmod>
@@ -43,6 +44,8 @@
         
         <tag>Elasticsearch</tag>
          
+        <tag>搜索引擎</tag>
+         
         <tag>推荐系统</tag>
          
         <tag>分布式队列</tag>
@@ -54,8 +57,6 @@
         <tag>机器学习</tag>
          
         <tag>高可用</tag>
-         
-        <tag>搜索引擎</tag>
          
         <tag>架构</tag>
          
@@ -76,7 +77,6 @@
     </data>
     </url>
 
-    
     
     
   <url>
