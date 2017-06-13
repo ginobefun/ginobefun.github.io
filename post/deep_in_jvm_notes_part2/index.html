@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="读书笔记,Java,JVM,垃圾收集,内存分配," />
+  <meta name="keywords" content="Java,读书笔记,JVM,垃圾收集,内存分配," />
 
 
 
@@ -103,7 +103,7 @@
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_log.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param1.png">
 <meta property="og:image" content="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_param2.png">
-<meta property="og:updated_time" content="2017-01-31T09:49:23.821Z">
+<meta property="og:updated_time" content="2017-06-13T09:09:56.009Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略">
 <meta name="twitter:description" content="国内JVM相关书籍NO.1，Java程序员必读。读书笔记第二部分对应原书的第三章，主要介绍JVM的垃圾回收算法、实现。">
@@ -488,7 +488,7 @@
 <h4 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_serial.png" alt="Serial收集器"></p>
 <ul>
 <li>最基本、发展历史最悠久，在JDK 1.3之前是新生代收集的唯一选择；</li>
-<li>是一个单线程（并非指一个收集线程，而是会暂停索引工作线程）的收集器；</li>
+<li>是一个单线程（并非指一个收集线程，而是会暂停所有工作线程）的收集器，采用的是复制算法；</li>
 <li>现在依然是虚拟机运行在Client模式下的默认新生代收集器，主要就是因为它简单而高效（没有线程交互的开销）；</li>
 </ul>
 <h4 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_parnew.png" alt="ParNew收集器"></p>
@@ -520,8 +520,8 @@
 <h4 id="CMS收集器"><a href="#CMS收集器" class="headerlink" title="CMS收集器"></a>CMS收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_cms.png" alt="CMS收集器"></p>
 <ul>
 <li>是一种以获取最短回收停顿时间为目标的收集器，特别适合互联网站或者B/S的服务端；</li>
-<li>主要包括4个步骤：初始标记、并发标记、重新标记和并发清除；</li>
-<li>还有3个明显的缺点：CMS收集器对CPU非常敏感、无法处理浮动垃圾、大量内存碎片产生；</li>
+<li>它是基于<strong>标记-清除</strong> 算法实现的，主要包括4个步骤：初始标记（STW，只是初始标记一下GC Roots能直接关联到的对象，速度很快）、并发标记（非STW，执行GC RootsTracing，耗时比较长）、重新标记（STW，修正并发标记期间因用户程序继续导致变动的那一部分对象标记）和并发清除（非STW，耗时较长）；</li>
+<li>还有3个明显的缺点：CMS收集器对CPU非常敏感（占用部分线程及CPU资源，影响总吞吐量）、无法处理浮动垃圾（默认达到92%就触发垃圾回收）、大量内存碎片产生（可以通过参数启动压缩）；</li>
 </ul>
 <h4 id="G1收集器"><a href="#G1收集器" class="headerlink" title="G1收集器"></a>G1收集器</h4><p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/gc_g1.png" alt="G1收集器"></p>
 <ul>
@@ -586,9 +586,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
-          
             <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/读书笔记/" rel="tag"># 读书笔记</a>
           
             <a href="/tags/JVM/" rel="tag"># JVM</a>
           
