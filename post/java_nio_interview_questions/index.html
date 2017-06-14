@@ -92,7 +92,7 @@
 <meta property="og:url" content="http://ginobefunny.com/post/java_nio_interview_questions/index.html">
 <meta property="og:site_name" content="GinoBeFunny">
 <meta property="og:description" content="最近面试一些公司，被问到的关于Java NIO编程的问题，以及自己总结的回答。">
-<meta property="og:updated_time" content="2017-06-14T08:46:58.513Z">
+<meta property="og:updated_time" content="2017-06-14T08:58:06.824Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试小结之IO篇">
 <meta name="twitter:description" content="最近面试一些公司，被问到的关于Java NIO编程的问题，以及自己总结的回答。">
@@ -444,6 +444,13 @@
 <li>异步I/O通道一般提供两种使用方式：一会走是通过Future类的对象来表示异步操作的结果，另外一种是在执行操作时传入一个CompletionHandler接口的实现对象作为操作完成时的回调方法；异步文件通道由AsynchronousFileChannel类表示，它没有当前读写位置的概念。</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">asyncWrite</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ExecutionException, InterruptedException </span>&#123;</div><div class="line">    AsynchronousFileChannel channel = AsynchronousFileChannel.open(Paths.get(<span class="string">"large.bin"</span>),</div><div class="line">            StandardOpenOption.CREATE, StandardOpenOption.WRITE);</div><div class="line">    ByteBuffer buffer = ByteBuffer.allocate(<span class="number">32</span> * <span class="number">1024</span> * <span class="number">1024</span>);</div><div class="line">    Future&lt;Integer&gt; result = channel.write(buffer, <span class="number">0</span>);</div><div class="line">    Integer len = result.get();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startAsyncSimpleServer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    AsynchronousChannelGroup group = AsynchronousChannelGroup.withFixedThreadPool(<span class="number">10</span>, Executors.defaultThreadFactory());</div><div class="line">    <span class="keyword">final</span> AsynchronousServerSocketChannel serverChannel = AsynchronousServerSocketChannel.open(group).bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">10080</span>));</div><div class="line">    serverChannel.accept(<span class="keyword">null</span>, <span class="keyword">new</span> CompletionHandler&lt;AsynchronousSocketChannel, Void&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">completed</span><span class="params">(AsynchronousSocketChannel result, Void attachment)</span> </span>&#123;</div><div class="line">            serverChannel.accept(<span class="keyword">null</span>, <span class="keyword">this</span>);</div><div class="line">            <span class="comment">// 使用clientChannel</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">failed</span><span class="params">(Throwable exc, Void attachment)</span> </span>&#123;</div><div class="line">            <span class="comment">// 错误处理</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="其他面试小结"><a href="#其他面试小结" class="headerlink" title="其他面试小结"></a>其他面试小结</h2><ul>
+<li><a href="http://ginobefunny.com/post/elasticsearch_interview_questions/">面试小结之Elasticsearch篇</a></li>
+<li><a href="http://ginobefunny.com/post/jvm_interview_questions/">面试小结之JVM篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrent_interview_questions/">面试小结之并发篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_nio_interview_questions/">面试小结之IO篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_other_interview_questions/">面试小结之综合篇</a></li>
+</ul>
 
       
     </div>
@@ -497,8 +504,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/post/java_other_interview_questions/" rel="prev" title="面试小结之其他问题篇">
-                面试小结之其他问题篇 <i class="fa fa-chevron-right"></i>
+              <a href="/post/java_other_interview_questions/" rel="prev" title="面试小结之综合篇">
+                面试小结之综合篇 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -735,7 +742,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈对Java-IO的认识。"><span class="nav-number">1.</span> <span class="nav-text">谈谈对Java IO的认识。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍一下Java-NIO中的Buffer、Channel和Selector的概念和作用。"><span class="nav-number">2.</span> <span class="nav-text">介绍一下Java NIO中的Buffer、Channel和Selector的概念和作用。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-7的版本对Java-NIO有哪些增强？"><span class="nav-number">3.</span> <span class="nav-text">Java 7的版本对Java NIO有哪些增强？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈对Java-IO的认识。"><span class="nav-number">1.</span> <span class="nav-text">谈谈对Java IO的认识。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍一下Java-NIO中的Buffer、Channel和Selector的概念和作用。"><span class="nav-number">2.</span> <span class="nav-text">介绍一下Java NIO中的Buffer、Channel和Selector的概念和作用。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-7的版本对Java-NIO有哪些增强？"><span class="nav-number">3.</span> <span class="nav-text">Java 7的版本对Java NIO有哪些增强？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他面试小结"><span class="nav-number">4.</span> <span class="nav-text">其他面试小结</span></a></li></ol></div>
             
 
           </div>

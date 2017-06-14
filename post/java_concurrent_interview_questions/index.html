@@ -99,7 +99,7 @@
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-a3f8b575f7b7fb8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-9c2a3d684ede2890.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-7ff1b37dfd99950a?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2017-06-14T08:47:04.725Z">
+<meta property="og:updated_time" content="2017-06-14T08:57:42.890Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="面试小结之并发篇">
 <meta name="twitter:description" content="最近面试一些公司，被问到的关于Java并发编程的问题，以及自己总结的回答。">
@@ -534,7 +534,14 @@ thenCompose/thenComposeAsync -- 这个Function的输入是当前的CompletableFu
 它就会生成一个新的组合后的CompletableFuture。可以用来实现异步pipline；
 thenCombine/thenCombineAsync - 并行执行的，它们之间并没有先后依赖顺序，和thenAcceptBoth的区别在于有返回值；
 allOf/anyOf -- 所有的/其中一个CompletableFuture都执行完后执行计算；
-</code></pre>
+</code></pre><h2 id="其他面试小结"><a href="#其他面试小结" class="headerlink" title="其他面试小结"></a>其他面试小结</h2><ul>
+<li><a href="http://ginobefunny.com/post/elasticsearch_interview_questions/">面试小结之Elasticsearch篇</a></li>
+<li><a href="http://ginobefunny.com/post/jvm_interview_questions/">面试小结之JVM篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrent_interview_questions/">面试小结之并发篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_nio_interview_questions/">面试小结之IO篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_other_interview_questions/">面试小结之综合篇</a></li>
+</ul>
+
       
     </div>
 
@@ -827,7 +834,7 @@ allOf/anyOf -- 所有的/其中一个CompletableFuture都执行完后执行计�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java线程的状态及如何转换。"><span class="nav-number">1.</span> <span class="nav-text">Java线程的状态及如何转换。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多个线程之间如何协调？"><span class="nav-number">2.</span> <span class="nav-text">多个线程之间如何协调？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说说Java的线程池是如何实现的？"><span class="nav-number">3.</span> <span class="nav-text">说说Java的线程池是如何实现的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于BlockingQueue和TransferQueue的异同。"><span class="nav-number">4.</span> <span class="nav-text">关于BlockingQueue和TransferQueue的异同。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈HashMap的实现。"><span class="nav-number">5.</span> <span class="nav-text">谈谈HashMap的实现。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈线程安全的ConcurrentHashMap的实现原理。"><span class="nav-number">6.</span> <span class="nav-text">谈谈线程安全的ConcurrentHashMap的实现原理。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是一致性哈希？"><span class="nav-number">7.</span> <span class="nav-text">什么是一致性哈希？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java有哪些实现锁的方式？"><span class="nav-number">8.</span> <span class="nav-text">Java有哪些实现锁的方式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AtomicLong、LongAdder和LongAccumulator的实现有何不同？"><span class="nav-number">9.</span> <span class="nav-text">AtomicLong、LongAdder和LongAccumulator的实现有何不同？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CompletableFuture对比Future有哪些改进，怎么用？"><span class="nav-number">10.</span> <span class="nav-text">CompletableFuture对比Future有哪些改进，怎么用？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java线程的状态及如何转换。"><span class="nav-number">1.</span> <span class="nav-text">Java线程的状态及如何转换。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多个线程之间如何协调？"><span class="nav-number">2.</span> <span class="nav-text">多个线程之间如何协调？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说说Java的线程池是如何实现的？"><span class="nav-number">3.</span> <span class="nav-text">说说Java的线程池是如何实现的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于BlockingQueue和TransferQueue的异同。"><span class="nav-number">4.</span> <span class="nav-text">关于BlockingQueue和TransferQueue的异同。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈HashMap的实现。"><span class="nav-number">5.</span> <span class="nav-text">谈谈HashMap的实现。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈线程安全的ConcurrentHashMap的实现原理。"><span class="nav-number">6.</span> <span class="nav-text">谈谈线程安全的ConcurrentHashMap的实现原理。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是一致性哈希？"><span class="nav-number">7.</span> <span class="nav-text">什么是一致性哈希？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java有哪些实现锁的方式？"><span class="nav-number">8.</span> <span class="nav-text">Java有哪些实现锁的方式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AtomicLong、LongAdder和LongAccumulator的实现有何不同？"><span class="nav-number">9.</span> <span class="nav-text">AtomicLong、LongAdder和LongAccumulator的实现有何不同？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CompletableFuture对比Future有哪些改进，怎么用？"><span class="nav-number">10.</span> <span class="nav-text">CompletableFuture对比Future有哪些改进，怎么用？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他面试小结"><span class="nav-number">11.</span> <span class="nav-text">其他面试小结</span></a></li></ol></div>
             
 
           </div>

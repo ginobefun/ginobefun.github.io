@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-06-14T08:51:04.045Z</updated>
+  <updated>2017-06-14T08:57:56.492Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -16,11 +16,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>面试小结之其他问题篇</title>
+    <title>面试小结之综合篇</title>
     <link href="http://ginobefunny.com/post/java_other_interview_questions/"/>
     <id>http://ginobefunny.com/post/java_other_interview_questions/</id>
     <published>2017-06-14T08:38:59.000Z</published>
-    <updated>2017-06-14T08:51:04.045Z</updated>
+    <updated>2017-06-14T08:57:56.492Z</updated>
     
     <content type="html"><![CDATA[<p>最近面试一些公司，被问到的关于编程基础、数据库、Redis和系统设计相关的问题，以及自己总结的回答。<br><a id="more"></a></p>
 <h2 id="介绍一下你熟悉的几种排序算法以及它们的时间复杂度。"><a href="#介绍一下你熟悉的几种排序算法以及它们的时间复杂度。" class="headerlink" title="介绍一下你熟悉的几种排序算法以及它们的时间复杂度。"></a>介绍一下你熟悉的几种排序算法以及它们的时间复杂度。</h2><h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><ul>
@@ -157,6 +157,13 @@ Spring根据bean的定义填充所有的属性。
 <li>如何保障稳定性：提高可用性、分组和隔离、限流、降级、监控和故障切换；</li>
 <li>理解高可用系统：要做到数据不丢，就必需要持久化；要做到服务高可用，就必需要有备用（复本），无论是应用结点还是数据结点；要做到复制，就会有数据一致性的问题；我们不可能做到100%的高可用，也就是说，我们能做到几个9个的SLA；</li>
 </ul>
+<h2 id="其他面试小结"><a href="#其他面试小结" class="headerlink" title="其他面试小结"></a>其他面试小结</h2><ul>
+<li><a href="http://ginobefunny.com/post/elasticsearch_interview_questions/">面试小结之Elasticsearch篇</a></li>
+<li><a href="http://ginobefunny.com/post/jvm_interview_questions/">面试小结之JVM篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrent_interview_questions/">面试小结之并发篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_nio_interview_questions/">面试小结之IO篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_other_interview_questions/">面试小结之综合篇</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -168,9 +175,9 @@ Spring根据bean的定义填充所有的属性。
       <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
     
     
-      <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
-    
       <category term="Spring" scheme="http://ginobefunny.com/tags/Spring/"/>
+    
+      <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
     
       <category term="面试" scheme="http://ginobefunny.com/tags/%E9%9D%A2%E8%AF%95/"/>
     
@@ -185,7 +192,7 @@ Spring根据bean的定义填充所有的属性。
     <link href="http://ginobefunny.com/post/java_nio_interview_questions/"/>
     <id>http://ginobefunny.com/post/java_nio_interview_questions/</id>
     <published>2017-06-14T08:38:50.000Z</published>
-    <updated>2017-06-14T08:46:58.513Z</updated>
+    <updated>2017-06-14T08:58:06.824Z</updated>
     
     <content type="html"><![CDATA[<p>最近面试一些公司，被问到的关于Java NIO编程的问题，以及自己总结的回答。<br><a id="more"></a></p>
 <h2 id="谈谈对Java-IO的认识。"><a href="#谈谈对Java-IO的认识。" class="headerlink" title="谈谈对Java IO的认识。"></a>谈谈对Java IO的认识。</h2><ul>
@@ -217,6 +224,13 @@ Spring根据bean的定义填充所有的属性。
 <li>异步I/O通道一般提供两种使用方式：一会走是通过Future类的对象来表示异步操作的结果，另外一种是在执行操作时传入一个CompletionHandler接口的实现对象作为操作完成时的回调方法；异步文件通道由AsynchronousFileChannel类表示，它没有当前读写位置的概念。</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">asyncWrite</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ExecutionException, InterruptedException </span>&#123;</div><div class="line">    AsynchronousFileChannel channel = AsynchronousFileChannel.open(Paths.get(<span class="string">"large.bin"</span>),</div><div class="line">            StandardOpenOption.CREATE, StandardOpenOption.WRITE);</div><div class="line">    ByteBuffer buffer = ByteBuffer.allocate(<span class="number">32</span> * <span class="number">1024</span> * <span class="number">1024</span>);</div><div class="line">    Future&lt;Integer&gt; result = channel.write(buffer, <span class="number">0</span>);</div><div class="line">    Integer len = result.get();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startAsyncSimpleServer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    AsynchronousChannelGroup group = AsynchronousChannelGroup.withFixedThreadPool(<span class="number">10</span>, Executors.defaultThreadFactory());</div><div class="line">    <span class="keyword">final</span> AsynchronousServerSocketChannel serverChannel = AsynchronousServerSocketChannel.open(group).bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">10080</span>));</div><div class="line">    serverChannel.accept(<span class="keyword">null</span>, <span class="keyword">new</span> CompletionHandler&lt;AsynchronousSocketChannel, Void&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">completed</span><span class="params">(AsynchronousSocketChannel result, Void attachment)</span> </span>&#123;</div><div class="line">            serverChannel.accept(<span class="keyword">null</span>, <span class="keyword">this</span>);</div><div class="line">            <span class="comment">// 使用clientChannel</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">failed</span><span class="params">(Throwable exc, Void attachment)</span> </span>&#123;</div><div class="line">            <span class="comment">// 错误处理</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="其他面试小结"><a href="#其他面试小结" class="headerlink" title="其他面试小结"></a>其他面试小结</h2><ul>
+<li><a href="http://ginobefunny.com/post/elasticsearch_interview_questions/">面试小结之Elasticsearch篇</a></li>
+<li><a href="http://ginobefunny.com/post/jvm_interview_questions/">面试小结之JVM篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrent_interview_questions/">面试小结之并发篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_nio_interview_questions/">面试小结之IO篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_other_interview_questions/">面试小结之综合篇</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -243,7 +257,7 @@ Spring根据bean的定义填充所有的属性。
     <link href="http://ginobefunny.com/post/java_concurrent_interview_questions/"/>
     <id>http://ginobefunny.com/post/java_concurrent_interview_questions/</id>
     <published>2017-06-14T08:38:44.000Z</published>
-    <updated>2017-06-14T08:47:04.725Z</updated>
+    <updated>2017-06-14T08:57:42.890Z</updated>
     
     <content type="html"><![CDATA[<p>最近面试一些公司，被问到的关于Java并发编程的问题，以及自己总结的回答。<br><a id="more"></a></p>
 <h2 id="Java线程的状态及如何转换。"><a href="#Java线程的状态及如何转换。" class="headerlink" title="Java线程的状态及如何转换。"></a>Java线程的状态及如何转换。</h2><p><img src="http://upload-images.jianshu.io/upload_images/3709321-cb615ced8545bfa2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="线程状态及其转换图"></p>
@@ -357,7 +371,14 @@ thenCompose/thenComposeAsync -- 这个Function的输入是当前的CompletableFu
 它就会生成一个新的组合后的CompletableFuture。可以用来实现异步pipline；
 thenCombine/thenCombineAsync - 并行执行的，它们之间并没有先后依赖顺序，和thenAcceptBoth的区别在于有返回值；
 allOf/anyOf -- 所有的/其中一个CompletableFuture都执行完后执行计算；
-</code></pre>]]></content>
+</code></pre><h2 id="其他面试小结"><a href="#其他面试小结" class="headerlink" title="其他面试小结"></a>其他面试小结</h2><ul>
+<li><a href="http://ginobefunny.com/post/elasticsearch_interview_questions/">面试小结之Elasticsearch篇</a></li>
+<li><a href="http://ginobefunny.com/post/jvm_interview_questions/">面试小结之JVM篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrent_interview_questions/">面试小结之并发篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_nio_interview_questions/">面试小结之IO篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_other_interview_questions/">面试小结之综合篇</a></li>
+</ul>
+]]></content>
     
     <summary type="html">
     
@@ -385,7 +406,7 @@ allOf/anyOf -- 所有的/其中一个CompletableFuture都执行完后执行计�
     <link href="http://ginobefunny.com/post/jvm_interview_questions/"/>
     <id>http://ginobefunny.com/post/jvm_interview_questions/</id>
     <published>2017-06-14T08:38:35.000Z</published>
-    <updated>2017-06-14T08:47:07.596Z</updated>
+    <updated>2017-06-14T08:57:31.963Z</updated>
     
     <content type="html"><![CDATA[<p>最近面试一些公司，被问到的关于Java虚拟机的问题，以及自己总结的回答。<br><a id="more"></a></p>
 <h2 id="Java内存区域是如何划分的？"><a href="#Java内存区域是如何划分的？" class="headerlink" title="Java内存区域是如何划分的？"></a>Java内存区域是如何划分的？</h2><ul>
@@ -526,6 +547,13 @@ Set Log里，然后合并到Remembered Set里，该阶段需要STW但是可并�
 <li>JVM锁有4种状态：无锁、偏向锁（通过MarkWord的线程ID）、轻量级锁（通过MarkWord的锁记录指针）、重量级锁；</li>
 </ul>
 <p><img src="http://upload-images.jianshu.io/upload_images/3709321-966e0972d28d930f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="锁的优缺点对比"></p>
+<h2 id="其他面试小结"><a href="#其他面试小结" class="headerlink" title="其他面试小结"></a>其他面试小结</h2><ul>
+<li><a href="http://ginobefunny.com/post/elasticsearch_interview_questions/">面试小结之Elasticsearch篇</a></li>
+<li><a href="http://ginobefunny.com/post/jvm_interview_questions/">面试小结之JVM篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrent_interview_questions/">面试小结之并发篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_nio_interview_questions/">面试小结之IO篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_other_interview_questions/">面试小结之综合篇</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -554,7 +582,7 @@ Set Log里，然后合并到Remembered Set里，该阶段需要STW但是可并�
     <link href="http://ginobefunny.com/post/elasticsearch_interview_questions/"/>
     <id>http://ginobefunny.com/post/elasticsearch_interview_questions/</id>
     <published>2017-06-14T08:33:23.000Z</published>
-    <updated>2017-06-14T08:47:10.367Z</updated>
+    <updated>2017-06-14T08:57:17.788Z</updated>
     
     <content type="html"><![CDATA[<p>最近面试一些公司，被问到的关于Elasticsearch和搜索引擎相关的问题，以及自己总结的回答。<br><a id="more"></a></p>
 <h2 id="Elasticsearch是如何实现Master选举的？"><a href="#Elasticsearch是如何实现Master选举的？" class="headerlink" title="Elasticsearch是如何实现Master选举的？"></a>Elasticsearch是如何实现Master选举的？</h2><ul>
@@ -685,6 +713,13 @@ d(x,y) + d(y,z) &gt;= d(x,z) -- 三角不等式
 <li>查询相似词如下：计算单词与根节点的编辑距离d，然后递归查找每个子节点标号为d-n到d+n（包含）的边。假如被检查的节点与搜索单词的距离d小于n，则返回该节点并继续查询。比如输入cape且最大容忍距离为1，则先计算和根的编辑距离d(“book”, “cape”)=4，然后接着找和根节点之间编辑距离为3到5的，这个就找到了cake这个节点，计算d(“cake”, “cape”)=1，满足条件所以返回<strong>cake</strong>，然后再找和cake节点编辑距离是0到2的，分别找到cape和cart节点，这样就得到<strong>cape</strong>这个满足条件的结果。</li>
 </ul>
 <p><img src="http://upload-images.jianshu.io/upload_images/3709321-7cdb109e6f73c192.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="BK树"></p>
+<h2 id="其他面试小结"><a href="#其他面试小结" class="headerlink" title="其他面试小结"></a>其他面试小结</h2><ul>
+<li><a href="http://ginobefunny.com/post/elasticsearch_interview_questions/">面试小结之Elasticsearch篇</a></li>
+<li><a href="http://ginobefunny.com/post/jvm_interview_questions/">面试小结之JVM篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_concurrent_interview_questions/">面试小结之并发篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_nio_interview_questions/">面试小结之IO篇</a></li>
+<li><a href="http://ginobefunny.com/post/java_other_interview_questions/">面试小结之综合篇</a></li>
+</ul>
 ]]></content>
     
     <summary type="html">
@@ -1498,11 +1533,11 @@ group by a.uid;
     
       <category term="word2vec" scheme="http://ginobefunny.com/tags/word2vec/"/>
     
+      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
+    
       <category term="搜索" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2/"/>
     
       <category term="推荐" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90/"/>
-    
-      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
     
   </entry>
   
@@ -2264,11 +2299,11 @@ query = function(batch view . realtime view)
     
       <category term="监控" scheme="http://ginobefunny.com/tags/%E7%9B%91%E6%8E%A7/"/>
     
-      <category term="Redis" scheme="http://ginobefunny.com/tags/Redis/"/>
-    
       <category term="人工智能" scheme="http://ginobefunny.com/tags/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/"/>
     
       <category term="CQRS" scheme="http://ginobefunny.com/tags/CQRS/"/>
+    
+      <category term="Redis" scheme="http://ginobefunny.com/tags/Redis/"/>
     
       <category term="Event Sourcing" scheme="http://ginobefunny.com/tags/Event-Sourcing/"/>
     
