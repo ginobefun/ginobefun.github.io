@@ -1,0 +1,1167 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="职场,Spring,面试,MySql,Redis," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近面试一些公司，被问到的关于编程基础、数据库、Redis和系统设计相关的问题，以及自己总结的回答。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试小结之其他问题篇">
+<meta property="og:url" content="http://ginobefunny.com/post/java_other_interview_questions/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="最近面试一些公司，被问到的关于编程基础、数据库、Redis和系统设计相关的问题，以及自己总结的回答。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-f70145540ae48678.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-fa7206a6cbeb3200.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-c123e66f595dbeea?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2177145-37c20115cb0950c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-06-14T08:51:04.045Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试小结之其他问题篇">
+<meta name="twitter:description" content="最近面试一些公司，被问到的关于编程基础、数据库、Redis和系统设计相关的问题，以及自己总结的回答。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3709321-f70145540ae48678.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6346332688051340000',
+      author: 'Gino'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/java_other_interview_questions/"/>
+
+
+
+
+
+  <title> 面试小结之其他问题篇 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/java_other_interview_questions/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                面试小结之其他问题篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-14T16:38:59+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CodingLife/" itemprop="url" rel="index">
+                    <span itemprop="name">CodingLife</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近面试一些公司，被问到的关于编程基础、数据库、Redis和系统设计相关的问题，以及自己总结的回答。<br><a id="more"></a></p>
+<h2 id="介绍一下你熟悉的几种排序算法以及它们的时间复杂度。"><a href="#介绍一下你熟悉的几种排序算法以及它们的时间复杂度。" class="headerlink" title="介绍一下你熟悉的几种排序算法以及它们的时间复杂度。"></a>介绍一下你熟悉的几种排序算法以及它们的时间复杂度。</h2><h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><ul>
+<li>它重复地走访过要排序的数列，一次比较两个元素，如果他们的顺序错误就把他们交换过来。走访数列的工作是重复地进行直到没有再需要交换。</li>
+<li>算法的平均时间复杂度为O(n^2)。</li>
+<li>但是若在某趟排序中未发现气泡位置的交换，则说明待排序的无序区中所有气泡均满足轻者在上，重者在下的原则，即为正序。则冒泡排序过程可在此趟扫描后就终止，基于这种考虑，提出了第一种改进的算法。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">bubbleSort</span><span class="params">(<span class="keyword">int</span>[] numbers)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> size = numbers.length;</div><div class="line">    <span class="keyword">boolean</span> isSorted = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; size - <span class="number">1</span> &amp;&amp; !isSorted; i++) &#123;</div><div class="line">        isSorted = <span class="keyword">true</span>;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; size - <span class="number">1</span> - i; j++) &#123;</div><div class="line">            <span class="keyword">if</span> (numbers[j] &gt; numbers[j + <span class="number">1</span>]) &#123;</div><div class="line">                swap(numbers, j, j + <span class="number">1</span>);</div><div class="line">                isSorted = <span class="keyword">false</span>;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h3><ul>
+<li>快速排序是一种排序算法，对包含n个数的输入数组，平均时间为O（nlgn），最坏情况是O（n^2）。</li>
+<li>快速排序时基于分治模式处理的，在数据集之中，选择一个元素作为”基准”（pivot），所有小于”基准”的元素，都移到”基准”的左边；所有大于”基准”的元素，都移到”基准”的右边。这个操作称为分区 (partition) 操作，分区操作结束后，基准元素所处的位置就是最终排序后它的位置。对”基准”左边和右边的两个子集，不断重复第一步和第二步，直到所有子集只剩下一个元素为止。</li>
+<li>快排的局限性：快排是一个效率很高的排序算法，但是对于长度很小的序列，快排效率低；pivot选择不当，将导致树的不平衡，这样导致快排的时间复杂度为o(n^2)；当数组中有大量重复的元素，快排效率将非常之低；改进方法可以参考java.util.DualPivotQuicksort：小数组使用插入排序、双枢轴（快速三向切分）、划分策略优化（五取样划分）。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quick</span><span class="params">(<span class="keyword">int</span>[] numbers)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (numbers.length &gt; <span class="number">0</span>) &#123;</div><div class="line">        quickSort(numbers, <span class="number">0</span>, numbers.length - <span class="number">1</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (low &lt; high) &#123;</div><div class="line">        <span class="keyword">int</span> middle = getMiddle(numbers, low, high); <span class="comment">//将numbers数组进行一分为二</span></div><div class="line">        quickSort(numbers, low, middle - <span class="number">1</span>);   <span class="comment">//对低字段表进行递归排序</span></div><div class="line">        quickSort(numbers, middle + <span class="number">1</span>, high); <span class="comment">//对高字段表进行递归排序</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">getMiddle</span><span class="params">(<span class="keyword">int</span>[] numbers, <span class="keyword">int</span> low, <span class="keyword">int</span> high)</span> </span>&#123;</div><div class="line">    <span class="keyword">int</span> temp = numbers[low]; <span class="comment">//数组的第一个作为中轴</span></div><div class="line">    <span class="keyword">while</span> (low &lt; high) &#123;</div><div class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; numbers[high] &gt; temp) &#123;</div><div class="line">            high--;</div><div class="line">        &#125;</div><div class="line">        numbers[low] = numbers[high];<span class="comment">//比中轴小的记录移到低端</span></div><div class="line">        <span class="keyword">while</span> (low &lt; high &amp;&amp; numbers[low] &lt; temp) &#123;</div><div class="line">            low++;</div><div class="line">        &#125;</div><div class="line">        numbers[high] = numbers[low]; <span class="comment">//比中轴大的记录移到高端</span></div><div class="line">    &#125;</div><div class="line">    numbers[low] = temp; <span class="comment">//中轴记录到尾</span></div><div class="line">    <span class="keyword">return</span> low; <span class="comment">// 返回中轴的位置</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h3><ul>
+<li>堆（二叉堆）可以视为一棵完全的二叉树，完全二叉树的一个“优秀”的性质是，除了最底层之外，每一层都是满的，这使得堆可以利用数组来表示（普通的一般的二叉树通常用链表作为基本容器表示），每一个结点对应数组中的一个元素。</li>
+<li>二叉堆一般分为两种：最大堆和最小堆。最大堆：最大堆中的最大元素值出现在根结点（堆顶）；堆中每个父节点的元素值都大于等于其孩子结点（如果存在）；</li>
+<li>堆排序就是把最大堆堆顶的最大数取出，将剩余的堆继续调整为最大堆，再次将堆顶的最大数取出，这个过程持续到剩余数只有一个时结束。在堆中定义以下几种操作：</li>
+</ul>
+<pre><code>最大堆调整（Max-Heapify）：将堆的末端子节点作调整，使得子节点永远小于父节点
+创建最大堆（Build-Max-Heap）：将堆所有数据重新排序，使其成为最大堆
+堆排序（Heap-Sort）：移除位在第一个数据的根节点，并做最大堆调整的递归运算
+Parent(i) = floor((i-1)/2)，i 的父节点下标
+Left(i) = 2i + 1，i 的左子节点下标
+Right(i) = 2(i + 1)，i 的右子节点下标
+</code></pre><ul>
+<li>堆排序其实也是一种选择排序，是一种树形选择排序。只不过直接选择排序中，为了从R[1…n]中选择最大记录，需比较n-1次，然后从R[1…n-2]中选择最大记录需比较n-2次。事实上这n-2次比较中有很多已经在前面的n-1次比较中已经做过，而树形选择排序恰好利用树形的特点保存了部分前面的比较结果，因此可以减少比较次数。对于n个关键字序列，最坏情况下每个节点需比较log2(n)次，因此其最坏情况下时间复杂度为nlogn。堆排序为不稳定排序，不适合记录较少的排序。</li>
+</ul>
+<h2 id="谈谈对Spring-IoC的理解。"><a href="#谈谈对Spring-IoC的理解。" class="headerlink" title="谈谈对Spring IoC的理解。"></a>谈谈对Spring IoC的理解。</h2><ul>
+<li>IoC不是什么技术，而是一种设计思想，它意味着将你设计好的对象交给容器控制，而不是传统的在你的对象内部直接控制。</li>
+<li>理解好Ioc的关键是要明确：</li>
+</ul>
+<pre><code>谁控制谁 -- IoC容器控制了对象
+控制什么 -- 主要控制了外部资源获取（不只是对象，包括比如文件等）
+为何是反转 -- 由容器帮我们查找及注入依赖对象，对象只是被动的接受依赖对象
+哪些方面反转了 -- 依赖对象的获取被反转了
+</code></pre><p>传统做法</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-f70145540ae48678.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="传统做法"></p>
+<p>IoC做法</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-fa7206a6cbeb3200.JPG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IoC做法"></p>
+<ul>
+<li>IoC能做什么：把创建和查找依赖对象的控制权交给了容器，由容器进行注入组合对象，所以对象与对象之间是松散耦合，这样也方便测试，利于功能复用，更重要的是使得程序的整个体系结构变得非常灵活；IoC很好的体现了面向对象设计法则之一 –  好莱坞法则；</li>
+<li>IoC和DI是同一个概念的不同角度描述，“依赖注入”明确描述了“被注入对象依赖IoC容器配置依赖对象”。</li>
+<li>在Spring里，BeanFactory提供了IoC容器最基本功能，而 ApplicationContext 则增加了更多支持企业级功能支持。ApplicationContext完全继承BeanFactory，因而BeanFactory所具有的语义也适用于ApplicationContext。ApplicationContext实现包括FileSystemXmlApplicationContext、ClassPathXmlApplicationContext、WebXmlApplicationContext；</li>
+<li>Spring框架中bean的生命周期：</li>
+</ul>
+<pre><code>Spring容器从XML文件中读取bean的定义，并实例化bean。
+Spring根据bean的定义填充所有的属性。
+如果bean实现了BeanNameAware接口，Spring传递bean的ID到setBeanName方法。
+如果Bean实现了BeanFactoryAware接口，Spring传递beanfactory给setBeanFactory方法。
+如果有任何与bean相关联的BeanPostProcessors，Spring会在postProcesserBeforeInitialization()方法内调用它们。
+如果bean实现IntializingBean了，调用它的afterPropertySet方法，如果bean声明了初始化方法，调用此初始化方法。
+如果有BeanPostProcessors和bean关联，这些bean的postProcessAfterInitialization() 方法将被调用。
+如果bean实现了DisposableBean，它将调用destroy()方法。
+</code></pre><h2 id="谈谈对Spring-AOP的理解。"><a href="#谈谈对Spring-AOP的理解。" class="headerlink" title="谈谈对Spring AOP的理解。"></a>谈谈对Spring AOP的理解。</h2><ul>
+<li>方面（Aspect）：一个关注点的模块化，这个关注点实现可能另外横切多个对象。事务管理是J2EE应用中一个很好的横切关注点例子。方面用Spring的Advisor或拦截器实现。 </li>
+<li>连接点（Joinpoint）: 程序执行过程中明确的点，如方法的调用或特定的异常被抛出；</li>
+<li>通知（Advice）: 在特定的连接点，AOP框架执行的动作。许多AOP框架包括Spring都是以拦截器做通知模型，维护一个“围绕”连接点的拦截器链。Spring中定义了四个advice: BeforeAdvice, AfterAdvice, ThrowAdvice和DynamicIntroductionAdvice；</li>
+<li>切入点（Pointcut）: 指定一个通知将被引发的一系列连接点的集合。AOP框架必须允许开发者指定切入点：例如，使用正则表达式。 Spring定义了Pointcut接口，用来组合MethodMatcher和ClassFilter，可以通过名字很清楚的理解，MethodMatcher是用来检查目标类的方法是否可以被应用此通知，而ClassFilter是用来检查Pointcut是否应该应用到目标类上；</li>
+<li><p>切点标志符(designator)：execution、within、this 与 target、bean、args、@annotation；</p>
+</li>
+<li><p>JDK动态代理和CGLib代理。</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 定义接口</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ForumService</span> </span>&#123;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeTopic</span><span class="params">(<span class="keyword">int</span> topic)</span></span>;</div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeForum</span><span class="params">(<span class="keyword">int</span> forumId)</span></span>;</div><div class="line">	</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 接口实现类</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ForumServiceImpl</span> <span class="keyword">implements</span> <span class="title">ForumService</span></span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeTopic</span><span class="params">(<span class="keyword">int</span> topic)</span></span>&#123;</div><div class="line">    	System.out.println(<span class="string">"模拟删除主题"</span>+topic);</div><div class="line">    	<span class="keyword">try</span>&#123;</div><div class="line">    		Thread.currentThread().sleep(<span class="number">20</span>);</div><div class="line">    	&#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line">    		<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</div><div class="line">    	&#125;</div><div class="line">    </div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">removeForum</span><span class="params">(<span class="keyword">int</span> forumId)</span></span>&#123;</div><div class="line">    	System.out.println(<span class="string">"模拟删除论坛"</span>+forumId);</div><div class="line">    	<span class="keyword">try</span>&#123;</div><div class="line">    		Thread.currentThread().sleep(<span class="number">20</span>);</div><div class="line">    	&#125;<span class="keyword">catch</span>(Exception e)&#123;</div><div class="line">    		<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(e);</div><div class="line">    	&#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 工具类用于打印接口调用信息</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PerformanceMonitor</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ThreadLocal&lt;MethodPerformance&gt; performanceRecord=<span class="keyword">new</span> ThreadLocal&lt;MethodPerformance&gt;();</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">begin</span><span class="params">(String method)</span></span>&#123;</div><div class="line">    	System.out.println(<span class="string">"begin monitor..."</span>);</div><div class="line">    	MethodPerformance mp = <span class="keyword">new</span> MethodPerformance(method);</div><div class="line">    	performanceRecord.set(mp);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">end</span><span class="params">()</span></span>&#123;</div><div class="line">    	System.out.println(<span class="string">"end monitor..."</span>);</div><div class="line">    	MethodPerformance mp = performanceRecord.get();</div><div class="line">    	mp.printPerformance();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MethodPerformance</span> </span>&#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> begin;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">long</span> end;</div><div class="line">    <span class="keyword">private</span> String serviceMethod;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MethodPerformance</span><span class="params">(String serviceMethod)</span></span>&#123;</div><div class="line">        <span class="keyword">this</span>.serviceMethod = serviceMethod;</div><div class="line">        <span class="keyword">this</span>.begin = System.currentTimeMillis();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printPerformance</span><span class="params">()</span></span>&#123;</div><div class="line">        end = System.currentTimeMillis();</div><div class="line">        <span class="keyword">long</span> elapse = end - begin;</div><div class="line">        System.out.println(serviceMethod + <span class="string">"花费"</span> + elapse + <span class="string">"毫秒"</span>);</div><div class="line">    &#125;</div><div class="line">&#125; </div><div class="line"></div><div class="line"><span class="comment">// JDK动态代理需要实现InvocationHandler</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PerformanceHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</div><div class="line">	<span class="keyword">private</span> Object target;</div><div class="line"></div><div class="line">	<span class="function"><span class="keyword">public</span> <span class="title">PerformanceHandler</span><span class="params">(Object object)</span> </span>&#123;</div><div class="line">		<span class="keyword">this</span>.target = object;</div><div class="line">	&#125;</div><div class="line"></div><div class="line">	<span class="meta">@Override</span></div><div class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span></span></div><div class="line">			<span class="keyword">throws</span> Throwable &#123;</div><div class="line">		PerformanceMonitor.begin(target.getClass().getName() + <span class="string">"."</span> + method.getName());</div><div class="line">		Object obj = method.invoke(target, args);</div><div class="line">		PerformanceMonitor.end();</div><div class="line">		<span class="keyword">return</span> obj;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// JDK动态代理使用</span></div><div class="line">ForumServiceImpl target = <span class="keyword">new</span> ForumServiceImpl();</div><div class="line">PerformanceHandler handler = <span class="keyword">new</span> PerformanceHandler(target);</div><div class="line">ForumService proxy = (ForumService)Proxy.newProxyInstance(target.getClass().getClassLoader(),</div><div class="line">    target.getClass().getInterfaces(), handler);</div><div class="line">proxy.removeForum(<span class="number">23</span>);</div><div class="line">proxy.removeTopic(<span class="number">678</span>);</div><div class="line">		</div><div class="line"><span class="comment">// CGlib动态代理需要实现MethodInterceptor</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CglibProxy</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span></span>&#123;</div><div class="line">    <span class="keyword">private</span> Enhancer enhancer = <span class="keyword">new</span> Enhancer();</div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getProxy</span><span class="params">(Class clazz)</span></span>&#123;</div><div class="line">    	enhancer.setSuperclass(clazz);</div><div class="line">    	enhancer.setCallback(<span class="keyword">this</span>);</div><div class="line">    	<span class="keyword">return</span> enhancer.create();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object proxy, Method method, Object[] args,</span></span></div><div class="line">			MethodProxy methodProxy) <span class="keyword">throws</span> Throwable &#123;</div><div class="line">        PerformanceMonitor.begin(proxy.getClass().getName() + <span class="string">"."</span> + method.getName());</div><div class="line">        Object obj = methodProxy.invoke(proxy, args);</div><div class="line">        PerformanceMonitor.end();</div><div class="line">        <span class="keyword">return</span> obj;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// CGlib动态代理使用</span></div><div class="line">CglibProxy proxy2 = <span class="keyword">new</span> CglibProxy();</div><div class="line">ForumServiceImpl forumServiceImpl = (ForumServiceImpl)proxy2.getProxy(ForumServiceImpl.class);</div><div class="line">forumServiceImpl.removeForum(<span class="number">456</span>);</div><div class="line">forumServiceImpl.removeTopic(<span class="number">987</span>);</div></pre></td></tr></table></figure>
+<ul>
+<li>两种动态代理的比较：CGLib所创建的动态代理对象的性能比JDK所创建的代理对象性能高不少，大概10倍，但CGLib在创建代理对象时所花费的时间却比JDK动态代理多大概8倍，所以对于singleton的代理对象或者具有实例池的代理，因为无需频繁的创建新的实例，所以比较适合CGLib动态代理技术，反之则适用于JDK动态代理技术。另外，由于CGLib采用动态创建子类的方式生成代理对象，所以不能对目标类中的final，private等方法进行处理。所以，大家需要根据实际的情况选择使用什么样的代理了。同样的，Spring的AOP编程中相关的ProxyFactory代理工厂内部就是使用JDK动态代理或CGLib动态代理的，通过动态代理，将增强（advice)应用到目标类中。</li>
+</ul>
+<h2 id="Spring-MVC的核心流程是什么样的？"><a href="#Spring-MVC的核心流程是什么样的？" class="headerlink" title="Spring MVC的核心流程是什么样的？"></a>Spring MVC的核心流程是什么样的？</h2><p><img src="http://upload-images.jianshu.io/upload_images/3709321-c123e66f595dbeea?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="核心流程"></p>
+<p>具体步骤：</p>
+<ol>
+<li>首先用户发送请求——&gt;DispatcherServlet，前端控制器收到请求后自己不进行处理，而是委托给其他的解析器进行处理，作为统一访问点，进行全局的流程控制；</li>
+<li>DispatcherServlet——&gt;HandlerMapping，HandlerMapping 将会把请求映射为 HandlerExecutionChain 对象（包含一个 Handler 处理器（页面控制器）对象、多个 HandlerInterceptor 拦截器）对象，通过这种策略模式，很容易添加新的映射策略；</li>
+<li>DispatcherServlet——&gt;HandlerAdapter，HandlerAdapter 将会把处理器包装为适配器，从而支持多种类型的处理器，即适配器设计模式的应用，从而很容易支持很多类型的处理器；</li>
+<li>HandlerAdapter——&gt;处理器功能处理方法的调用，HandlerAdapter 将会根据适配的结果调用真正的处理器的功能处理方法，完成功能处理；并返回一个 ModelAndView 对象（包含模型数据、逻辑视图名）；</li>
+<li>ModelAndView 的逻辑视图名——&gt; ViewResolver， ViewResolver 将把逻辑视图名解析为具体的 View，通过这种策略模式，很容易更换其他视图技术；</li>
+<li>View——&gt;渲染，View 会根据传进来的 Model 模型数据进行渲染，此处的 Model 实际是一个 Map 数据结构，因此很容易支持其他视图技术；</li>
+<li>返回控制权给 DispatcherServlet，由 DispatcherServlet 返回响应给用户，到此一个流程结束。</li>
+</ol>
+<h2 id="Redis和Memcached的异同。"><a href="#Redis和Memcached的异同。" class="headerlink" title="Redis和Memcached的异同。"></a>Redis和Memcached的异同。</h2><h3 id="Memcached"><a href="#Memcached" class="headerlink" title="Memcached"></a>Memcached</h3><ol>
+<li>可以利用多核优势，单实例吞吐量极高，可以达到几十万QPS；</li>
+<li>只支持简单的key/value数据结构，不像Redis可以支持丰富的数据类型。</li>
+<li>无法进行持久化，数据不能备份，只能用于缓存使用，且重启后数据全部丢失。</li>
+<li>无法进行数据同步，不能将MC中的数据迁移到其他MC实例中。</li>
+<li>Memcached内存分配采用Slab Allocation机制管理内存，value大小分布差异较大时会造成内存利用率降低，    并引发低利用率时依然出现踢出等问题。需要用户注重value设计。</li>
+</ol>
+<h3 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h3><ol>
+<li>支持多种数据结构，如string、 list、hash、set、zset等；</li>
+<li>支持持久化操作，可以进行aof及rdb数据持久化到磁盘，从而进行数据备份或数据恢复等操作，较好的防止数据丢失的手段；</li>
+<li>支持通过Replication进行数据复制，通过master-slave机制，可以实时进行数据的同步复制来实现HA；</li>
+<li>单线程请求，所有命令串行执行，并发情况下不需要考虑数据一致性问题，但性能受限于CPU性能，故单实例CPU最高才可能达到5-6wQPS每秒；</li>
+<li>支持pub/sub消息订阅机制，可以用来进行消息订阅与通知；</li>
+<li>Redis在string类型上会消耗较多内存，可以使用hash表压缩存储以降低内存耗用。</li>
+</ol>
+<h2 id="Redis作为分布式缓存可能会存在哪些问题，怎么解决？"><a href="#Redis作为分布式缓存可能会存在哪些问题，怎么解决？" class="headerlink" title="Redis作为分布式缓存可能会存在哪些问题，怎么解决？"></a>Redis作为分布式缓存可能会存在哪些问题，怎么解决？</h2><ul>
+<li>缓存穿透预防及优化：缓存穿透是指查询一个根本不存在的数据，缓存层和存储层都不会命中；缓存穿透将导致不存在的数据每次请求都要到存储层去查询，失去了缓存保护后端存储的意义；解决方法：缓存空对象和布隆过滤器拦截；</li>
+<li>缓存雪崩问题优化：由于缓存层承载着大量请求，有效的保护了存储层，但是如果缓存层由于某些原因整体不能提供服务，于是所有的请求都会达到存储层，存储层的调用量会暴增，造成存储层也会挂掉的情况；预防和解决缓存雪崩问题，可以从以下三个方面进行着手：保证缓存层服务高可用性、依赖隔离组件为后端限流并降级、提前演练。</li>
+<li>缓存热点key重建优化：开发人员使用缓存和过期时间的策略既可以加速数据读写，又保证数据的定期更新，这种模式基本能够满足绝大部分需求。但如果热点Key和重建缓存耗时两个问题同时出现，可能就会对应用造成致命的危害；解决方法：互斥锁（只允许一个线程重建缓存）、永远不过期（唯一不足的就是重构缓存期间会出现数据不一致的情况）。</li>
+</ul>
+<h2 id="谈谈对Mysql索引的认识。"><a href="#谈谈对Mysql索引的认识。" class="headerlink" title="谈谈对Mysql索引的认识。"></a>谈谈对Mysql索引的认识。</h2><ul>
+<li>主键查询走索引，我们一般使用的索引都是Btree索引；</li>
+<li>MyISAM和InnoDB索引结构有很大差异，这里以InnoDB为例，InnoDB的叶节点存储的是数据的行，而除了主键之外的列索引存储的是主键key，也就是说在查询的时候需要二次查询，先通过列索引找到主键，再通过主键索引找到row。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/2177145-37c20115cb0950c1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="MySQL索引"></p>
+<ul>
+<li>针对我们经常查询的多列场景，我们可以建组合索引，组合索引在可以尽可能多的运用列的查询规则。说到组合索引那么必须说一下最左前缀原则：指的的是在sql where子句中一些条件或表达式中出现的列的顺序要保持和多索引的一致或以多列索引顺序出现，只要出现非顺序出现、断层都无法利用到多列索引。</li>
+<li>索引的区分度，主要是衡量索引值不相同的程度，区分度越大，越有利于索引的查询。</li>
+<li>组合索引的顺序和区分度：对于多个列构成的组合索引，在查询过滤的时候也是和列的位置有关的，这也是最左前缀规则说的事情，也就是说如果在第一次能过滤掉大量的数据，那么后续的索引匹配就能减少很多消耗。所以在选择索引顺序的时候最好是要考虑到区分度的问题，将区分度比较高的列放在前面。</li>
+<li>只有当索引的列顺序和Order By子句的顺序完全一致时，并且所有的列的排序方向都一样时，才能使用索引对子句进行排序。</li>
+<li>应该注意的几点：在使用索引查询的时候，需要保证索引类型和查询的数据类型一致，经常混用的是用int型查询varchar类型的数据或反过来，这样会导致索引失效；range查询要尽量放在后面，因为在range后面的查询不会走索引，这一点在设计索引时要注意；Like查询不能前缀模糊匹配，也就是说不可以like ‘%123’，因为like的后缀模糊 like ‘123%’可以转化为range查询，但是前缀模糊不可以；索引不是越多越好，索引十分大时不仅会影响查询效率，同时会为数据的插入造成很大的负担；对于重复索引需要删除，规划好索引是高效率的前提。</li>
+<li>主键索引和唯一索引的区别：主键一定会创建一个唯一索引，但是有唯一索引的列不一定是主键；主键不允许为空值，唯一索引列允许空值；一个表只能有一个主键，但是可以有多个唯一索引主键可以被其他表引用为外键，唯一索引列不可以；主键是一种约束，而唯一索引是一种索引，是表的冗余数据结构，两者有本质的差别。</li>
+</ul>
+<h2 id="MySql的事务隔离级别有哪几种？"><a href="#MySql的事务隔离级别有哪几种？" class="headerlink" title="MySql的事务隔离级别有哪几种？"></a>MySql的事务隔离级别有哪几种？</h2><ul>
+<li>隔离级别用于表述并发事务之间的相互干扰程度，其基于锁机制进行并发控制。</li>
+<li>可序列化（Serializable）：事务一个接一个的执行，完全相互独立；实现可序列化要求在选定对象上的读锁和写锁保持直到事务结束后才能释放；在SELECT的查询中使用一个WHERE子句来描述一个范围时应该获得一个“范围锁”。</li>
+<li>可重复度（Repeatable Read）：事务A读取数据之后，对涉及的数据加锁，不允许其他事务进行修改，由于其他事务会插入新的数据，因此会产生幻读；对选定对象的读锁和写锁一直保持到事务结束，但不要求“范围锁”，因此可能会发生幻读；可重复读是MySQL的默认事务隔离级别。</li>
+<li>读取已提交（Read Committed）：只能看到其他事务已经提交的数据，避免了脏读，但存在不可重复读、幻读；DBMS需要对选定对象的写锁(write locks)一直保持到事务结束，但是读锁(read locks)在SELECT操作完成后马上释放，且不要求“范围锁”。</li>
+<li>读取未提交（Read Uncommitted）：可以看到其他事务没有提交的数据，出现脏读、不可重复读、幻读；</li>
+</ul>
+<p><em>[PS补充]<br>不可重复读的重点是修改：同样的条件，读取过的数据，再次读取出来发现值不一样了。<br>幻读的重点在于新增或者删除：同样的条件，第1次和第2次读出来的记录数不一样。</em></p>
+<h2 id="MySql的MVVC有什么作用？"><a href="#MySql的MVVC有什么作用？" class="headerlink" title="MySql的MVVC有什么作用？"></a>MySql的MVVC有什么作用？</h2><ul>
+<li>多版本并发控制（MVCC），来实现MySQL上的多事务并发访问时，隔离级别控制；</li>
+<li>数据版本：并发事务执行时，同一行数据有多个版本；</li>
+<li>事务版本：每个事务都有一个事务版本；</li>
+<li>版本有序：版本是通过时间来标识的；</li>
+<li>通过MVCC实现的效果是同一时刻、同一张表、多个并发事务，看到的数据是不同的。</li>
+<li>MVCC本质使用了copy-on-write，为每个数据保留多份snapshot，不同snapshot之间，使用指针连接成链表；update操作，能看到的snapshot是受限的，是链表上小于等于当前事务版本的最大版本（读取已提交：离当前事务最近的已提交版本）；</li>
+</ul>
+<h2 id="如何设计高性能、高并发、高可用的系统。"><a href="#如何设计高性能、高并发、高可用的系统。" class="headerlink" title="如何设计高性能、高并发、高可用的系统。"></a>如何设计高性能、高并发、高可用的系统。</h2><ul>
+<li>系统架构三个利器：RPC服务组件、消息中间件（交互异步化、流量削峰）、配置管理（灰度发布、降级）；</li>
+<li>无状态：接口层最重要的就是无状态，将有状态的数据剥离到数据库或缓存中；</li>
+<li>如何改善延时：找关键路径（“28原则”）、空间换时间，如各级缓存；时间换空间，如传输压缩，解决网络传输的瓶颈；多核并行，减少锁竞争；更适合的算法和数据结构；通过性能测试和监控找出瓶颈；减少系统调用和上下文切换；</li>
+<li>如何提高吞吐量：复制、扩容、异步化、缓存；</li>
+<li>如何保障稳定性：提高可用性、分组和隔离、限流、降级、监控和故障切换；</li>
+<li>理解高可用系统：要做到数据不丢，就必需要持久化；要做到服务高可用，就必需要有备用（复本），无论是应用结点还是数据结点；要做到复制，就会有数据一致性的问题；我们不可能做到100%的高可用，也就是说，我们能做到几个9个的SLA；</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat.jpg" alt="Gino Zhang wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫一扫，关注我的微信公众号</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/职场/" rel="tag"># 职场</a>
+          
+            <a href="/tags/Spring/" rel="tag"># Spring</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/MySql/" rel="tag"># MySql</a>
+          
+            <a href="/tags/Redis/" rel="tag"># Redis</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/java_nio_interview_questions/" rel="next" title="面试小结之IO篇">
+                <i class="fa fa-chevron-left"></i> 面试小结之IO篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/java_other_interview_questions/"
+           data-title="面试小结之其他问题篇" data-url="http://ginobefunny.com/post/java_other_interview_questions/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/ginobefun" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/0ffaa3601861" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-gift"></i>
+                  
+                  JianShu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangnan.tech/" title="王楠的博客" target="_blank">王楠的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://toutiao.io/subjects/160373" title="开发者头条" target="_blank">开发者头条</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.yohobuy.com/" title="Yoho!Buy" target="_blank">Yoho!Buy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://theme-next.iissnan.com/" title="Hexo Next Theme" target="_blank">Hexo Next Theme</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍一下你熟悉的几种排序算法以及它们的时间复杂度。"><span class="nav-number">1.</span> <span class="nav-text">介绍一下你熟悉的几种排序算法以及它们的时间复杂度。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#冒泡排序"><span class="nav-number">1.1.</span> <span class="nav-text">冒泡排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#快速排序"><span class="nav-number">1.2.</span> <span class="nav-text">快速排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#堆排序"><span class="nav-number">1.3.</span> <span class="nav-text">堆排序</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈对Spring-IoC的理解。"><span class="nav-number">2.</span> <span class="nav-text">谈谈对Spring IoC的理解。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈对Spring-AOP的理解。"><span class="nav-number">3.</span> <span class="nav-text">谈谈对Spring AOP的理解。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring-MVC的核心流程是什么样的？"><span class="nav-number">4.</span> <span class="nav-text">Spring MVC的核心流程是什么样的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis和Memcached的异同。"><span class="nav-number">5.</span> <span class="nav-text">Redis和Memcached的异同。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Memcached"><span class="nav-number">5.1.</span> <span class="nav-text">Memcached</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis"><span class="nav-number">5.2.</span> <span class="nav-text">Redis</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis作为分布式缓存可能会存在哪些问题，怎么解决？"><span class="nav-number">6.</span> <span class="nav-text">Redis作为分布式缓存可能会存在哪些问题，怎么解决？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈对Mysql索引的认识。"><span class="nav-number">7.</span> <span class="nav-text">谈谈对Mysql索引的认识。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySql的事务隔离级别有哪几种？"><span class="nav-number">8.</span> <span class="nav-text">MySql的事务隔离级别有哪几种？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MySql的MVVC有什么作用？"><span class="nav-number">9.</span> <span class="nav-text">MySql的MVVC有什么作用？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何设计高性能、高并发、高可用的系统。"><span class="nav-number">10.</span> <span class="nav-text">如何设计高性能、高并发、高可用的系统。</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

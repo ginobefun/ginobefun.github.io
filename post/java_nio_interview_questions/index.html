@@ -1,0 +1,1059 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Java,职场,面试,NIO," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近面试一些公司，被问到的关于Java NIO编程的问题，以及自己总结的回答。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试小结之IO篇">
+<meta property="og:url" content="http://ginobefunny.com/post/java_nio_interview_questions/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="最近面试一些公司，被问到的关于Java NIO编程的问题，以及自己总结的回答。">
+<meta property="og:updated_time" content="2017-06-14T08:46:58.513Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试小结之IO篇">
+<meta name="twitter:description" content="最近面试一些公司，被问到的关于Java NIO编程的问题，以及自己总结的回答。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6346332688051340000',
+      author: 'Gino'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/java_nio_interview_questions/"/>
+
+
+
+
+
+  <title> 面试小结之IO篇 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/java_nio_interview_questions/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                面试小结之IO篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-14T16:38:50+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CodingLife/" itemprop="url" rel="index">
+                    <span itemprop="name">CodingLife</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近面试一些公司，被问到的关于Java NIO编程的问题，以及自己总结的回答。<br><a id="more"></a></p>
+<h2 id="谈谈对Java-IO的认识。"><a href="#谈谈对Java-IO的认识。" class="headerlink" title="谈谈对Java IO的认识。"></a>谈谈对Java IO的认识。</h2><ul>
+<li>对于I/O操作来说, 其根本的作用在于传输数据。输入和输出指的仅是数据的流向，实际传输是通过某些具体的媒介来完成的，其中最主要的是文件系统和网络连接；</li>
+<li>早期的java.io包把I/O操作抽象成数据的流动，进而有了流的概念；在Java NIO中，则把I/O操作抽象成端到端的一个数据连接，这就有了通道（channel）的概念；</li>
+<li>Java中最基本的流是在字节这个层次上进行操作的；在read方法的调用是阻塞的，这可能会成为应用中的瓶颈（可以通过available方法获取在不阻塞的情况下可以获取到的字节数）；流无法重新使用，BufferedInputStream通过mark和reset操作可以实现流中部分内容的重复读取；另外一种重用输入流的方式是把它转换成数据来使用；</li>
+<li>输出流是通过write方法把数据存放在缓冲区（缓冲区满了会自动执行写入），使用flush方法强制进行实际的写入操作；</li>
+<li>其他常用流：FileInput(Output)Stream、ByteArrayInput(Output)Stream、字符流（new BufferedReader(new InputStreamReader(inputStream))）；</li>
+</ul>
+<h2 id="介绍一下Java-NIO中的Buffer、Channel和Selector的概念和作用。"><a href="#介绍一下Java-NIO中的Buffer、Channel和Selector的概念和作用。" class="headerlink" title="介绍一下Java NIO中的Buffer、Channel和Selector的概念和作用。"></a>介绍一下Java NIO中的Buffer、Channel和Selector的概念和作用。</h2><ul>
+<li>Java NIO的缓冲区：使用数组的方式不够灵活且性能差，Java NIO的缓冲区功能更加强大；容量(capacity)表示缓冲区的额定大小，需要在创建时指定（allocate静态方法）；读写限制(limit)表示缓冲区在进行读写操作时的最大允许位置；读写位置(position)表示当前进行读写操作时的位置；缓冲区的很多操作（clear、flip、rewind）都是操作limit和position的值来实现重复读写；</li>
+<li>Java NIO的通道：channel表示为一个已经建立好的到支持I/O操作的实体（如文件和网络）的连接，在此连接上进行数据的读写操作，使用的是缓冲区来实现读写；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">openAndWrite</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    FileChannel channel = FileChannel.open(Paths.get(<span class="string">"my.txt"</span>), StandardOpenOption.CREATE, StandardOpenOption.WRITE);</div><div class="line">    ByteBuffer buffer = ByteBuffer.allocate(<span class="number">64</span>);</div><div class="line">    buffer.putChar(<span class="string">'A'</span>).flip();</div><div class="line">    channel.write(buffer);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>Socket和ServerSocket类中提供的建立连接和数据传输相关的方法都是阻塞式的；对服务端通常使用线程池的方式来调用ServerSocket.accept方法来监听连接请求；Java NIO提供了非阻塞式和多路复用的套接字连接；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startSimpleServer</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>&#123;</div><div class="line">    ServerSocketChannel channel = ServerSocketChannel.open();</div><div class="line">    channel.bind(<span class="keyword">new</span> InetSocketAddress(<span class="string">"localhost"</span>, <span class="number">10800</span>));</div><div class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</div><div class="line">        <span class="keyword">try</span>(SocketChannel sc = channel.accept())&#123;</div><div class="line">            sc.write(ByteBuffer.wrap(<span class="string">"Hello"</span>.getBytes(<span class="string">"UTF-8"</span>)));</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>套接字通道的多路复用的思想比较简单，通过一个专门的选择器（Selector）来同时对多个套接字通道进行监听；当其中的某些套接字通道上有它感兴趣的事件发生时，这些通道就会变为可用状态，可以在选择器的选择操作中被选中；可用通道的选择一般是通过操作系统提供的底层操作系统调用来实现的，性能也比较高；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoadWebPageUseSelector</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="comment">// 通过Selector同时下载多个网页的内容</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">load</span><span class="params">(Set&lt;URL&gt; urls)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        Map&lt;SocketAddress, String&gt; mapping = urlToSocketAddress(urls);</div><div class="line"></div><div class="line">        <span class="comment">// 1. 创建Selector</span></div><div class="line">        Selector selector = Selector.open();</div><div class="line"></div><div class="line">        <span class="comment">// 2. 将套接字Channel注册到Selector上</span></div><div class="line">        <span class="keyword">for</span> (SocketAddress address : mapping.keySet()) &#123;</div><div class="line">            register(selector, address);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">int</span> finished = <span class="number">0</span>;</div><div class="line">        <span class="keyword">int</span> total = mapping.size();</div><div class="line"></div><div class="line">        ByteBuffer buffer = ByteBuffer.allocate(<span class="number">32</span> * <span class="number">1024</span>);</div><div class="line">        <span class="keyword">int</span> len = -<span class="number">1</span>;</div><div class="line">        <span class="keyword">while</span> (finished &lt; total) &#123;</div><div class="line">            <span class="comment">// 3. 调用select方法进行通道选择，该方法会阻塞，直到至少有一个他们所感兴趣的事件发生，然后可以通过selectedKeys获取被选中的通道的对象集合</span></div><div class="line">            selector.select();</div><div class="line">            Iterator&lt;SelectionKey&gt; iterator = selector.selectedKeys().iterator();</div><div class="line">            <span class="keyword">while</span> (iterator.hasNext()) &#123;</div><div class="line">                SelectionKey key = iterator.next();</div><div class="line">                iterator.remove();</div><div class="line">                <span class="keyword">if</span> (key.isValid() &amp;&amp; key.isConnectable()) &#123;</div><div class="line">                    SocketChannel channel = (SocketChannel) key.channel();</div><div class="line"></div><div class="line">                    <span class="comment">// 4. 如果连接成功，则发送HTTP请求；失败则取消该连接；</span></div><div class="line">                    <span class="keyword">boolean</span> success = channel.finishConnect();</div><div class="line">                    <span class="keyword">if</span> (!success) &#123;</div><div class="line">                        finished++;</div><div class="line">                        key.cancel();</div><div class="line">                    &#125; <span class="keyword">else</span> &#123;</div><div class="line">                        InetSocketAddress address = (InetSocketAddress) channel.getRemoteAddress();</div><div class="line">                        String path = mapping.get(address);</div><div class="line">                        String request = <span class="string">"GET"</span> + path + <span class="string">"HTTP/1.0\r\n\r\nHost:"</span> + address.getHostString() + <span class="string">"\r\n\r\n"</span>;</div><div class="line">                        ByteBuffer header = ByteBuffer.wrap(request.getBytes(<span class="string">"UTF-8"</span>));</div><div class="line">                        channel.write(header);</div><div class="line">                    &#125;</div><div class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (key.isValid() &amp;&amp; key.isReadable()) &#123;</div><div class="line">                    <span class="comment">// 5. 当channel处于可读时则读取channel的数据并写入文件</span></div><div class="line">                    SocketChannel channel = (SocketChannel) key.channel();</div><div class="line">                    InetSocketAddress address = (InetSocketAddress) channel.getRemoteAddress();</div><div class="line">                    String filename = address.getHostName() + <span class="string">".txt"</span>;</div><div class="line">                    FileChannel destChannel = FileChannel.open(Paths.get(filename), StandardOpenOption.APPEND, StandardOpenOption.CREATE);</div><div class="line">                    buffer.clear();</div><div class="line"></div><div class="line">                    <span class="comment">// 6. 当返回0时表示本次没有数据可读不需要操作；如果为-1则表示所有数据亿级读取完毕，可以关闭；</span></div><div class="line">                    <span class="keyword">while</span> ((len = channel.read(buffer)) &gt; <span class="number">0</span> || buffer.position() != <span class="number">0</span>) &#123;</div><div class="line">                        buffer.flip();</div><div class="line">                        destChannel.write(buffer);</div><div class="line">                        buffer.compact();</div><div class="line">                    &#125;</div><div class="line"></div><div class="line">                    <span class="keyword">if</span> (len == -<span class="number">1</span>) &#123;</div><div class="line">                        finished++;</div><div class="line">                        key.cancel();</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">register</span><span class="params">(Selector selector, SocketAddress address)</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">        SocketChannel channel = SocketChannel.open();</div><div class="line"></div><div class="line">        <span class="comment">// 设置为非阻塞模式</span></div><div class="line">        channel.configureBlocking(<span class="keyword">false</span>);</div><div class="line">        channel.connect(address);</div><div class="line"></div><div class="line">        <span class="comment">// 注册时需要指定感兴趣的事件类型</span></div><div class="line">        channel.register(selector, SelectionKey.OP_CONNECT | SelectionKey.OP_READ);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">private</span> Map&lt;SocketAddress, String&gt; <span class="title">urlToSocketAddress</span><span class="params">(Set&lt;URL&gt; urls)</span> </span>&#123;</div><div class="line">        Map&lt;SocketAddress, String&gt; mapping = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">        <span class="keyword">for</span> (URL url : urls) &#123;</div><div class="line">            <span class="keyword">int</span> port = url.getPort() != -<span class="number">1</span> ? url.getPort() : url.getDefaultPort();</div><div class="line">            SocketAddress address = <span class="keyword">new</span> InetSocketAddress(url.getHost(), port);</div><div class="line">            String path = url.getPath();</div><div class="line">            <span class="keyword">if</span> (url.getQuery() != <span class="keyword">null</span>) &#123;</div><div class="line">                path = path + <span class="string">"?"</span> + url.getQuery();</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            mapping.put(address, path);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> mapping;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="Java-7的版本对Java-NIO有哪些增强？"><a href="#Java-7的版本对Java-NIO有哪些增强？" class="headerlink" title="Java 7的版本对Java NIO有哪些增强？"></a>Java 7的版本对Java NIO有哪些增强？</h2><ul>
+<li>Java 7中的NIO.2进一步增强，主要包括文件系统访问和异步I/O通道；</li>
+<li>引入Path接口作为文件系统中路径的一种抽象，来代替之前字符串处理的方式，更加语义化；引入DirectoryStream来支持目录下子目录和文件的遍历，它的优势在于它渐进式地遍历，每次只读取一定数量的内容，从而可以降低遍历时的开销（DirectoryStream<path></path> stream = Files.newDirectoryStream(path, “*.java”)）；如果要递归地遍历子目录下的子目录，对整个目录树进行遍历，可以使用FileVisitor；通过引入文件视图FileAttributeView来获取和设置文件的各种属性；另外还提供了新的目录监视服务，当指定目录下的子目录或文件被创建、更新或删除时可以得到事件通知；Files工具类提供了一系列静态方法可以满足常见的需求；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">calculate</span><span class="params">()</span> <span class="keyword">throws</span> IOException, InterruptedException </span>&#123;</div><div class="line">    WatchService service = FileSystems.getDefault().newWatchService();</div><div class="line">    Path path = Paths.get(<span class="string">""</span>).toAbsolutePath();</div><div class="line">    path.register(service, StandardWatchEventKinds.ENTRY_CREATE);</div><div class="line">    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</div><div class="line">        WatchKey watchKey = service.take();</div><div class="line">        <span class="keyword">for</span> (WatchEvent&lt;?&gt; event : watchKey.pollEvents()) &#123;</div><div class="line">            Path createdPath = (Path) event.context();</div><div class="line">            createdPath = path.resolve(createdPath);</div><div class="line">            <span class="keyword">long</span> size = Files.size(createdPath);</div><div class="line">            System.out.println(createdPath + <span class="string">"=&gt;"</span> + size);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        watchKey.reset();</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">manipulateFiles</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    Path newFile = Files.createFile(Paths.get(<span class="string">"new.txt"</span>).toAbsolutePath());</div><div class="line">    List&lt;String&gt; content = Arrays.asList(<span class="string">"Hello"</span>, <span class="string">"World"</span>);</div><div class="line">    Files.write(newFile, content, Charset.forName(<span class="string">"UTF-8"</span>));</div><div class="line">    Files.size(newFile);</div><div class="line"></div><div class="line">    <span class="keyword">byte</span>[] bytes = Files.readAllBytes(newFile);</div><div class="line">    ByteArrayOutputStream outputStream = <span class="keyword">new</span> ByteArrayOutputStream();</div><div class="line">    Files.copy(newFile, outputStream);</div><div class="line">    Files.delete(newFile);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>异步I/O通道一般提供两种使用方式：一会走是通过Future类的对象来表示异步操作的结果，另外一种是在执行操作时传入一个CompletionHandler接口的实现对象作为操作完成时的回调方法；异步文件通道由AsynchronousFileChannel类表示，它没有当前读写位置的概念。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">asyncWrite</span><span class="params">()</span> <span class="keyword">throws</span> IOException, ExecutionException, InterruptedException </span>&#123;</div><div class="line">    AsynchronousFileChannel channel = AsynchronousFileChannel.open(Paths.get(<span class="string">"large.bin"</span>),</div><div class="line">            StandardOpenOption.CREATE, StandardOpenOption.WRITE);</div><div class="line">    ByteBuffer buffer = ByteBuffer.allocate(<span class="number">32</span> * <span class="number">1024</span> * <span class="number">1024</span>);</div><div class="line">    Future&lt;Integer&gt; result = channel.write(buffer, <span class="number">0</span>);</div><div class="line">    Integer len = result.get();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startAsyncSimpleServer</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</div><div class="line">    AsynchronousChannelGroup group = AsynchronousChannelGroup.withFixedThreadPool(<span class="number">10</span>, Executors.defaultThreadFactory());</div><div class="line">    <span class="keyword">final</span> AsynchronousServerSocketChannel serverChannel = AsynchronousServerSocketChannel.open(group).bind(<span class="keyword">new</span> InetSocketAddress(<span class="number">10080</span>));</div><div class="line">    serverChannel.accept(<span class="keyword">null</span>, <span class="keyword">new</span> CompletionHandler&lt;AsynchronousSocketChannel, Void&gt;() &#123;</div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">completed</span><span class="params">(AsynchronousSocketChannel result, Void attachment)</span> </span>&#123;</div><div class="line">            serverChannel.accept(<span class="keyword">null</span>, <span class="keyword">this</span>);</div><div class="line">            <span class="comment">// 使用clientChannel</span></div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="meta">@Override</span></div><div class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">failed</span><span class="params">(Throwable exc, Void attachment)</span> </span>&#123;</div><div class="line">            <span class="comment">// 错误处理</span></div><div class="line">        &#125;</div><div class="line">    &#125;);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat.jpg" alt="Gino Zhang wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫一扫，关注我的微信公众号</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Java/" rel="tag"># Java</a>
+          
+            <a href="/tags/职场/" rel="tag"># 职场</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/NIO/" rel="tag"># NIO</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/java_concurrent_interview_questions/" rel="next" title="面试小结之并发篇">
+                <i class="fa fa-chevron-left"></i> 面试小结之并发篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/java_other_interview_questions/" rel="prev" title="面试小结之其他问题篇">
+                面试小结之其他问题篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/java_nio_interview_questions/"
+           data-title="面试小结之IO篇" data-url="http://ginobefunny.com/post/java_nio_interview_questions/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/ginobefun" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/0ffaa3601861" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-gift"></i>
+                  
+                  JianShu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangnan.tech/" title="王楠的博客" target="_blank">王楠的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://toutiao.io/subjects/160373" title="开发者头条" target="_blank">开发者头条</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.yohobuy.com/" title="Yoho!Buy" target="_blank">Yoho!Buy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://theme-next.iissnan.com/" title="Hexo Next Theme" target="_blank">Hexo Next Theme</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈对Java-IO的认识。"><span class="nav-number">1.</span> <span class="nav-text">谈谈对Java IO的认识。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍一下Java-NIO中的Buffer、Channel和Selector的概念和作用。"><span class="nav-number">2.</span> <span class="nav-text">介绍一下Java NIO中的Buffer、Channel和Selector的概念和作用。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-7的版本对Java-NIO有哪些增强？"><span class="nav-number">3.</span> <span class="nav-text">Java 7的版本对Java NIO有哪些增强？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

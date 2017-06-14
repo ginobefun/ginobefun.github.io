@@ -1,0 +1,1164 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Elasticsearch,职场,面试," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近面试一些公司，被问到的关于Elasticsearch和搜索引擎相关的问题，以及自己总结的回答。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试小结之Elasticsearch篇">
+<meta property="og:url" content="http://ginobefunny.com/post/elasticsearch_interview_questions/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="最近面试一些公司，被问到的关于Elasticsearch和搜索引擎相关的问题，以及自己总结的回答。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-2084bd0268a42ae1.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-88f589037638c93d.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-3a013fdb77aa88fc.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-7b6f0fab6f412f51.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://github.com/julycoding/The-Art-Of-Programming-By-July/raw/master/ebook/images/8/8.4/1.jpg">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-31bef8a5bbf14a13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-7cdb109e6f73c192.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-06-14T08:47:10.367Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试小结之Elasticsearch篇">
+<meta name="twitter:description" content="最近面试一些公司，被问到的关于Elasticsearch和搜索引擎相关的问题，以及自己总结的回答。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3709321-2084bd0268a42ae1.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6346332688051340000',
+      author: 'Gino'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/elasticsearch_interview_questions/"/>
+
+
+
+
+
+  <title> 面试小结之Elasticsearch篇 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/elasticsearch_interview_questions/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                面试小结之Elasticsearch篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-14T16:33:23+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CodingLife/" itemprop="url" rel="index">
+                    <span itemprop="name">CodingLife</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近面试一些公司，被问到的关于Elasticsearch和搜索引擎相关的问题，以及自己总结的回答。<br><a id="more"></a></p>
+<h2 id="Elasticsearch是如何实现Master选举的？"><a href="#Elasticsearch是如何实现Master选举的？" class="headerlink" title="Elasticsearch是如何实现Master选举的？"></a>Elasticsearch是如何实现Master选举的？</h2><ul>
+<li>Elasticsearch的选主是ZenDiscovery模块负责的，主要包含Ping（节点之间通过这个RPC来发现彼此）和Unicast（单播模块包含一个主机列表以控制哪些节点需要ping通）这两部分；</li>
+<li>对所有可以成为master的节点（<strong>node.master: true</strong>）根据nodeId字典排序，每次选举每个节点都把自己所知道节点排一次序，然后选出第一个（第0位）节点，暂且认为它是master节点。</li>
+<li>如果对某个节点的投票数达到一定的值（可以成为master节点数n/2+1）并且该节点自己也选举自己，那这个节点就是master。否则重新选举一直到满足上述条件。</li>
+<li><em>补充：master节点的职责主要包括集群、节点和索引的管理，不负责文档级别的管理；data节点可以关闭http功能</em>。</li>
+</ul>
+<h2 id="Elasticsearch中的节点（比如共20个），其中的10个选了一个master，另外10个选了另一个master，怎么办？"><a href="#Elasticsearch中的节点（比如共20个），其中的10个选了一个master，另外10个选了另一个master，怎么办？" class="headerlink" title="Elasticsearch中的节点（比如共20个），其中的10个选了一个master，另外10个选了另一个master，怎么办？"></a>Elasticsearch中的节点（比如共20个），其中的10个选了一个master，另外10个选了另一个master，怎么办？</h2><ul>
+<li>当集群master候选数量不小于3个时，可以通过设置最少投票通过数量（<strong>discovery.zen.minimum_master_nodes</strong>）超过所有候选节点一半以上来解决脑裂问题；</li>
+<li>当候选数量为两个时，只能修改为唯一的一个master候选，其他作为data节点，避免脑裂问题。</li>
+</ul>
+<h2 id="客户端在和集群连接时，如何选择特定的节点执行请求的？"><a href="#客户端在和集群连接时，如何选择特定的节点执行请求的？" class="headerlink" title="客户端在和集群连接时，如何选择特定的节点执行请求的？"></a>客户端在和集群连接时，如何选择特定的节点执行请求的？</h2><ul>
+<li>TransportClient利用transport模块远程连接一个elasticsearch集群。它并不加入到集群中，只是简单的获得一个或者多个初始化的transport地址，并以 <strong>轮询</strong> 的方式与这些地址进行通信。</li>
+</ul>
+<h2 id="详细描述一下Elasticsearch索引文档的过程。"><a href="#详细描述一下Elasticsearch索引文档的过程。" class="headerlink" title="详细描述一下Elasticsearch索引文档的过程。"></a>详细描述一下Elasticsearch索引文档的过程。</h2><ul>
+<li>协调节点默认使用文档ID参与计算（也支持通过routing），以便为路由提供合适的分片。</li>
+</ul>
+<pre><code>shard = hash(document_id) % (num_of_primary_shards)
+</code></pre><ul>
+<li>当分片所在的节点接收到来自协调节点的请求后，会将请求写入到Memory Buffer，然后定时（默认是每隔1秒）写入到Filesystem Cache，这个从Momery Buffer到Filesystem Cache的过程就叫做refresh；</li>
+<li>当然在某些情况下，存在Momery Buffer和Filesystem Cache的数据可能会丢失，ES是通过translog的机制来保证数据的可靠性的。其实现机制是接收到请求后，同时也会写入到translog中，当Filesystem cache中的数据写入到磁盘中时，才会清除掉，这个过程叫做flush；</li>
+<li>在flush过程中，内存中的缓冲将被清除，内容被写入一个新段，段的fsync将创建一个新的提交点，并将内容刷新到磁盘，旧的translog将被删除并开始一个新的translog。</li>
+<li>flush触发的时机是定时触发（默认30分钟）或者translog变得太大（默认为512M）时；</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-2084bd0268a42ae1.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Elasticsearch索引文档的过程"></p>
+<p><em>补充：关于Lucene的Segement：</em></p>
+<ul>
+<li>Lucene索引是由多个段组成，段本身是一个功能齐全的倒排索引。</li>
+<li>段是不可变的，允许Lucene将新的文档增量地添加到索引中，而不用从头重建索引。</li>
+<li>对于每一个搜索请求而言，索引中的所有段都会被搜索，并且每个段会消耗CPU的时钟周、文件句柄和内存。这意味着段的数量越多，搜索性能会越低。</li>
+<li>为了解决这个问题，Elasticsearch会合并小段到一个较大的段，提交新的合并段到磁盘，并删除那些旧的小段。</li>
+</ul>
+<h2 id="详细描述一下Elasticsearch更新和删除文档的过程。"><a href="#详细描述一下Elasticsearch更新和删除文档的过程。" class="headerlink" title="详细描述一下Elasticsearch更新和删除文档的过程。"></a>详细描述一下Elasticsearch更新和删除文档的过程。</h2><ul>
+<li>删除和更新也都是写操作，但是Elasticsearch中的文档是不可变的，因此不能被删除或者改动以展示其变更；</li>
+<li>磁盘上的每个段都有一个相应的.del文件。当删除请求发送后，文档并没有真的被删除，而是在.del文件中被标记为删除。该文档依然能匹配查询，但是会在结果中被过滤掉。当段合并时，在.del文件中被标记为删除的文档将不会被写入新段。</li>
+<li>在新的文档被创建时，Elasticsearch会为该文档指定一个版本号，当执行更新时，旧版本的文档在.del文件中被标记为删除，新版本的文档被索引到一个新段。旧版本的文档依然能匹配查询，但是会在结果中被过滤掉。</li>
+</ul>
+<h2 id="详细描述一下Elasticsearch搜索的过程。"><a href="#详细描述一下Elasticsearch搜索的过程。" class="headerlink" title="详细描述一下Elasticsearch搜索的过程。"></a>详细描述一下Elasticsearch搜索的过程。</h2><ul>
+<li>搜索被执行成一个两阶段过程，我们称之为 Query Then Fetch；</li>
+<li>在初始<em>查询阶段</em>时，查询会广播到索引中每一个分片拷贝（主分片或者副本分片）。 每个分片在本地执行搜索并构建一个匹配文档的大小为 from + size 的优先队列。<em>PS：在搜索的时候是会查询Filesystem Cache的，但是有部分数据还在Memory Buffer，所以搜索是近实时的。</em></li>
+<li>每个分片返回各自优先队列中 <strong>所有文档的 ID 和排序值</strong> 给协调节点，它合并这些值到自己的优先队列中来产生一个全局排序后的结果列表。</li>
+<li>接下来就是 <em>取回阶段</em>，协调节点辨别出哪些文档需要被取回并向相关的分片提交多个 GET 请求。每个分片加载并 <em>丰富</em> 文档，如果有需要的话，接着返回文档给协调节点。一旦所有的文档都被取回了，协调节点返回结果给客户端。</li>
+<li><em>补充：Query Then Fetch的搜索类型在文档相关性打分的时候参考的是本分片的数据，这样在文档数量较少的时候可能不够准确，DFS Query Then Fetch增加了一个预查询的处理，询问Term和Document frequency，这个评分更准确，但是性能会变差。</em></li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-88f589037638c93d.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Elasticsearch执行搜索的过程"></p>
+<h2 id="在Elasticsearch中，是怎么根据一个词找到对应的倒排索引的？"><a href="#在Elasticsearch中，是怎么根据一个词找到对应的倒排索引的？" class="headerlink" title="在Elasticsearch中，是怎么根据一个词找到对应的倒排索引的？"></a>在Elasticsearch中，是怎么根据一个词找到对应的倒排索引的？</h2><p>SEE：</p>
+<ul>
+<li><a href="http://www.cnblogs.com/forfuture1978/archive/2009/12/14/1623597.html" target="_blank" rel="external">Lucene的索引文件格式(1)</a>  </li>
+<li><a href="http://www.cnblogs.com/forfuture1978/archive/2009/12/14/1623599.html" target="_blank" rel="external">Lucene的索引文件格式(2)</a></li>
+</ul>
+<h2 id="Elasticsearch在部署时，对Linux的设置有哪些优化方法？"><a href="#Elasticsearch在部署时，对Linux的设置有哪些优化方法？" class="headerlink" title="Elasticsearch在部署时，对Linux的设置有哪些优化方法？"></a>Elasticsearch在部署时，对Linux的设置有哪些优化方法？</h2><ul>
+<li>64 GB 内存的机器是非常理想的， 但是32 GB 和16 GB 机器也是很常见的。少于8 GB 会适得其反。</li>
+<li>如果你要在更快的 CPUs 和更多的核心之间选择，选择更多的核心更好。多个内核提供的额外并发远胜过稍微快一点点的时钟频率。</li>
+<li>如果你负担得起 SSD，它将远远超出任何旋转介质。 基于 SSD 的节点，查询和索引性能都有提升。如果你负担得起，SSD 是一个好的选择。</li>
+<li>即使数据中心们近在咫尺，也要避免集群跨越多个数据中心。绝对要避免集群跨越大的地理距离。</li>
+<li>请确保运行你应用程序的 JVM 和服务器的 JVM 是完全一样的。 在 Elasticsearch 的几个地方，使用 Java 的本地序列化。</li>
+<li>通过设置gateway.recover_after_nodes、gateway.expected_nodes、gateway.recover_after_time可以在集群重启的时候避免过多的分片交换，这可能会让数据恢复从数个小时缩短为几秒钟。</li>
+<li>Elasticsearch 默认被配置为使用单播发现，以防止节点无意中加入集群。只有在同一台机器上运行的节点才会自动组成集群。最好使用单播代替组播。</li>
+<li>不要随意修改垃圾回收器（CMS）和各个线程池的大小。</li>
+<li>把你的内存的（少于）一半给 Lucene（但不要超过 32 GB！），通过ES_HEAP_SIZE 环境变量设置。</li>
+<li>内存交换到磁盘对服务器性能来说是致命的。如果内存交换到磁盘上，一个 100 微秒的操作可能变成 10 毫秒。 再想想那么多 10 微秒的操作时延累加起来。 不难看出 swapping 对于性能是多么可怕。</li>
+<li>Lucene 使用了<em>大量的</em>文件。同时，Elasticsearch 在节点和 HTTP 客户端之间进行通信也使用了大量的套接字。 所有这一切都需要足够的文件描述符。你应该增加你的文件描述符，设置一个很大的值，如 64,000。</li>
+</ul>
+<p><em>补充：索引阶段性能提升方法</em></p>
+<ul>
+<li>使用批量请求并调整其大小：每次批量数据 5–15 MB 大是个不错的起始点。</li>
+<li>存储：使用 SSD</li>
+<li>段和合并：Elasticsearch 默认值是 20 MB/s，对机械磁盘应该是个不错的设置。如果你用的是 SSD，可以考虑提高到 100–200 MB/s。如果你在做批量导入，完全不在意搜索，你可以彻底关掉合并限流。另外还可以增加 index.translog.flush_threshold_size 设置，从默认的 512 MB 到更大一些的值，比如 1 GB，这可以在一次清空触发的时候在事务日志里积累出更大的段。</li>
+<li>如果你的搜索结果不需要近实时的准确度，考虑把每个索引的index.refresh_interval 改到30s。</li>
+<li>如果你在做大批量导入，考虑通过设置index.number_of_replicas: 0 关闭副本。</li>
+</ul>
+<h2 id="对于GC方面，在使用Elasticsearch时要注意什么？"><a href="#对于GC方面，在使用Elasticsearch时要注意什么？" class="headerlink" title="对于GC方面，在使用Elasticsearch时要注意什么？"></a>对于GC方面，在使用Elasticsearch时要注意什么？</h2><ul>
+<li>SEE：<a href="https://elasticsearch.cn/article/32" target="_blank" rel="external">https://elasticsearch.cn/article/32</a></li>
+<li>倒排词典的索引需要常驻内存，无法GC，需要监控data node上segment memory增长趋势。</li>
+<li>各类缓存，field cache, filter cache, indexing cache, bulk queue等等，要设置合理的大小，并且要应该根据最坏的情况来看heap是否够用，也就是各类缓存全部占满的时候，还有heap空间可以分配给其他任务吗？避免采用clear cache等“自欺欺人”的方式来释放内存。</li>
+<li>避免返回大量结果集的搜索与聚合。确实需要大量拉取数据的场景，可以采用scan &amp; scroll api来实现。</li>
+<li>cluster stats驻留内存并无法水平扩展，超大规模集群可以考虑分拆成多个集群通过tribe node连接。</li>
+<li>想知道heap够不够，必须结合实际应用场景，并对集群的heap使用情况做持续的监控。</li>
+</ul>
+<h2 id="Elasticsearch对于大数据量（上亿量级）的聚合如何实现？"><a href="#Elasticsearch对于大数据量（上亿量级）的聚合如何实现？" class="headerlink" title="Elasticsearch对于大数据量（上亿量级）的聚合如何实现？"></a>Elasticsearch对于大数据量（上亿量级）的聚合如何实现？</h2><ul>
+<li>Elasticsearch 提供的首个近似聚合是cardinality 度量。它提供一个字段的基数，即该字段的<em>distinct</em>或者<em>unique</em>值的数目。它是基于HLL算法的。HLL 会先对我们的输入作哈希运算，然后根据哈希运算的结果中的 bits 做概率估算从而得到基数。其特点是：可配置的精度，用来控制内存的使用（更精确 ＝ 更多内存）；小的数据集精度是非常高的；我们可以通过配置参数，来设置去重需要的固定内存使用量。无论数千还是数十亿的唯一值，内存使用量只与你配置的精确度相关。</li>
+</ul>
+<h2 id="在并发情况下，Elasticsearch如果保证读写一致？"><a href="#在并发情况下，Elasticsearch如果保证读写一致？" class="headerlink" title="在并发情况下，Elasticsearch如果保证读写一致？"></a>在并发情况下，Elasticsearch如果保证读写一致？</h2><ul>
+<li>可以通过版本号使用乐观并发控制，以确保新版本不会被旧版本覆盖，由应用层来处理具体的冲突；</li>
+<li>另外对于写操作，一致性级别支持quorum/one/all，默认为quorum，即只有当大多数分片可用时才允许写操作。但即使大多数可用，也可能存在因为网络等原因导致写入副本失败，这样该副本被认为故障，分片将会在一个不同的节点上重建。</li>
+<li>对于读操作，可以设置replication为sync(默认)，这使得操作在主分片和副本分片都完成后才会返回；如果设置replication为async时，也可以通过设置搜索请求参数_preference为primary来查询主分片，确保文档是最新版本。</li>
+</ul>
+<h2 id="如何监控Elasticsearch集群状态？"><a href="#如何监控Elasticsearch集群状态？" class="headerlink" title="如何监控Elasticsearch集群状态？"></a>如何监控Elasticsearch集群状态？</h2><ul>
+<li>Marvel 让你可以很简单的通过 Kibana 监控 Elasticsearch。你可以实时查看你的集群健康状态和性能，也可以分析过去的集群、索引和节点指标。</li>
+</ul>
+<h2 id="介绍下你们电商搜索的整体技术架构。"><a href="#介绍下你们电商搜索的整体技术架构。" class="headerlink" title="介绍下你们电商搜索的整体技术架构。"></a>介绍下你们电商搜索的整体技术架构。</h2><p><img src="http://upload-images.jianshu.io/upload_images/3709321-3a013fdb77aa88fc.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="整体技术架构"></p>
+<h2 id="介绍一下你们的个性化搜索方案？"><a href="#介绍一下你们的个性化搜索方案？" class="headerlink" title="介绍一下你们的个性化搜索方案？"></a>介绍一下你们的个性化搜索方案？</h2><p>SEE <a href="http://ginobefunny.com/post/personalized_search_implemention_based_word2vec_and_elasticsearch/">基于word2vec和Elasticsearch实现个性化搜索</a></p>
+<h2 id="是否了解字典树？"><a href="#是否了解字典树？" class="headerlink" title="是否了解字典树？"></a>是否了解字典树？</h2><ul>
+<li>常用字典数据结构如下所示：</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-7b6f0fab6f412f51.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="常用字典数据结构"></p>
+<ul>
+<li>Trie的核心思想是空间换时间，利用字符串的公共前缀来降低查询时间的开销以达到提高效率的目的。它有3个基本性质：</li>
+</ul>
+<pre><code>根节点不包含字符，除根节点外每一个节点都只包含一个字符。
+从根节点到某一节点，路径上经过的字符连接起来，为该节点对应的字符串。
+每个节点的所有子节点包含的字符都不相同。
+</code></pre><p><img src="https://github.com/julycoding/The-Art-Of-Programming-By-July/raw/master/ebook/images/8/8.4/1.jpg" alt="字典树"></p>
+<ul>
+<li>可以看到，trie树每一层的节点数是26^i级别的。所以为了节省空间，我们还可以用动态链表，或者用数组来模拟动态。而空间的花费，不会超过单词数×单词长度。</li>
+<li>实现：对每个结点开一个字母集大小的数组，每个结点挂一个链表，使用左儿子右兄弟表示法记录这棵树；</li>
+<li>对于中文的字典树，每个节点的子节点用一个哈希表存储，这样就不用浪费太大的空间，而且查询速度上可以保留哈希的复杂度O(1)。</li>
+</ul>
+<h2 id="拼写纠错是如何实现的？"><a href="#拼写纠错是如何实现的？" class="headerlink" title="拼写纠错是如何实现的？"></a>拼写纠错是如何实现的？</h2><ul>
+<li>拼写纠错是基于编辑距离来实现；编辑距离是一种标准的方法，它用来表示经过插入、删除和替换操作从一个字符串转换到另外一个字符串的最小操作步数；</li>
+<li>编辑距离的计算过程：比如要计算batyu和beauty的编辑距离，先创建一个7×8的表（batyu长度为5，coffee长度为6，各加2），接着，在如下位置填入黑色数字。其他格的计算过程是取以下三个值的最小值：</li>
+</ul>
+<pre><code>如果最上方的字符等于最左方的字符，则为左上方的数字。否则为左上方的数字+1。（对于3,3来说为0）
+左方数字+1（对于3,3格来说为2）
+上方数字+1（对于3,3格来说为2）
+</code></pre><p>最终取右下角的值即为编辑距离的值3。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-31bef8a5bbf14a13.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="编辑距离"></p>
+<ul>
+<li>对于拼写纠错，我们考虑构造一个度量空间（Metric Space），该空间内任何关系满足以下三条基本条件：</li>
+</ul>
+<pre><code>d(x,y) = 0 -- 假如x与y的距离为0，则x=y
+d(x,y) = d(y,x)  -- x到y的距离等同于y到x的距离
+d(x,y) + d(y,z) &gt;= d(x,z) -- 三角不等式
+</code></pre><ul>
+<li>根据三角不等式，则满足与query距离在n范围内的另一个字符转B，其与A的距离最大为d+n，最小为d-n。</li>
+<li>BK树的构造就过程如下：每个节点有任意个子节点，每条边有个值表示编辑距离。所有子节点到父节点的边上标注n表示编辑距离恰好为n。比如，我们有棵树父节点是”book”和两个子节点”cake”和”books”，”book”到”books”的边标号1，”book”到”cake”的边上标号4。从字典里构造好树后，无论何时你想插入新单词时，计算该单词与根节点的编辑距离，并且查找数值为d(neweord, root)的边。递归得与各子节点进行比较，直到没有子节点，你就可以创建新的子节点并将新单词保存在那。比如，插入”boo”到刚才上述例子的树中，我们先检查根节点，查找d(“book”, “boo”) = 1的边，然后检查标号为1的边的子节点，得到单词”books”。我们再计算距离d(“books”, “boo”)=2，则将新单词插在”books”之后，边标号为2。</li>
+<li>查询相似词如下：计算单词与根节点的编辑距离d，然后递归查找每个子节点标号为d-n到d+n（包含）的边。假如被检查的节点与搜索单词的距离d小于n，则返回该节点并继续查询。比如输入cape且最大容忍距离为1，则先计算和根的编辑距离d(“book”, “cape”)=4，然后接着找和根节点之间编辑距离为3到5的，这个就找到了cake这个节点，计算d(“cake”, “cape”)=1，满足条件所以返回<strong>cake</strong>，然后再找和cake节点编辑距离是0到2的，分别找到cape和cart节点，这样就得到<strong>cape</strong>这个满足条件的结果。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-7cdb109e6f73c192.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="BK树"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat.jpg" alt="Gino Zhang wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫一扫，关注我的微信公众号</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Elasticsearch/" rel="tag"># Elasticsearch</a>
+          
+            <a href="/tags/职场/" rel="tag"># 职场</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/learning_distributed_systems_tracing/" rel="next" title="分布式调用跟踪系统调研笔记">
+                <i class="fa fa-chevron-left"></i> 分布式调用跟踪系统调研笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/jvm_interview_questions/" rel="prev" title="面试小结之JVM篇">
+                面试小结之JVM篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/elasticsearch_interview_questions/"
+           data-title="面试小结之Elasticsearch篇" data-url="http://ginobefunny.com/post/elasticsearch_interview_questions/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/ginobefun" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/0ffaa3601861" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-gift"></i>
+                  
+                  JianShu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangnan.tech/" title="王楠的博客" target="_blank">王楠的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://toutiao.io/subjects/160373" title="开发者头条" target="_blank">开发者头条</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.yohobuy.com/" title="Yoho!Buy" target="_blank">Yoho!Buy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://theme-next.iissnan.com/" title="Hexo Next Theme" target="_blank">Hexo Next Theme</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch是如何实现Master选举的？"><span class="nav-number">1.</span> <span class="nav-text">Elasticsearch是如何实现Master选举的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch中的节点（比如共20个），其中的10个选了一个master，另外10个选了另一个master，怎么办？"><span class="nav-number">2.</span> <span class="nav-text">Elasticsearch中的节点（比如共20个），其中的10个选了一个master，另外10个选了另一个master，怎么办？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端在和集群连接时，如何选择特定的节点执行请求的？"><span class="nav-number">3.</span> <span class="nav-text">客户端在和集群连接时，如何选择特定的节点执行请求的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细描述一下Elasticsearch索引文档的过程。"><span class="nav-number">4.</span> <span class="nav-text">详细描述一下Elasticsearch索引文档的过程。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细描述一下Elasticsearch更新和删除文档的过程。"><span class="nav-number">5.</span> <span class="nav-text">详细描述一下Elasticsearch更新和删除文档的过程。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详细描述一下Elasticsearch搜索的过程。"><span class="nav-number">6.</span> <span class="nav-text">详细描述一下Elasticsearch搜索的过程。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在Elasticsearch中，是怎么根据一个词找到对应的倒排索引的？"><span class="nav-number">7.</span> <span class="nav-text">在Elasticsearch中，是怎么根据一个词找到对应的倒排索引的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch在部署时，对Linux的设置有哪些优化方法？"><span class="nav-number">8.</span> <span class="nav-text">Elasticsearch在部署时，对Linux的设置有哪些优化方法？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对于GC方面，在使用Elasticsearch时要注意什么？"><span class="nav-number">9.</span> <span class="nav-text">对于GC方面，在使用Elasticsearch时要注意什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Elasticsearch对于大数据量（上亿量级）的聚合如何实现？"><span class="nav-number">10.</span> <span class="nav-text">Elasticsearch对于大数据量（上亿量级）的聚合如何实现？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在并发情况下，Elasticsearch如果保证读写一致？"><span class="nav-number">11.</span> <span class="nav-text">在并发情况下，Elasticsearch如果保证读写一致？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何监控Elasticsearch集群状态？"><span class="nav-number">12.</span> <span class="nav-text">如何监控Elasticsearch集群状态？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍下你们电商搜索的整体技术架构。"><span class="nav-number">13.</span> <span class="nav-text">介绍下你们电商搜索的整体技术架构。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#介绍一下你们的个性化搜索方案？"><span class="nav-number">14.</span> <span class="nav-text">介绍一下你们的个性化搜索方案？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#是否了解字典树？"><span class="nav-number">15.</span> <span class="nav-text">是否了解字典树？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拼写纠错是如何实现的？"><span class="nav-number">16.</span> <span class="nav-text">拼写纠错是如何实现的？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

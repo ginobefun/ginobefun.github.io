@@ -1,0 +1,1151 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="职场,锁,并发,面试,ConcurrentHashMap," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="最近面试一些公司，被问到的关于Java并发编程的问题，以及自己总结的回答。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面试小结之并发篇">
+<meta property="og:url" content="http://ginobefunny.com/post/java_concurrent_interview_questions/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="最近面试一些公司，被问到的关于Java并发编程的问题，以及自己总结的回答。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-cb615ced8545bfa2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-10647ceea1f53aff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-aad65d89876a30f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-c219f054ec125188.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-a3f8b575f7b7fb8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-9c2a3d684ede2890.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-7ff1b37dfd99950a?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-06-14T08:47:04.725Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="面试小结之并发篇">
+<meta name="twitter:description" content="最近面试一些公司，被问到的关于Java并发编程的问题，以及自己总结的回答。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3709321-cb615ced8545bfa2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '6346332688051340000',
+      author: 'Gino'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/java_concurrent_interview_questions/"/>
+
+
+
+
+
+  <title> 面试小结之并发篇 | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/java_concurrent_interview_questions/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                面试小结之并发篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-14T16:38:44+08:00">
+                2017-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/CodingLife/" itemprop="url" rel="index">
+                    <span itemprop="name">CodingLife</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近面试一些公司，被问到的关于Java并发编程的问题，以及自己总结的回答。<br><a id="more"></a></p>
+<h2 id="Java线程的状态及如何转换。"><a href="#Java线程的状态及如何转换。" class="headerlink" title="Java线程的状态及如何转换。"></a>Java线程的状态及如何转换。</h2><p><img src="http://upload-images.jianshu.io/upload_images/3709321-cb615ced8545bfa2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="线程状态及其转换图"></p>
+<h2 id="多个线程之间如何协调？"><a href="#多个线程之间如何协调？" class="headerlink" title="多个线程之间如何协调？"></a>多个线程之间如何协调？</h2><ul>
+<li>wait()、notify()、notifyAll()：这三个方法用于协调多个线程对共享数据的存取，所以必须在同步语句块内使用。wait方法要等待notify/notifyAll的线程释放锁后才能开始继续往下执行。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 等待方</span></div><div class="line"><span class="keyword">synchronized</span>(lockObj)&#123;</div><div class="line">    <span class="keyword">while</span>(condition is <span class="keyword">false</span>)&#123;</div><div class="line">        lockObj.wait();</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="comment">// do business</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 通知方</span></div><div class="line"><span class="keyword">synchronized</span>(lockObj)&#123;</div><div class="line">    <span class="comment">// change condition</span></div><div class="line">    </div><div class="line">    lockObj.notifyAll();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="说说Java的线程池是如何实现的？"><a href="#说说Java的线程池是如何实现的？" class="headerlink" title="说说Java的线程池是如何实现的？"></a>说说Java的线程池是如何实现的？</h2><ul>
+<li>创建线程要花费昂贵的资源和时间，如果任务来了才创建线程那么响应时间会变长，而且一个进程能创建的线程数有限。为了避免这些问题，在程序启动的时候就创建若干线程来响应处理，它们被称为线程池，里面的线程叫工作线程。</li>
+<li>maximumPoolSize和corePoolSize的区别：这个概念很重要，maximumPoolSize为线程池最大容量，也就是说线程池最多能起多少Worker。corePoolSize是核心线程池的大小，当corePoolSize满了时，同时workQueue full（ArrayBolckQueue是可能满的） 那么此时允许新建Worker去处理workQueue中的Task，但是不能超过maximumPoolSize。超过corePoolSize之外的线程会在空闲超时后终止。可以通过beforeExecute和afterExecute实现线程池的监听；</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-10647ceea1f53aff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="线程池"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-aad65d89876a30f7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="线程池处理流程"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutorService <span class="title">newFixedThreadPool</span><span class="params">(<span class="keyword">int</span> nThreads)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ThreadPoolExecutor(nThreads, nThreads,</div><div class="line">                                  <span class="number">0L</span>, TimeUnit.MILLISECONDS,</div><div class="line">                                  <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="关于BlockingQueue和TransferQueue的异同。"><a href="#关于BlockingQueue和TransferQueue的异同。" class="headerlink" title="关于BlockingQueue和TransferQueue的异同。"></a>关于BlockingQueue和TransferQueue的异同。</h2><ul>
+<li>TransferQueue继承了BlockingQueue并扩展了一些新方法。BlockingQueue是Java 5中加入的接口，它是指这样的一个队列：当生产者向队列添加元素但队列已满时，生产者会被阻塞；当消费者从队列移除元素但队列为空时，消费者会被阻塞。</li>
+<li>TransferQueue则更进一步，生产者会一直阻塞直到所添加到队列的元素被某一个消费者所消费（不仅仅是添加到队列里就完事），新添加的transfer方法用来实现这种约束。顾名思义，阻塞就是发生在元素从一个线程transfer到另一个线程的过程中，它有效地实现了元素在线程之间的传递（以建立Java内存模型中的happens-before关系的方式）。</li>
+<li>TransferQueue还包括了其他的一些方法：两个tryTransfer方法，一个是非阻塞的，另一个带有timeout参数设置超时时间的。还有两个辅助方法hasWaitingConsumer()和getWaitingConsumerCount()。</li>
+<li>TransferQueue相比SynchronousQueue用处更广、更好用，因为你可以决定是使用BlockingQueue的方法（例如put方法）还是确保一次传递完成（即transfer方法）。在队列中已有元素的情况下，调用transfer方法，可以确保队列中被传递元素之前的所有元素都能被处理。Doug Lea说从功能角度来讲，LinkedTransferQueue实际上是ConcurrentLinkedQueue、SynchronousQueue（公平模式）和LinkedBlockingQueue的超集。而且LinkedTransferQueue更好用，因为它不仅仅综合了这几个类的功能，同时也提供了更高效的实现。</li>
+</ul>
+<h2 id="谈谈HashMap的实现。"><a href="#谈谈HashMap的实现。" class="headerlink" title="谈谈HashMap的实现。"></a>谈谈HashMap的实现。</h2><ul>
+<li>从结构实现来讲，HashMap是数组+链表+红黑树（JDK1.8增加了红黑树部分）实现的，如下如所示。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-c219f054ec125188.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="HashMap"></p>
+<pre><code>从源码可知，HashMap类中有一个非常重要的字段，就是 Node[] table，即哈希桶数组；
+Node是HashMap的一个内部类，实现了Map.Entry接口，本质是就是一个映射(键值对)。
+HashMap就是使用哈希表来存储的。为解决冲突，Java中HashMap采用了链地址法，简单来说，就是数组加链表的结合。在每个数组元素上都一个链表结构，当数据被Hash后，得到数组下标，把数据放在对应下标元素的链表上。
+Node[] table的初始化长度默认值是16，Load factor为负载因子(默认值是0.75)，threshold是HashMap所能容纳的最大数据量的Node(键值对)个数。threshold = length * Load factor。也就是说，在数组定义好长度之后，负载因子越大，所能容纳的键值对个数越多。
+</code></pre><ul>
+<li>确定哈希桶数组索引位置：取key的hashCode值、高位运算(通过hashCode()的高16位异或低16位实现的)、取模运算。</li>
+</ul>
+<pre><code>static final int hash(Object key) {
+    int h;
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16);
+}
+</code></pre><p><img src="http://upload-images.jianshu.io/upload_images/3709321-a3f8b575f7b7fb8d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="数组索引位置"></p>
+<ul>
+<li>HashMap的put方法执行过程可以通过下图来理解。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-9c2a3d684ede2890.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="put方法执行过程"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</div><div class="line">    <span class="keyword">return</span> putVal(hash(key), key, value, <span class="keyword">false</span>, <span class="keyword">true</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">final</span> V <span class="title">putVal</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">boolean</span> onlyIfAbsent,</span></span></div><div class="line">               <span class="keyword">boolean</span> evict) &#123;</div><div class="line">    Node&lt;K,V&gt;[] tab; Node&lt;K,V&gt; p; <span class="keyword">int</span> n, i;</div><div class="line">    <span class="comment">// 步骤①：tab为空则创建</span></div><div class="line">    <span class="keyword">if</span> ((tab = table) == <span class="keyword">null</span> || (n = tab.length) == <span class="number">0</span>)</div><div class="line">        n = (tab = resize()).length;</div><div class="line">    <span class="comment">// 步骤②：计算index，并对null做处理 </span></div><div class="line">    <span class="keyword">if</span> ((p = tab[i = (n - <span class="number">1</span>) &amp; hash]) == <span class="keyword">null</span>)</div><div class="line">        tab[i] = newNode(hash, key, value, <span class="keyword">null</span>);</div><div class="line">    <span class="keyword">else</span> &#123;</div><div class="line">        Node&lt;K,V&gt; e; K k;</div><div class="line">        <span class="comment">// 步骤③：节点key存在，直接覆盖value</span></div><div class="line">        <span class="keyword">if</span> (p.hash == hash &amp;&amp;</div><div class="line">            ((k = p.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</div><div class="line">            e = p;</div><div class="line">        <span class="comment">// 步骤④：判断该链为红黑树</span></div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (p <span class="keyword">instanceof</span> TreeNode)</div><div class="line">            e = ((TreeNode&lt;K,V&gt;)p).putTreeVal(<span class="keyword">this</span>, tab, hash, key, value);</div><div class="line">        <span class="comment">// 步骤⑤：该链为链表</span></div><div class="line">        <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> binCount = <span class="number">0</span>; ; ++binCount) &#123;</div><div class="line">                <span class="keyword">if</span> ((e = p.next) == <span class="keyword">null</span>) &#123;</div><div class="line">                    p.next = newNode(hash, key, value, <span class="keyword">null</span>);</div><div class="line">                    <span class="comment">//链表长度大于8转换为红黑树进行处理</span></div><div class="line">                    <span class="keyword">if</span> (binCount &gt;= TREEIFY_THRESHOLD - <span class="number">1</span>) <span class="comment">// -1 for 1st</span></div><div class="line">                        treeifyBin(tab, hash);</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                &#125;</div><div class="line">                <span class="comment">// key已经存在直接覆盖value</span></div><div class="line">                <span class="keyword">if</span> (e.hash == hash &amp;&amp;</div><div class="line">                    ((k = e.key) == key || (key != <span class="keyword">null</span> &amp;&amp; key.equals(k))))</div><div class="line">                    <span class="keyword">break</span>;</div><div class="line">                p = e;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span> (e != <span class="keyword">null</span>) &#123; <span class="comment">// existing mapping for key</span></div><div class="line">            V oldValue = e.value;</div><div class="line">            <span class="keyword">if</span> (!onlyIfAbsent || oldValue == <span class="keyword">null</span>)</div><div class="line">                e.value = value;</div><div class="line">            afterNodeAccess(e);</div><div class="line">            <span class="keyword">return</span> oldValue;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    ++modCount;</div><div class="line">    <span class="comment">// 步骤⑥：超过最大容量 就扩容</span></div><div class="line">    <span class="keyword">if</span> (++size &gt; threshold)</div><div class="line">        resize();</div><div class="line">    afterNodeInsertion(evict);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>扩容机制：扩容(resize)就是重新计算容量，向HashMap对象里不停的添加元素，而HashMap对象内部的数组无法装载更多的元素时，对象就需要扩大数组的长度，以便能装入更多的元素。当然Java里的数组是无法自动扩容的，方法是使用一个新的数组代替已有的容量小的数组。在扩充HashMap的时候，不需要像JDK1.7的实现那样重新计算hash，只需要看看原来的hash值新增的那个bit是1还是0就好了，是0的话索引没变，是1的话索引变成“原索引+oldCap”。这个设计确实非常的巧妙，既省去了重新计算hash值的时间，而且同时，由于新增的1bit是0还是1可以认为是随机的，因此resize的过程，均匀的把之前的冲突的节点分散到新的bucket了。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">final</span> Node&lt;K,V&gt;[] resize() &#123;</div><div class="line">        Node&lt;K,V&gt;[] oldTab = table;</div><div class="line">        <span class="keyword">int</span> oldCap = (oldTab == <span class="keyword">null</span>) ? <span class="number">0</span> : oldTab.length;</div><div class="line">        <span class="keyword">int</span> oldThr = threshold;</div><div class="line">        <span class="keyword">int</span> newCap, newThr = <span class="number">0</span>;</div><div class="line">        <span class="keyword">if</span> (oldCap &gt; <span class="number">0</span>) &#123;</div><div class="line">            <span class="comment">// 超过最大值就不再扩充了，就只好随你碰撞去吧</span></div><div class="line">            <span class="keyword">if</span> (oldCap &gt;= MAXIMUM_CAPACITY) &#123;</div><div class="line">                threshold = Integer.MAX_VALUE;</div><div class="line">                <span class="keyword">return</span> oldTab;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// 没超过最大值，就扩充为原来的2倍</span></div><div class="line">            <span class="keyword">else</span> <span class="keyword">if</span> ((newCap = oldCap &lt;&lt; <span class="number">1</span>) &lt; MAXIMUM_CAPACITY &amp;&amp;</div><div class="line">                     oldCap &gt;= DEFAULT_INITIAL_CAPACITY)</div><div class="line">                newThr = oldThr &lt;&lt; <span class="number">1</span>; <span class="comment">// double threshold</span></div><div class="line">        &#125;</div><div class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (oldThr &gt; <span class="number">0</span>) <span class="comment">// initial capacity was placed in threshold</span></div><div class="line">            newCap = oldThr;</div><div class="line">        <span class="keyword">else</span> &#123;               <span class="comment">// zero initial threshold signifies using defaults</span></div><div class="line">            newCap = DEFAULT_INITIAL_CAPACITY;</div><div class="line">            newThr = (<span class="keyword">int</span>)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">// 计算新的resize上限</span></div><div class="line">        <span class="keyword">if</span> (newThr == <span class="number">0</span>) &#123;</div><div class="line">            <span class="keyword">float</span> ft = (<span class="keyword">float</span>)newCap * loadFactor;</div><div class="line">            newThr = (newCap &lt; MAXIMUM_CAPACITY &amp;&amp; ft &lt; (<span class="keyword">float</span>)MAXIMUM_CAPACITY ?</div><div class="line">                      (<span class="keyword">int</span>)ft : Integer.MAX_VALUE);</div><div class="line">        &#125;</div><div class="line">        threshold = newThr;</div><div class="line">        <span class="meta">@SuppressWarnings</span>(&#123;<span class="string">"rawtypes"</span>,<span class="string">"unchecked"</span>&#125;)</div><div class="line">            Node&lt;K,V&gt;[] newTab = (Node&lt;K,V&gt;[])<span class="keyword">new</span> Node[newCap];</div><div class="line">        table = newTab;</div><div class="line">        <span class="keyword">if</span> (oldTab != <span class="keyword">null</span>) &#123;</div><div class="line">            <span class="comment">// 把每个bucket都移动到新的buckets中</span></div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; oldCap; ++j) &#123;</div><div class="line">                Node&lt;K,V&gt; e;</div><div class="line">                <span class="keyword">if</span> ((e = oldTab[j]) != <span class="keyword">null</span>) &#123;</div><div class="line">                    oldTab[j] = <span class="keyword">null</span>;</div><div class="line">                    <span class="keyword">if</span> (e.next == <span class="keyword">null</span>)</div><div class="line">                        newTab[e.hash &amp; (newCap - <span class="number">1</span>)] = e;</div><div class="line">                    <span class="keyword">else</span> <span class="keyword">if</span> (e <span class="keyword">instanceof</span> TreeNode)</div><div class="line">                        ((TreeNode&lt;K,V&gt;)e).split(<span class="keyword">this</span>, newTab, j, oldCap);</div><div class="line">                    <span class="keyword">else</span> &#123; <span class="comment">// preserve order</span></div><div class="line">                        Node&lt;K,V&gt; loHead = <span class="keyword">null</span>, loTail = <span class="keyword">null</span>;</div><div class="line">                        Node&lt;K,V&gt; hiHead = <span class="keyword">null</span>, hiTail = <span class="keyword">null</span>;</div><div class="line">                        Node&lt;K,V&gt; next;</div><div class="line">                        <span class="keyword">do</span> &#123;</div><div class="line">                            next = e.next;</div><div class="line">                            <span class="comment">// 原索引</span></div><div class="line">                            <span class="keyword">if</span> ((e.hash &amp; oldCap) == <span class="number">0</span>) &#123;</div><div class="line">                                <span class="keyword">if</span> (loTail == <span class="keyword">null</span>)</div><div class="line">                                    loHead = e;</div><div class="line">                                <span class="keyword">else</span></div><div class="line">                                    loTail.next = e;</div><div class="line">                                loTail = e;</div><div class="line">                            &#125;</div><div class="line">                            <span class="comment">// 原索引+oldCap</span></div><div class="line">                            <span class="keyword">else</span> &#123;</div><div class="line">                                <span class="keyword">if</span> (hiTail == <span class="keyword">null</span>)</div><div class="line">                                    hiHead = e;</div><div class="line">                                <span class="keyword">else</span></div><div class="line">                                    hiTail.next = e;</div><div class="line">                                hiTail = e;</div><div class="line">                            &#125;</div><div class="line">                        &#125; <span class="keyword">while</span> ((e = next) != <span class="keyword">null</span>);</div><div class="line">                        </div><div class="line">                        <span class="comment">// 原索引放到bucket里</span></div><div class="line">                        <span class="keyword">if</span> (loTail != <span class="keyword">null</span>) &#123;</div><div class="line">                            loTail.next = <span class="keyword">null</span>;</div><div class="line">                            newTab[j] = loHead;</div><div class="line">                        &#125;</div><div class="line">                        <span class="comment">// 原索引+oldCap放到bucket里</span></div><div class="line">                        <span class="keyword">if</span> (hiTail != <span class="keyword">null</span>) &#123;</div><div class="line">                            hiTail.next = <span class="keyword">null</span>;</div><div class="line">                            newTab[j + oldCap] = hiHead;</div><div class="line">                        &#125;</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> newTab;</div><div class="line">    &#125;</div></pre></td></tr></table></figure>
+<h2 id="谈谈线程安全的ConcurrentHashMap的实现原理。"><a href="#谈谈线程安全的ConcurrentHashMap的实现原理。" class="headerlink" title="谈谈线程安全的ConcurrentHashMap的实现原理。"></a>谈谈线程安全的ConcurrentHashMap的实现原理。</h2><ul>
+<li>ConcurrentHashMap在jdk1.8中主要做了2方面的改进：改进一是取消segments字段，直接采用transient volatile HashEntry<k,v>[] table保存数据，采用table数组元素作为锁，从而实现了对每一行数据进行加锁，进一步减少并发冲突的概率；改进二是将原先table数组＋单向链表的数据结构，变更为table数组＋单向链表＋红黑树的结构，对于hash表来说，最核心的能力在于将key hash之后能均匀的分布在数组中，如果hash之后散列的很均匀，那么table数组中的每个队列长度主要为0或者1。但实际情况并非总是如此理想，虽然ConcurrentHashMap类默认的加载因子为0.75，但是在数据量过大或者运气不佳的情况下，还是会存在一些队列长度过长的情况，如果还是采用单向列表方式，那么查询某个节点的时间复杂度为O(n)；因此，对于个数超过8(默认值)的列表，jdk1.8中采用了红黑树的结构，那么查询的时间复杂度可以降低到O(logN)，可以改进性能。</k,v></li>
+<li>TreeNode类：树节点类，另外一个核心的数据结构。当链表长度过长的时候，会转换为TreeNode。但是与HashMap不相同的是，它并不是直接转换为红黑树，而是把这些结点包装成TreeNode放在TreeBin对象中，由TreeBin完成对红黑树的包装。而且TreeNode在ConcurrentHashMap继承自Node类，而并非HashMap中的集成自LinkedHashMap.Entry。</li>
+<li>二叉查找树，也称有序二叉树（ordered binary tree），是指一棵空树或者具有下列性质的二叉树：</li>
+</ul>
+<pre><code>1.若任意节点的左子树不空，则左子树上所有结点的值均小于它的根结点的值；
+2.若任意节点的右子树不空，则右子树上所有结点的值均大于它的根结点的值；
+3.任意节点的左、右子树也分别为二叉查找树。
+4.没有键值相等的节点（no duplicate nodes）。
+</code></pre><ul>
+<li>红黑树虽然本质上是一棵二叉查找树，但它在二叉查找树的基础上增加了着色和相关的性质使得红黑树相对平衡，从而保证了红黑树的查找、插入、删除的时间复杂度最坏为O(log n)。但它是如何保证一棵n个结点的红黑树的高度始终保持在logn的呢？这就引出了红黑树的5个性质：</li>
+</ul>
+<pre><code>1.每个结点要么是红的要么是黑的。  
+2.根结点是黑的。  
+3.每个叶结点（叶结点即指树尾端NIL指针或NULL结点）都是黑的。  
+4.如果一个结点是红的，那么它的两个儿子都是黑的。  
+5.对于任意结点而言，其到叶结点树尾端NIL指针的每条路径都包含相同数目的黑结点。
+</code></pre><h2 id="什么是一致性哈希？"><a href="#什么是一致性哈希？" class="headerlink" title="什么是一致性哈希？"></a>什么是一致性哈希？</h2><ul>
+<li>环形Hash空间：按照常用的hash算法来将对应的key哈希到一个具有2^32次方个桶的空间中，即0~(2^32)-1的数字空间中。现在我们可以将这些数字头尾相连，想象成一个闭合的环形；</li>
+<li>把数据通过一定的hash算法处理后映射到环上；</li>
+<li>将机器通过hash算法映射到环上（一般情况下对机器的hash计算是采用机器的IP或者机器唯一的别名作为输入值），然后以顺时针的方向计算，将所有对象存储到离自己最近的机器中；</li>
+<li>机器的删除与添加：普通hash求余算法最为不妥的地方就是在有机器的添加或者删除之后会照成大量的对象存储位置失效，这样就大大的不满足单调性了。通过对节点的添加和删除的分析，一致性哈希算法在保持了单调性的同时，还是数据的迁移达到了最小，这样的算法对分布式集群来说是非常合适的，避免了大量数据迁移，减小了服务器的的压力。</li>
+<li>平衡性：在一致性哈希算法中，为了尽可能的满足平衡性，其引入了虚拟节点。它实际上是节点在hash空间的复制品，一实际个节点对应了若干个“虚拟节点”，这个对应个数也成为“复制个数”，“虚拟节点”在hash空间中以hash值排列。</li>
+</ul>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-7ff1b37dfd99950a?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="一致性哈希"></p>
+<h2 id="Java有哪些实现锁的方式？"><a href="#Java有哪些实现锁的方式？" class="headerlink" title="Java有哪些实现锁的方式？"></a>Java有哪些实现锁的方式？</h2><ul>
+<li>synchronized同步锁：它无法中断一个正在等候获得锁的线程，也无法通过投票得到锁，如果不想等下去，也就没法得到锁。但除非对锁的某个高级特性有明确的需要，或者有明确的证据表明在特定情况下，同步已经成为瓶颈，否则还是应当继续使用synchronized。</li>
+<li>volatile是比synchronized更轻量，因为它没有上下文切换；其实现是通过lock指令将缓存行数据写到系统内存且让其他缓存数据无效；</li>
+<li>ReentrantLock可以支持公平锁，当然公平锁性能会有影响，默认为非公平的；</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 对于非公平锁，会执行该方法:</span></div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">nonfairTryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</div><div class="line">    <span class="keyword">int</span> c = getState();<span class="comment">//获取状态变量</span></div><div class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;<span class="comment">//表明没有线程占有该同步状态</span></div><div class="line">        <span class="keyword">if</span> (compareAndSetState(<span class="number">0</span>, acquires)) &#123;<span class="comment">//以原子方式设置该同步状态</span></div><div class="line">            setExclusiveOwnerThread(current);<span class="comment">//该线程拥有该FairSync同步状态</span></div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;<span class="comment">//当前线程已经拥有该同步状态</span></div><div class="line">        <span class="keyword">int</span> nextc = c + acquires;</div><div class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>) <span class="comment">// overflow</span></div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</div><div class="line">        setState(nextc);<span class="comment">//重复设置状态变量（锁的可重入特性）</span></div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// 而对于公平锁，该方法则是这样：</span></div><div class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryAcquire</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</div><div class="line">    <span class="keyword">final</span> Thread current = Thread.currentThread();</div><div class="line">    <span class="keyword">int</span> c = getState();</div><div class="line">    <span class="keyword">if</span> (c == <span class="number">0</span>) &#123;</div><div class="line">        <span class="comment">//先判断该线程节点是否是队列的头结点</span></div><div class="line">        <span class="comment">//是则以原子方式设置同步状态，获取锁</span></div><div class="line">        <span class="comment">//否则失败返回</span></div><div class="line">        <span class="keyword">if</span> (!hasQueuedPredecessors() &amp;&amp; compareAndSetState(<span class="number">0</span>, acquires)) &#123;</div><div class="line">            setExclusiveOwnerThread(current);</div><div class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (current == getExclusiveOwnerThread()) &#123;<span class="comment">//重入</span></div><div class="line">        <span class="keyword">int</span> nextc = c + acquires;</div><div class="line">        <span class="keyword">if</span> (nextc &lt; <span class="number">0</span>)</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">"Maximum lock count exceeded"</span>);</div><div class="line">        setState(nextc);</div><div class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>AQS管理的FIFO等待队列，获取锁状态失败的线程会被放入该队列，等待再次尝试获取锁。而state成员变量，代表着锁的同步状态，一个线程成功获得锁，这个行为的实质就是该线程成功的设置了state变量的状态。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">addWaiter</span><span class="params">(Node mode)</span> </span>&#123;</div><div class="line">    Node node = <span class="keyword">new</span> Node(Thread.currentThread(), mode);</div><div class="line">    <span class="comment">// Try the fast path of enq; backup to full enq on failure</span></div><div class="line">    Node pred = tail;</div><div class="line">    <span class="comment">// 这个if分支其实是一种优化：CAS操作失败的话才进入enq中的循环。</span></div><div class="line">    <span class="keyword">if</span> (pred != <span class="keyword">null</span>) &#123;</div><div class="line">        node.prev = pred;</div><div class="line">        <span class="keyword">if</span> (compareAndSetTail(pred, node)) &#123;</div><div class="line">            pred.next = node;</div><div class="line">            <span class="keyword">return</span> node;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    enq(node);</div><div class="line">    <span class="keyword">return</span> node;</div><div class="line">&#125; </div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> Node <span class="title">enq</span><span class="params">(<span class="keyword">final</span> Node node)</span> </span>&#123;</div><div class="line">    <span class="keyword">for</span> (;;) &#123;</div><div class="line">        Node t = tail;</div><div class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>) &#123; <span class="comment">// Must initialize</span></div><div class="line">            <span class="keyword">if</span> (compareAndSetHead(<span class="keyword">new</span> Node()))</div><div class="line">                tail = head;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            node.prev = t;</div><div class="line">            <span class="keyword">if</span> (compareAndSetTail(t, node)) &#123;</div><div class="line">                t.next = node;</div><div class="line">                <span class="keyword">return</span> t;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>ReentrantReadWriteLock对重入锁再进一步分离为读锁和写锁，在读多写少的场景下能显著提升性能。</li>
+<li>ReadLock可以被多个线程持有并且在作用时排斥任何的WriteLock，而WriteLock则是完全的互斥。</li>
+<li>写线程获取写入锁后可以获取读取锁，然后释放写入锁，这样就从写入锁变成了读取锁，从而实现锁降级的特性。读取锁是不能直接升级为写入锁的。因为获取一个写入锁需要释放所有读取锁，所以如果有两个读取锁视图获取写入锁而都不释放读取锁时就会发生死锁。</li>
+<li>如果读取执行情况很多，写入很少的情况下，使用ReentrantReadWriteLock可能会使写入线程遭遇饥饿问题，也就是写入线程吃吃无法竞争到锁定而一直处于等待状态。</li>
+<li>StampedLock控制锁有三种模式（写，读，乐观读），一个StampedLock状态是由版本和模式两个部分组成，锁获取方法返回一个数字作为票据stamp，它用相应的锁状态表示并控制访问，数字0表示没有写锁被授权访问。在读锁上分为悲观锁和乐观锁。所谓的乐观读模式，也就是若读的操作很多，写的操作很少的情况下，你可以乐观地认为，写入与读取同时发生几率很少，因此不悲观地使用完全的读取锁定，程序可以查看读取资料之后，是否遭到写入执行的变更，再采取后续的措施（重新读取变更信息，或者抛出异常） ，这一个小小改进，可大幅度提高程序的吞吐量！</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</div><div class="line">   <span class="keyword">private</span> <span class="keyword">double</span> x, y;</div><div class="line">   <span class="keyword">private</span> <span class="keyword">final</span> StampedLock sl = <span class="keyword">new</span> StampedLock();</div><div class="line">   <span class="function"><span class="keyword">void</span> <span class="title">move</span><span class="params">(<span class="keyword">double</span> deltaX, <span class="keyword">double</span> deltaY)</span> </span>&#123; <span class="comment">// an exclusively locked method</span></div><div class="line">     <span class="keyword">long</span> stamp = sl.writeLock();</div><div class="line">     <span class="keyword">try</span> &#123;</div><div class="line">       x += deltaX;</div><div class="line">       y += deltaY;</div><div class="line">     &#125; <span class="keyword">finally</span> &#123;</div><div class="line">       sl.unlockWrite(stamp);</div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line">   </div><div class="line">   <span class="comment">//下面看看乐观读锁案例</span></div><div class="line">   <span class="function"><span class="keyword">double</span> <span class="title">distanceFromOrigin</span><span class="params">()</span> </span>&#123; <span class="comment">// A read-only method</span></div><div class="line">     <span class="keyword">long</span> stamp = sl.tryOptimisticRead(); <span class="comment">//获得一个乐观读锁</span></div><div class="line">     <span class="keyword">double</span> currentX = x, currentY = y; <span class="comment">//将两个字段读入本地局部变量</span></div><div class="line">     <span class="keyword">if</span> (!sl.validate(stamp)) &#123; <span class="comment">//检查发出乐观读锁后同时是否有其他写锁发生？</span></div><div class="line">        stamp = sl.readLock(); <span class="comment">//如果没有，我们再次获得一个读悲观锁</span></div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">          currentX = x; <span class="comment">// 将两个字段读入本地局部变量</span></div><div class="line">          currentY = y; <span class="comment">// 将两个字段读入本地局部变量</span></div><div class="line">        &#125; <span class="keyword">finally</span> &#123;</div><div class="line">           sl.unlockRead(stamp);</div><div class="line">        &#125;</div><div class="line">     &#125;</div><div class="line">     <span class="keyword">return</span> Math.sqrt(currentX * currentX + currentY * currentY);</div><div class="line">   &#125;</div><div class="line"></div><div class="line">    <span class="comment">//下面是悲观读锁案例</span></div><div class="line">   <span class="function"><span class="keyword">void</span> <span class="title">moveIfAtOrigin</span><span class="params">(<span class="keyword">double</span> newX, <span class="keyword">double</span> newY)</span> </span>&#123; <span class="comment">// upgrade</span></div><div class="line">     <span class="comment">// Could instead start with optimistic, not read mode</span></div><div class="line">     <span class="keyword">long</span> stamp = sl.readLock();</div><div class="line">     <span class="keyword">try</span> &#123;</div><div class="line">       <span class="keyword">while</span> (x == <span class="number">0.0</span> &amp;&amp; y == <span class="number">0.0</span>) &#123; <span class="comment">//循环，检查当前状态是否符合</span></div><div class="line">         <span class="keyword">long</span> ws = sl.tryConvertToWriteLock(stamp); <span class="comment">//将读锁转为写锁</span></div><div class="line">         <span class="keyword">if</span> (ws != <span class="number">0L</span>) &#123; <span class="comment">//这是确认转为写锁是否成功</span></div><div class="line">           stamp = ws; <span class="comment">//如果成功 替换票据</span></div><div class="line">           x = newX; <span class="comment">//进行状态改变</span></div><div class="line">           y = newY; <span class="comment">//进行状态改变</span></div><div class="line">           <span class="keyword">break</span>;</div><div class="line">         &#125;</div><div class="line">         <span class="keyword">else</span> &#123; <span class="comment">//如果不能成功转换为写锁</span></div><div class="line">           sl.unlockRead(stamp); <span class="comment">//我们显式释放读锁</span></div><div class="line">           stamp = sl.writeLock(); <span class="comment">//显式直接进行写锁 然后再通过循环再试</span></div><div class="line">         &#125;</div><div class="line">       &#125;</div><div class="line">     &#125; <span class="keyword">finally</span> &#123;</div><div class="line">       sl.unlock(stamp); <span class="comment">//释放读锁或写锁</span></div><div class="line">     &#125;</div><div class="line">   &#125;</div><div class="line"> &#125;</div></pre></td></tr></table></figure>
+<h2 id="AtomicLong、LongAdder和LongAccumulator的实现有何不同？"><a href="#AtomicLong、LongAdder和LongAccumulator的实现有何不同？" class="headerlink" title="AtomicLong、LongAdder和LongAccumulator的实现有何不同？"></a>AtomicLong、LongAdder和LongAccumulator的实现有何不同？</h2><ul>
+<li>AtomicLong是Java 5引入的基于CAS的无锁的操作长整形值的工具类；</li>
+<li>LongAdder是Java 8提供的累加器，基于Striped64实现。它常用于状态采集、统计等场景。AtomicLong也可以用于这种场景，但在线程竞争激烈的情况下，LongAdder要比AtomicLong拥有更高的吞吐量，但会耗费更多的内存空间。</li>
+<li>Striped64的设计核心思路就是通过内部的分散计算来避免竞争(比如多线程CAS操作时的竞争)。Striped64内部包含一个基础值和一个单元哈希表。没有竞争的情况下，要累加的数会累加到这个基础值上；如果有竞争的话，会将要累加的数累加到单元哈希表中的某个单元里面。所以整个Striped64的值包括基础值和单元哈希表中所有单元的值的总和。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/** </span></div><div class="line"> * 存放Cell的hash表，大小为2的幂。 </div><div class="line"> */  </div><div class="line"><span class="keyword">transient</span> <span class="keyword">volatile</span> Cell[] cells;  </div><div class="line"></div><div class="line"><span class="comment">/** </span></div><div class="line"> * 基础值，没有竞争时会使用(更新)这个值，同时做为初始化竞争失败的回退方案。 </div><div class="line"> * 原子更新。 </div><div class="line"> */  </div><div class="line"><span class="keyword">transient</span> <span class="keyword">volatile</span> <span class="keyword">long</span> base;  </div><div class="line"></div><div class="line"><span class="comment">/** </span></div><div class="line"> * 自旋锁，通过CAS操作加锁，用于保护创建或者扩展Cell表。 </div><div class="line"> */  </div><div class="line"><span class="keyword">transient</span> <span class="keyword">volatile</span> <span class="keyword">int</span> cellsBusy;</div></pre></td></tr></table></figure>
+<ul>
+<li>LongAccumulator和LongAdder类似，也基于Striped64实现。但要比LongAdder更加灵活(要传入一个函数接口)，LongAdder相当于是LongAccumulator的一种特例。</li>
+</ul>
+<h2 id="CompletableFuture对比Future有哪些改进，怎么用？"><a href="#CompletableFuture对比Future有哪些改进，怎么用？" class="headerlink" title="CompletableFuture对比Future有哪些改进，怎么用？"></a>CompletableFuture对比Future有哪些改进，怎么用？</h2><ul>
+<li>Future对象代表一个尚未完成异步操作的结果。从Java 5以来，JUC包一直提供着最基本的Future，不过它太鸡肋了，除了get、cancel、isDone和isCancelled方法之外就没有其他的操作了，对于结果的获取很不方便，只能通过阻塞或者轮询的方式得到任务的结果。阻塞的方式显然和我们的异步编程的初衷相违背，轮询的方式又会耗费无谓的CPU资源，而且也不能及时地得到计算结果，这样很不方便。</li>
+<li>好在Java 8中引入了具有函数式风格的CompletableFuture，支持一系列的函数式的组合、运算操作，非常方便，可以写出函数式风格的代码而摆脱callback hell。</li>
+<li>主动完成计算：CompletableFuture类实现了CompletionStage和Future接口，所以你还是可以像以前一样通过阻塞或者轮询的方式获得结果，尽管这种方式不推荐使用。</li>
+<li>主要的API如下所示：</li>
+</ul>
+<pre><code>supplyAsync/runAsync -- 创建CompletableFuture对象；
+whenComplete/whenCompleteAsync/exceptionally -- 计算完成或者抛出异常的时可以执行特定的Action；
+thenApply/thenApplyAsync -- 对数据进行一些处理或变换；
+thenAccept/thenAcceptAsync -- 纯消费，不返回新的计算值；
+thenAcceptBoth/thenAcceptBothAsync/runAfterBoth -- 当两个CompletionStage都正常完成计算的时候，就会执行提供的Action；
+thenCompose/thenComposeAsync -- 这个Function的输入是当前的CompletableFuture的计算值，返回结果将是一个新的CompletableFuture。
+记住，thenCompose返回的对象并不一是函数fn返回的对象，如果原来的CompletableFuture还没有计算出来，
+它就会生成一个新的组合后的CompletableFuture。可以用来实现异步pipline；
+thenCombine/thenCombineAsync - 并行执行的，它们之间并没有先后依赖顺序，和thenAcceptBoth的区别在于有返回值；
+allOf/anyOf -- 所有的/其中一个CompletableFuture都执行完后执行计算；
+</code></pre>
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat.jpg" alt="Gino Zhang wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫一扫，关注我的微信公众号</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/职场/" rel="tag"># 职场</a>
+          
+            <a href="/tags/锁/" rel="tag"># 锁</a>
+          
+            <a href="/tags/并发/" rel="tag"># 并发</a>
+          
+            <a href="/tags/面试/" rel="tag"># 面试</a>
+          
+            <a href="/tags/ConcurrentHashMap/" rel="tag"># ConcurrentHashMap</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/jvm_interview_questions/" rel="next" title="面试小结之JVM篇">
+                <i class="fa fa-chevron-left"></i> 面试小结之JVM篇
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/post/java_nio_interview_questions/" rel="prev" title="面试小结之IO篇">
+                面试小结之IO篇 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="post/java_concurrent_interview_questions/"
+           data-title="面试小结之并发篇" data-url="http://ginobefunny.com/post/java_concurrent_interview_questions/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">130</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/ginobefun" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/0ffaa3601861" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-gift"></i>
+                  
+                  JianShu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangnan.tech/" title="王楠的博客" target="_blank">王楠的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://toutiao.io/subjects/160373" title="开发者头条" target="_blank">开发者头条</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.yohobuy.com/" title="Yoho!Buy" target="_blank">Yoho!Buy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://theme-next.iissnan.com/" title="Hexo Next Theme" target="_blank">Hexo Next Theme</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java线程的状态及如何转换。"><span class="nav-number">1.</span> <span class="nav-text">Java线程的状态及如何转换。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#多个线程之间如何协调？"><span class="nav-number">2.</span> <span class="nav-text">多个线程之间如何协调？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#说说Java的线程池是如何实现的？"><span class="nav-number">3.</span> <span class="nav-text">说说Java的线程池是如何实现的？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于BlockingQueue和TransferQueue的异同。"><span class="nav-number">4.</span> <span class="nav-text">关于BlockingQueue和TransferQueue的异同。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈HashMap的实现。"><span class="nav-number">5.</span> <span class="nav-text">谈谈HashMap的实现。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#谈谈线程安全的ConcurrentHashMap的实现原理。"><span class="nav-number">6.</span> <span class="nav-text">谈谈线程安全的ConcurrentHashMap的实现原理。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是一致性哈希？"><span class="nav-number">7.</span> <span class="nav-text">什么是一致性哈希？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java有哪些实现锁的方式？"><span class="nav-number">8.</span> <span class="nav-text">Java有哪些实现锁的方式？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AtomicLong、LongAdder和LongAccumulator的实现有何不同？"><span class="nav-number">9.</span> <span class="nav-text">AtomicLong、LongAdder和LongAccumulator的实现有何不同？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CompletableFuture对比Future有哪些改进，怎么用？"><span class="nav-number">10.</span> <span class="nav-text">CompletableFuture对比Future有哪些改进，怎么用？</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"ginobefunny"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+      <script src="/js/src/hook-duoshuo.js?v=5.1.0"></script>
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>

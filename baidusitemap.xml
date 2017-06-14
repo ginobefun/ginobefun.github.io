@@ -4,6 +4,140 @@
 
     
   <url>
+    <loc>http://ginobefunny.com/post/java_other_interview_questions/</loc>
+    <lastmod>2017-06-14T08:51:04.045Z</lastmod>
+    <data>
+        <display>
+        <title>面试小结之其他问题篇</title>
+        <pubTime>2017-06-14T08:38:59.000Z</pubTime>
+        
+        <tag>职场</tag>
+         
+        <tag>Spring</tag>
+         
+        <tag>面试</tag>
+         
+        <tag>MySql</tag>
+         
+        <tag>Redis</tag>
+         
+         
+           
+             
+              <breadCrumb title="CodingLife" url="http://ginobefunny.com/categories/CodingLife/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/elasticsearch_interview_questions/</loc>
+    <lastmod>2017-06-14T08:47:10.367Z</lastmod>
+    <data>
+        <display>
+        <title>面试小结之Elasticsearch篇</title>
+        <pubTime>2017-06-14T08:33:23.000Z</pubTime>
+        
+        <tag>Elasticsearch</tag>
+         
+        <tag>职场</tag>
+         
+        <tag>面试</tag>
+         
+         
+           
+             
+              <breadCrumb title="CodingLife" url="http://ginobefunny.com/categories/CodingLife/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/jvm_interview_questions/</loc>
+    <lastmod>2017-06-14T08:47:07.596Z</lastmod>
+    <data>
+        <display>
+        <title>面试小结之JVM篇</title>
+        <pubTime>2017-06-14T08:38:35.000Z</pubTime>
+        
+        <tag>职场</tag>
+         
+        <tag>JVM</tag>
+         
+        <tag>垃圾收集</tag>
+         
+        <tag>面试</tag>
+         
+        <tag>JMM</tag>
+         
+         
+           
+             
+              <breadCrumb title="CodingLife" url="http://ginobefunny.com/categories/CodingLife/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/java_concurrent_interview_questions/</loc>
+    <lastmod>2017-06-14T08:47:04.725Z</lastmod>
+    <data>
+        <display>
+        <title>面试小结之并发篇</title>
+        <pubTime>2017-06-14T08:38:44.000Z</pubTime>
+        
+        <tag>职场</tag>
+         
+        <tag>锁</tag>
+         
+        <tag>并发</tag>
+         
+        <tag>面试</tag>
+         
+        <tag>ConcurrentHashMap</tag>
+         
+         
+           
+             
+              <breadCrumb title="CodingLife" url="http://ginobefunny.com/categories/CodingLife/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://ginobefunny.com/post/java_nio_interview_questions/</loc>
+    <lastmod>2017-06-14T08:46:58.513Z</lastmod>
+    <data>
+        <display>
+        <title>面试小结之IO篇</title>
+        <pubTime>2017-06-14T08:38:50.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>职场</tag>
+         
+        <tag>面试</tag>
+         
+        <tag>NIO</tag>
+         
+         
+           
+             
+              <breadCrumb title="CodingLife" url="http://ginobefunny.com/categories/CodingLife/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://ginobefunny.com/post/deep_in_jvm_notes_part2/</loc>
     <lastmod>2017-06-13T09:09:56.009Z</lastmod>
     <data>
@@ -171,13 +305,13 @@
          
         <tag>监控</tag>
          
+        <tag>Redis</tag>
+         
         <tag>人工智能</tag>
          
         <tag>CQRS</tag>
          
         <tag>Event Sourcing</tag>
-         
-        <tag>Redis</tag>
          
         <tag>TDD</tag>
          
@@ -506,13 +640,13 @@
          
         <tag>字节码</tag>
          
-        <tag>HotSpot</tag>
-         
         <tag>编译器</tag>
          
-        <tag>即时编译器</tag>
-         
         <tag>解释器</tag>
+         
+        <tag>HotSpot</tag>
+         
+        <tag>即时编译器</tag>
          
          
            
@@ -586,15 +720,15 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
          
         <tag>执行引擎</tag>
+         
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
