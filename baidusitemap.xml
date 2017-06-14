@@ -37,9 +37,9 @@
         <title>面试小结之综合篇</title>
         <pubTime>2017-06-14T08:38:59.000Z</pubTime>
         
-        <tag>Spring</tag>
-         
         <tag>职场</tag>
+         
+        <tag>Spring</tag>
          
         <tag>面试</tag>
          
@@ -205,10 +205,6 @@
         <title>阅读随手记 201704</title>
         <pubTime>2017-04-08T05:25:52.000Z</pubTime>
         
-        <tag>Elasticsearch</tag>
-         
-        <tag>搜索引擎</tag>
-         
         <tag>推荐系统</tag>
          
         <tag>分布式队列</tag>
@@ -220,6 +216,10 @@
         <tag>机器学习</tag>
          
         <tag>高可用</tag>
+         
+        <tag>Elasticsearch</tag>
+         
+        <tag>搜索引擎</tag>
          
         <tag>架构</tag>
          
@@ -808,8 +808,6 @@
         
         <tag>读书笔记</tag>
          
-        <tag>Elasticsearch</tag>
-         
         <tag>微服务</tag>
          
         <tag>DistributedLog</tag>
@@ -823,6 +821,8 @@
         <tag>高并发</tag>
          
         <tag>高可用</tag>
+         
+        <tag>Elasticsearch</tag>
          
         <tag>架构</tag>
          
@@ -984,8 +984,6 @@
          
         <tag>读书笔记</tag>
          
-        <tag>Git</tag>
-         
         <tag>数据库中间件</tag>
          
         <tag>推荐系统</tag>
@@ -1019,6 +1017,8 @@
         <tag>微信小程序</tag>
          
         <tag>性能调优</tag>
+         
+        <tag>Git</tag>
          
         <tag>自我提升</tag>
          
