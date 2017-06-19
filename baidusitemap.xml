@@ -208,8 +208,6 @@
         
         <tag>Elasticsearch</tag>
          
-        <tag>搜索引擎</tag>
-         
         <tag>推荐系统</tag>
          
         <tag>分布式队列</tag>
@@ -221,6 +219,8 @@
         <tag>机器学习</tag>
          
         <tag>高可用</tag>
+         
+        <tag>搜索引擎</tag>
          
         <tag>架构</tag>
          
@@ -640,13 +640,13 @@
          
         <tag>字节码</tag>
          
-        <tag>HotSpot</tag>
-         
         <tag>编译器</tag>
          
-        <tag>即时编译器</tag>
-         
         <tag>解释器</tag>
+         
+        <tag>HotSpot</tag>
+         
+        <tag>即时编译器</tag>
          
          
            
@@ -720,15 +720,15 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
          
         <tag>执行引擎</tag>
+         
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
