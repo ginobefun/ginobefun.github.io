@@ -3,6 +3,7 @@
 
 
     
+    
   <url>
     <loc>http://ginobefunny.com/post/java_concurrent_interview_questions/</loc>
     <lastmod>2017-06-15T08:44:29.181Z</lastmod>
@@ -373,13 +374,13 @@
         
         <tag>Elasticsearch</tag>
          
-        <tag>word2vec</tag>
-         
-        <tag>个性化</tag>
-         
         <tag>搜索</tag>
          
         <tag>推荐</tag>
+         
+        <tag>word2vec</tag>
+         
+        <tag>个性化</tag>
          
          
            
@@ -416,7 +417,6 @@
     </data>
     </url>
 
-    
     
   <url>
     <loc>http://ginobefunny.com/post/elasticsearch_dynamic_synonym_plugin/</loc>
@@ -574,9 +574,9 @@
         <title>代码之外的生存指南</title>
         <pubTime>2017-02-04T11:54:18.000Z</pubTime>
         
-        <tag>自我完善</tag>
-         
         <tag>读书笔记</tag>
+         
+        <tag>自我完善</tag>
          
         <tag>职场</tag>
          
@@ -806,9 +806,9 @@
         <title>阅读随手记 201701</title>
         <pubTime>2017-01-03T08:23:21.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Elasticsearch</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>微服务</tag>
          

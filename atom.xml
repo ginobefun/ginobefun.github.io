@@ -1531,13 +1531,13 @@ group by a.uid;
     
       <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
     
-      <category term="word2vec" scheme="http://ginobefunny.com/tags/word2vec/"/>
-    
-      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
-    
       <category term="搜索" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2/"/>
     
       <category term="推荐" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90/"/>
+    
+      <category term="word2vec" scheme="http://ginobefunny.com/tags/word2vec/"/>
+    
+      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
     
   </entry>
   
@@ -3293,9 +3293,9 @@ message AddressBook {
       <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
     
     
-      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
-    
       <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
     
       <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
     
