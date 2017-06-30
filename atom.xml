@@ -1342,6 +1342,8 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
     
       <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
     
+      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
+    
       <category term="推荐系统" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/"/>
     
       <category term="分布式队列" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%98%9F%E5%88%97/"/>
@@ -1353,8 +1355,6 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
       <category term="机器学习" scheme="http://ginobefunny.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="高可用" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
-    
-      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
     
       <category term="架构" scheme="http://ginobefunny.com/tags/%E6%9E%B6%E6%9E%84/"/>
     
@@ -3293,9 +3293,9 @@ message AddressBook {
       <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
     
     
-      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
-    
       <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
     
       <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
     
@@ -5812,9 +5812,9 @@ and must have the same mapping.
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
     
@@ -5967,9 +5967,9 @@ and must have the same mapping.
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
     
