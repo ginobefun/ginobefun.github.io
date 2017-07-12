@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-06-14T08:57:56.492Z</updated>
+  <updated>2017-07-12T06:32:49.756Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -14,6 +14,196 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>动手学dubbo之初体验</title>
+    <link href="http://ginobefunny.com/post/learning_dubbo_quick_start/"/>
+    <id>http://ginobefunny.com/post/learning_dubbo_quick_start/</id>
+    <published>2017-07-12T06:27:18.000Z</published>
+    <updated>2017-07-12T06:32:49.756Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="http://dubbo.io/" target="_blank" rel="external">dubbo</a>是阿里巴巴开源的分布式服务框架，本篇通过源码中的demo快速了解dubbo的架构、核心概念和开发方式。<br><a id="more"></a></p>
+<h1 id="一-概述"><a href="#一-概述" class="headerlink" title="一. 概述"></a>一. 概述</h1><p><strong>以下部分来源于<a href="http://dubbo.io/User+Guide-zh.htm" target="_blank" rel="external">dubbo用户指南</a>.</strong></p>
+<p>DUBBO是一个分布式服务框架，致力于提供高性能和透明化的RPC远程服务调用方案，是阿里巴巴SOA服务化治理方案的核心框架，每天为2,000+个服务提供3,000,000,000+次访问量支持，并被广泛应用于阿里巴巴集团的各成员站点。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-ba6c3d7080df76ce.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dubbo架构"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">0. Container负责启动、加载、运行Provider；</div><div class="line">1. Provider在启动时向注册中心注册自己提供的服务；</div><div class="line">2. Consumer在启动时向注册中心订阅自己所需的服务；</div><div class="line">3. Registry返回Provider地址列表给Consumer，如有变更，Registry将基于长连接推送变更数据给Consumer；</div><div class="line">4. Consumer从Provider地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用；</div><div class="line">5. Consumer和Provider在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到Monitor。</div></pre></td></tr></table></figure>
+<h1 id="二-把demo跑起来"><a href="#二-把demo跑起来" class="headerlink" title="二. 把demo跑起来"></a>二. 把demo跑起来</h1><ol>
+<li>fork dubbo源码</li>
+<li>clone dubbo源码<pre><code>git clone git@github.com:ginobefun/dubbo.git
+</code></pre></li>
+<li>编译源码<pre><code>cd dubbo
+mvn clean install -Dmaven.test.skip=true
+</code></pre></li>
+<li>启动简易Registry<pre><code>解压dubbo-simple\dubbo-registry-simple\target\dubbo-registry-simple-VERSION-SNAPSHOT-assembly.tar.gz到临时目录tmp\并重命名为dubbo-registry-simple；
+执行dubbo-registry-simple\bin\start.bat启动；
+控制台输出“Dubbo service server started!”则启动成功；
+</code></pre></li>
+<li>启动简易Monitor<pre><code>解压dubbo-simple\dubbo-monitor-simple\target\dubbo-monitor-simple-VERSION-SNAPSHOT-assembly.tar.gz到临时目录tmp\并重命名为dubbo-monitor-simple；
+修改dubbo-monitor-simple\conf\dubbo.properties中“dubbo.registry.address=dubbo://127.0.0.1:9090”；
+执行dubbo-monitor-simple\bin\start.bat启动；
+控制台输出“Dubbo service server started!”则启动成功；
+</code></pre></li>
+<li>启动provider示例<pre><code>解压dubbo-demo\dubbo-demo-provider\target\dubbo-demo-provider-VERSION-SNAPSHOT-assembly.tar.gz到临时目录tmp\并重命名为dubbo-demo-provider；
+修改dubbo-demo-provider\conf\dubbo.properties中“dubbo.registry.address=dubbo://127.0.0.1:9090”；
+执行dubbo-demo-provider\bin\start.bat启动；
+控制台输出“Dubbo service server started!”则启动成功；
+</code></pre></li>
+<li>启动consumer示例<pre><code>解压dubbo-demo\dubbo-demo-consumer\target\dubbo-demo-consumer-VERSION-SNAPSHOT-assembly.tar.gz到临时目录tmp\并重命名为dubbo-demo-consumer；
+修改dubbo-demo-consumer\conf\dubbo.properties中“dubbo.registry.address=dubbo://127.0.0.1:9090”；
+执行dubbo-demo-consumer\bin\start.bat启动；
+</code></pre></li>
+<li>观察demo-provider控制台输出<pre><code>[10:44:21] Hello world0, request from consumer: /192.168.56.1:50832
+[10:44:23] Hello world1, request from consumer: /192.168.56.1:50832
+[10:44:25] Hello world2, request from consumer: /192.168.56.1:50832
+[10:44:27] Hello world3, request from consumer: /192.168.56.1:50832
+......
+</code></pre></li>
+<li>观察demo-consumer控制台输出      <pre><code>[10:44:21] Hello world0, response form provider: 192.168.56.1:20880
+[10:44:23] Hello world1, response form provider: 192.168.56.1:20880
+[10:44:25] Hello world2, response form provider: 192.168.56.1:20880
+[10:44:27] Hello world3, response form provider: 192.168.56.1:20880
+......
+</code></pre></li>
+<li>通过Monitor查看<br><img src="http://upload-images.jianshu.io/upload_images/3709321-04def64de256e22c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dubbo_monitor_home.png"></li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-b559dd8d39ddd6a8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dubbo_monitor_apps.png"></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3709321-7a45f303276d8152.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dubbo_monitor_services.png"></p>
+<h1 id="三-翻一翻demo源码"><a href="#三-翻一翻demo源码" class="headerlink" title="三. 翻一翻demo源码"></a>三. 翻一翻demo源码</h1><p>先翻一翻相关的源码，下一篇开始深入学习具体的源码。</p>
+<h2 id="3-1-dubbo-registry-simple"><a href="#3-1-dubbo-registry-simple" class="headerlink" title="3.1 dubbo-registry-simple"></a>3.1 dubbo-registry-simple</h2><h3 id="简易注册中心服务实现"><a href="#简易注册中心服务实现" class="headerlink" title="简易注册中心服务实现"></a>简易注册中心服务实现</h3><p>该类继承了抽象注册中心实现。<br><img src="http://upload-images.jianshu.io/upload_images/3709321-defd33782b46dbf5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dubbo_registry_simple_service.png"></p>
+<p>从源码可以看出其实现是通过内存中两个ConcurrentHashMap来存放服务注册和订阅信息。<br><img src="http://upload-images.jianshu.io/upload_images/3709321-0561562491b7dd6b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dubbo_registry_simple_service_structure.png"></p>
+<h3 id="spring配置"><a href="#spring配置" class="headerlink" title="spring配置"></a>spring配置</h3><p>在spring配置里引入了dubbo的多个命名空间，定义了application、protocol和service。</p>
+<pre><code>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:dubbo=&quot;http://code.alibabatech.com/schema/dubbo&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;&gt;
+
+  &lt;bean class=&quot;org.springframework.beans.factory.config.PropertyPlaceholderConfigurer&quot;&gt;
+    &lt;property name=&quot;systemPropertiesModeName&quot; value=&quot;SYSTEM_PROPERTIES_MODE_OVERRIDE&quot; /&gt;
+    &lt;property name=&quot;location&quot; value=&quot;classpath:dubbo.properties&quot; /&gt;
+  &lt;/bean&gt;
+  &lt;dubbo:application name=&quot;${dubbo.application.name}&quot; owner=&quot;${dubbo.application.owner}&quot; /&gt;
+  &lt;dubbo:protocol name=&quot;dubbo&quot; port=&quot;${dubbo.protocol.port}&quot; heartbeat=&quot;180000&quot; /&gt;
+  &lt;dubbo:service id=&quot;registryServiceConfig&quot; interface=&quot;com.alibaba.dubbo.registry.RegistryService&quot;
+                 ref=&quot;registryService&quot; registry=&quot;N/A&quot; ondisconnect=&quot;disconnect&quot; callbacks=&quot;1000&quot;&gt;
+    &lt;dubbo:method name=&quot;subscribe&quot;&gt;&lt;dubbo:argument index=&quot;1&quot; callback=&quot;true&quot; /&gt;&lt;/dubbo:method&gt;
+    &lt;dubbo:method name=&quot;unsubscribe&quot;&gt;&lt;dubbo:argument index=&quot;1&quot; callback=&quot;false&quot; /&gt;&lt;/dubbo:method&gt;
+  &lt;/dubbo:service&gt;
+  &lt;bean id=&quot;registryService&quot; class=&quot;com.alibaba.dubbo.registry.simple.SimpleRegistryService&quot; /&gt;
+&lt;/beans&gt;
+</code></pre><h3 id="dubbo配置"><a href="#dubbo配置" class="headerlink" title="dubbo配置"></a>dubbo配置</h3><pre><code>dubbo.container=log4j,spring
+dubbo.application.name=simple-registry
+dubbo.application.owner=
+dubbo.protocol.port=9090
+dubbo.log4j.file=logs/dubbo-simple-registry.log
+dubbo.log4j.level=WARN
+</code></pre><h2 id="3-2-dubbo-demo-api"><a href="#3-2-dubbo-demo-api" class="headerlink" title="3.2 dubbo-demo-api"></a>3.2 dubbo-demo-api</h2><p>定义了服务的接口。</p>
+<pre><code>public interface DemoService {
+    String sayHello(String name);
+}
+</code></pre><h2 id="3-3-dubbo-demo-provider"><a href="#3-3-dubbo-demo-provider" class="headerlink" title="3.3 dubbo-demo-provider"></a>3.3 dubbo-demo-provider</h2><h3 id="DemoService的实现"><a href="#DemoService的实现" class="headerlink" title="DemoService的实现"></a>DemoService的实现</h3><pre><code>public class DemoServiceImpl implements DemoService {
+    public String sayHello(String name) {
+        System.out.println(&quot;[&quot; + new SimpleDateFormat(&quot;HH:mm:ss&quot;).format(new Date()) + &quot;] Hello &quot;
+                 + name + &quot;, request from consumer: &quot; + RpcContext.getContext().getRemoteAddress());
+        return &quot;Hello &quot; + name + &quot;, response form provider: &quot; + RpcContext.getContext().getLocalAddress();
+    }
+}
+</code></pre><h3 id="Spring配置"><a href="#Spring配置" class="headerlink" title="Spring配置"></a>Spring配置</h3><p>通过dubbo:service导出服务。</p>
+<pre><code>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:dubbo=&quot;http://code.alibabatech.com/schema/dubbo&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://code.alibabatech.com/schema/dubbo          
+          http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;&gt;
+
+    &lt;bean id=&quot;demoService&quot; class=&quot;com.alibaba.dubbo.demo.provider.DemoServiceImpl&quot; /&gt;
+    &lt;dubbo:service interface=&quot;com.alibaba.dubbo.demo.DemoService&quot; ref=&quot;demoService&quot; /&gt;
+&lt;/beans&gt;
+</code></pre><h3 id="dubbo配置-1"><a href="#dubbo配置-1" class="headerlink" title="dubbo配置"></a>dubbo配置</h3><pre><code>dubbo.container=log4j,spring
+dubbo.application.name=demo-provider
+dubbo.application.owner=
+dubbo.registry.address=dubbo://127.0.0.1:9090
+dubbo.monitor.protocol=registry
+dubbo.protocol.name=dubbo
+dubbo.protocol.port=20880
+dubbo.service.loadbalance=roundrobin
+dubbo.log4j.file=logs/dubbo-demo-provider.log
+dubbo.log4j.level=WARN
+</code></pre><h2 id="3-4-dubbo-demo-consumer"><a href="#3-4-dubbo-demo-consumer" class="headerlink" title="3.4 dubbo-demo-consumer"></a>3.4 dubbo-demo-consumer</h2><h3 id="DemoAction引用DemoService服务。"><a href="#DemoAction引用DemoService服务。" class="headerlink" title="DemoAction引用DemoService服务。"></a>DemoAction引用DemoService服务。</h3><pre><code>public class DemoAction {
+    private DemoService demoService;
+
+    public void setDemoService(DemoService demoService) {
+        this.demoService = demoService;
+    }
+
+    public void start() throws Exception {
+        for (int i = 0; i &lt; Integer.MAX_VALUE; i++) {
+            try {
+                String hello = demoService.sayHello(&quot;world&quot; + i);
+                System.out.println(&quot;[&quot; + new SimpleDateFormat(&quot;HH:mm:ss&quot;).format(new Date()) + &quot;] &quot; + hello);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Thread.sleep(2000);
+        }
+    }
+}
+</code></pre><h3 id="Spring配置-1"><a href="#Spring配置-1" class="headerlink" title="Spring配置"></a>Spring配置</h3><pre><code>&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:dubbo=&quot;http://code.alibabatech.com/schema/dubbo&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://code.alibabatech.com/schema/dubbo
+          http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;&gt;
+
+    &lt;dubbo:reference id=&quot;demoService&quot; interface=&quot;com.alibaba.dubbo.demo.DemoService&quot; /&gt;
+    &lt;bean class=&quot;com.alibaba.dubbo.demo.consumer.DemoAction&quot; init-method=&quot;start&quot;&gt;
+        &lt;property name=&quot;demoService&quot; ref=&quot;demoService&quot; /&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;
+</code></pre><h3 id="dubbo配置-2"><a href="#dubbo配置-2" class="headerlink" title="dubbo配置"></a>dubbo配置</h3><pre><code>dubbo.container=log4j,spring
+dubbo.application.name=demo-consumer
+dubbo.application.owner=
+dubbo.registry.address=dubbo://127.0.0.1:9090
+dubbo.monitor.protocol=registry
+dubbo.log4j.file=logs/dubbo-demo-consumer.log
+dubbo.log4j.level=WARN
+</code></pre><h2 id="3-5-dubbo-monitor-simple"><a href="#3-5-dubbo-monitor-simple" class="headerlink" title="3.5 dubbo-monitor-simple"></a>3.5 dubbo-monitor-simple</h2><p>//TODO: 暂时跳过，后续详解</p>
+<h1 id="四-初体验感受"><a href="#四-初体验感受" class="headerlink" title="四. 初体验感受"></a>四. 初体验感受</h1><ol>
+<li>通过阅读用户指南和Quick Start能够快速了解dubbo的全貌和初步的开发体验；</li>
+<li>通过阅读源码可以看出dubbo的架构设计很清晰且易于扩展；</li>
+<li>后续的文章将会根据Quick Start的例子一步步了解dubbo的实现以加深理解。</li>
+</ol>
+<h1 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h1><ul>
+<li><a href="http://dubbo.io/User+Guide-zh.htm" target="_blank" rel="external">dubbo用户指南</a></li>
+<li><a href="https://github.com/alibaba/dubbo" target="_blank" rel="external">dubbo开源代码</a></li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;http://dubbo.io/&quot;&gt;dubbo&lt;/a&gt;是阿里巴巴开源的分布式服务框架，本篇通过源码中的demo快速了解dubbo的架构、核心概念和开发方式。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="dubbo" scheme="http://ginobefunny.com/categories/dubbo/"/>
+    
+    
+      <category term="RPC" scheme="http://ginobefunny.com/tags/RPC/"/>
+    
+      <category term="入门" scheme="http://ginobefunny.com/tags/%E5%85%A5%E9%97%A8/"/>
+    
+      <category term="教程" scheme="http://ginobefunny.com/tags/%E6%95%99%E7%A8%8B/"/>
+    
+      <category term="实例" scheme="http://ginobefunny.com/tags/%E5%AE%9E%E4%BE%8B/"/>
+    
+      <category term="dubbo" scheme="http://ginobefunny.com/tags/dubbo/"/>
+    
+      <category term="分布式服务框架" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1%E6%A1%86%E6%9E%B6/"/>
+    
+  </entry>
   
   <entry>
     <title>面试小结之综合篇</title>
@@ -1533,11 +1723,11 @@ group by a.uid;
     
       <category term="word2vec" scheme="http://ginobefunny.com/tags/word2vec/"/>
     
+      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
+    
       <category term="搜索" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2/"/>
     
       <category term="推荐" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90/"/>
-    
-      <category term="个性化" scheme="http://ginobefunny.com/tags/%E4%B8%AA%E6%80%A7%E5%8C%96/"/>
     
   </entry>
   
@@ -3293,9 +3483,9 @@ message AddressBook {
       <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
     
@@ -5977,152 +6167,13 @@ and must have the same mapping.
     
       <category term="字节码" scheme="http://ginobefunny.com/tags/%E5%AD%97%E8%8A%82%E7%A0%81/"/>
     
-      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
-    
-      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
-    
       <category term="HotSpot" scheme="http://ginobefunny.com/tags/HotSpot/"/>
+    
+      <category term="编译器" scheme="http://ginobefunny.com/tags/%E7%BC%96%E8%AF%91%E5%99%A8/"/>
     
       <category term="即时编译器" scheme="http://ginobefunny.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91%E5%99%A8/"/>
     
-  </entry>
-  
-  <entry>
-    <title>基于Elasticsearch实现搜索建议</title>
-    <link href="http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/"/>
-    <id>http://ginobefunny.com/post/search_suggestion_implemention_based_elasticsearch/</id>
-    <published>2017-01-23T09:14:44.000Z</published>
-    <updated>2017-01-23T12:30:46.686Z</updated>
-    
-    <content type="html"><![CDATA[<p>搜索建议是搜索的一个重要组成部分，一个搜索建议的实现通常需要考虑建议词的来源、匹配、排序、聚合、关联的文档数和拼写纠错等，本文介绍一个基于Elasticsearch实现的搜索建议。</p>
-<a id="more"></a>
-<h2 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h2><p>电商网站的搜索是最基础最重要的功能之一，搜索框上面的良好体验能为电商带来更高的收益，我们先来看看淘宝、京东、亚马逊网站的搜索建议。</p>
-<p>在淘宝的搜索框输入【卫衣】时，下方的搜索建议包括建议词以及相关的标签：<br><img src="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/suggestion_taobao.png" alt="淘宝的搜索建议"></p>
-<p>在京东的搜索框输入【卫衣】时，下方搜索建议右方显示建议词关联的商品数量：<br><img src="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/suggestion_jindong.png" alt="京东的搜索建议"></p>
-<p>在亚马逊的搜索框输入【卫衣】时，搜索建议上部分能支持在特定的分类下进行搜索：<br><img src="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/suggestion_amazon.png" alt="亚马逊的搜索建议"></p>
-<p>通过上述对比可以看出，不同的电商对于搜索建议的侧重点略有不同，但核心的问题包括：</p>
-<ul>
-<li>匹配：能够通过用户的输入进行前缀匹配；</li>
-<li>排序：根据建议词的优先级进行排序；</li>
-<li>聚合：能够根据建议词关联的商品进行聚合，比如聚合分类、聚合标签等；</li>
-<li>纠错：能够对用户的输入进行拼写纠错；</li>
-</ul>
-<h2 id="搜索建议实现"><a href="#搜索建议实现" class="headerlink" title="搜索建议实现"></a>搜索建议实现</h2><p>在我们的搜索建议实现里，主要考虑了建议词的来源、匹配、排序、关联的商品数量和拼写纠错。</p>
-<h3 id="SuggestionDiscovery"><a href="#SuggestionDiscovery" class="headerlink" title="SuggestionDiscovery"></a>SuggestionDiscovery</h3><ul>
-<li>SuggestionDiscovery的职责是发现建议词；</li>
-<li>建议词的来源可以是商品的分类名称、品牌名称、商品标签、商品名称的高频词、热搜词，也可以是一些组合词，比如“分类 + 性别”和“分类 + 标签”，还可以是一些自定义添加的词；</li>
-<li>建议词维护的时候需要考虑去重，比如“卫衣男”和“卫衣 男”应该是相同的，“Nike”和“nike”也应该是相同的；</li>
-<li>由于建议词的来源通常比较稳定，所以执行的周期可以比较长一点，比如每周一次；</li>
-</ul>
-<h3 id="SuggestionCounter"><a href="#SuggestionCounter" class="headerlink" title="SuggestionCounter"></a>SuggestionCounter</h3><ul>
-<li>SuggestionCounter的职责是获取建议词关联的商品数量，如果需要可以进行一些聚合操作，比如聚合分类和标签；</li>
-<li>SuggestionCounter的实现的时候由于要真正地调用搜索接口，应该尽量避免对用户搜索的影响，比如在凌晨执行并且使用单线程调用；</li>
-<li>为了提升效率，应该使用Elasticsearch的Multi Search接口批量进行count，同时批量更新数据库里建议词的count值；</li>
-<li>由于SuggestionCounter是比较耗资源的，可以考虑延长执行的周期，但是这可能会带来count值与实际搜索时误差较大的问题，这个需要根据实际情况考虑；</li>
-</ul>
-<h3 id="SuggestionIndexRebuiler"><a href="#SuggestionIndexRebuiler" class="headerlink" title="SuggestionIndexRebuiler"></a>SuggestionIndexRebuiler</h3><ul>
-<li>SuggestionIndexRebuiler的职责是负责重建索引；</li>
-<li>考虑到用户的搜索习惯，可以使用<a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.3/multi-fields.html#_multi_fields_with_multiple_analyzers" target="_blank" rel="external">Multi-fields</a>来给建议词增加多个分析器。比如对于【卫衣 套头】的建议词使用Multi-fields增加不分词字段、拼音分词字段、拼音首字母分词字段、IK分词字段，这样输入【weiyi】和【套头】都可以匹配到该建议词；</li>
-<li>重建索引时通过是通过bulk批量添加到临时索引中，然后通过别名来更新；</li>
-<li>重建索引的数据依赖于SuggestionCounter，因此其执行的周期应该与SuggestionCounter保持一致；</li>
-</ul>
-<h3 id="SuggestionService"><a href="#SuggestionService" class="headerlink" title="SuggestionService"></a>SuggestionService</h3><ul>
-<li>SuggestionService是真正处于用户搜索建议的服务类；</li>
-<li>通常的实现是先到缓存中查询是否能匹配到缓存记录，如果能匹配到则直接返回；否则的话调用Elasticsearch的<a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.3/query-dsl-prefix-query.html" target="_blank" rel="external">Prefix Query</a>进行搜索，由于我们在重建索引的时候定义了Multi-fields，在搜索的时候应该用boolQuery来处理；如果此时Elasticsearch返回不为空的结果数据，那么加入缓存并返回即可；</li>
-</ul>
-<pre><code>POST /suggestion/_search
-{
-  &quot;from&quot; : 0,
-  &quot;size&quot; : 10,
-  &quot;query&quot; : {
-    &quot;bool&quot; : {
-      &quot;must&quot; : {
-        &quot;bool&quot; : {
-          &quot;should&quot; : [ {
-            &quot;prefix&quot; : {
-              &quot;keyword&quot; : &quot;卫衣&quot;
-            }
-          }, {
-            &quot;prefix&quot; : {
-              &quot;keyword.keyword_ik&quot; : &quot;卫衣&quot;
-            }
-          }, {
-            &quot;prefix&quot; : {
-              &quot;keyword.keyword_pinyin&quot; : &quot;卫衣&quot;
-            }
-          }, {
-            &quot;prefix&quot; : {
-              &quot;keyword.keyword_first_py&quot; : &quot;卫衣&quot;
-            }
-          } ]
-        }
-      },
-      &quot;filter&quot; : {
-        &quot;range&quot; : {
-          &quot;count&quot; : {
-            &quot;from&quot; : 5,
-            &quot;to&quot; : null,
-            &quot;include_lower&quot; : true,
-            &quot;include_upper&quot; : true
-          }
-        }
-      }
-    }
-  },
-  &quot;sort&quot; : [ {
-    &quot;weight&quot; : {
-      &quot;order&quot; : &quot;desc&quot;
-    }
-  }, {
-    &quot;count&quot; : {
-      &quot;order&quot; : &quot;desc&quot;
-    }
-  } ]
-}
-</code></pre><ul>
-<li>如果Elasticsearch返回的是空结果，此时应该需要增加拼写纠错的处理（拼写纠错也可以在调用Elasticsearch搜索的时候带上，但是通常情况下用户并没有拼写错误，所以建议还是在后面单独调用suggester）；如果返回的suggest不为空，则根据新的词调用建议词服务；比如用户输入了【adidss】，调用Elasticsearch的suggester获取到的结果是【adidas】，则再根据adidas进行搜索建议词处理。</li>
-</ul>
-<pre><code>POST /suggestion/_search
-{
-  &quot;size&quot; : 0,
-  &quot;suggest&quot; : {
-    &quot;keyword_suggestion&quot; : {
-      &quot;text&quot; : &quot;adidss&quot;,
-      &quot;term&quot; : {
-        &quot;field&quot; : &quot;keyword&quot;,
-        &quot;size&quot; : 1
-      }
-    }
-  }
-}
-</code></pre><ul>
-<li>关于排序：在我们的实现里面是通过weight和count进行排序的，weight目前只考虑了建议词的类型（比如分类 &gt; 品牌 &gt; 标签）；</li>
-</ul>
-<h2 id="实现效果和后续改进"><a href="#实现效果和后续改进" class="headerlink" title="实现效果和后续改进"></a>实现效果和后续改进</h2><ul>
-<li>通过上面的实现，我们已经能实现一个比较强大的搜索建议词了，实际的效果如下所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/11_es_suggestion/suggestion_yoho.png" alt="最终效果"></p>
-<ul>
-<li>后续可以考虑的改进：参考亚马逊增加分类的聚合展示、增加用户个性化的处理支持更好的建议词排序、基于用户的搜索历史支持更好的建议词推荐；</li>
-</ul>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.3/query-dsl-prefix-query.html" target="_blank" rel="external">Elasticsearch Prefix Query</a></li>
-<li><a href="https://www.elastic.co/guide/en/elasticsearch/reference/2.3/search-suggesters.html" target="_blank" rel="external">Elasticsearch Suggester</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;搜索建议是搜索的一个重要组成部分，一个搜索建议的实现通常需要考虑建议词的来源、匹配、排序、聚合、关联的文档数和拼写纠错等，本文介绍一个基于Elasticsearch实现的搜索建议。&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="Elasticsearch" scheme="http://ginobefunny.com/categories/Elasticsearch/"/>
-    
-    
-      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
-    
-      <category term="搜索建议" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BB%BA%E8%AE%AE/"/>
+      <category term="解释器" scheme="http://ginobefunny.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
     
   </entry>
   

@@ -3,6 +3,36 @@
 
 
     
+  <url>
+    <loc>http://ginobefunny.com/post/learning_dubbo_quick_start/</loc>
+    <lastmod>2017-07-12T06:32:49.756Z</lastmod>
+    <data>
+        <display>
+        <title>动手学dubbo之初体验</title>
+        <pubTime>2017-07-12T06:27:18.000Z</pubTime>
+        
+        <tag>RPC</tag>
+         
+        <tag>入门</tag>
+         
+        <tag>教程</tag>
+         
+        <tag>实例</tag>
+         
+        <tag>dubbo</tag>
+         
+        <tag>分布式服务框架</tag>
+         
+         
+           
+             
+              <breadCrumb title="dubbo" url="http://ginobefunny.com/categories/dubbo/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
     
     
     
@@ -376,11 +406,11 @@
          
         <tag>word2vec</tag>
          
+        <tag>个性化</tag>
+         
         <tag>搜索</tag>
          
         <tag>推荐</tag>
-         
-        <tag>个性化</tag>
          
          
            
@@ -574,9 +604,9 @@
         <title>代码之外的生存指南</title>
         <pubTime>2017-02-04T11:54:18.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>自我完善</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>职场</tag>
          
@@ -640,13 +670,13 @@
          
         <tag>字节码</tag>
          
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
-         
         <tag>HotSpot</tag>
          
+        <tag>编译器</tag>
+         
         <tag>即时编译器</tag>
+         
+        <tag>解释器</tag>
          
          
            
@@ -720,15 +750,15 @@
          
         <tag>字节码</tag>
          
+        <tag>编译器</tag>
+         
+        <tag>解释器</tag>
+         
         <tag>类加载器</tag>
          
         <tag>双亲委派</tag>
          
         <tag>执行引擎</tag>
-         
-        <tag>编译器</tag>
-         
-        <tag>解释器</tag>
          
          
            
@@ -806,9 +836,9 @@
         <title>阅读随手记 201701</title>
         <pubTime>2017-01-03T08:23:21.000Z</pubTime>
         
-        <tag>读书笔记</tag>
-         
         <tag>Elasticsearch</tag>
+         
+        <tag>读书笔记</tag>
          
         <tag>微服务</tag>
          
