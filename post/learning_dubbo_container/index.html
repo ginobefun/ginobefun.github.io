@@ -1,0 +1,1051 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="RPC,入门,教程,实例,dubbo,分布式服务框架,SPI," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="GinoBeFunny" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在动手学dubbo之初体验一文中我们了解了dubbo的架构，接下来的几篇文章我会根据阅读Quick Start里面的demo源码来深入学习dubbo的实现。这一篇主要学习Container的原理、实现和作用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动手学dubbo之Container与SPI">
+<meta property="og:url" content="http://ginobefunny.com/post/learning_dubbo_container/index.html">
+<meta property="og:site_name" content="GinoBeFunny">
+<meta property="og:description" content="在动手学dubbo之初体验一文中我们了解了dubbo的架构，接下来的几篇文章我会根据阅读Quick Start里面的demo源码来深入学习dubbo的实现。这一篇主要学习Container的原理、实现和作用。">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3709321-35f17414c406361c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2017-07-13T08:45:19.277Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="动手学dubbo之Container与SPI">
+<meta name="twitter:description" content="在动手学dubbo之初体验一文中我们了解了dubbo的架构，接下来的几篇文章我会根据阅读Quick Start里面的demo源码来深入学习dubbo的实现。这一篇主要学习Container的原理、实现和作用。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3709321-35f17414c406361c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"always"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://ginobefunny.com/post/learning_dubbo_container/"/>
+
+
+
+
+
+  <title> 动手学dubbo之Container与SPI | GinoBeFunny </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-86468813-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?ae24983a3465fec4833d9e0c2b125a35";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">GinoBeFunny</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Be a creator of knowledge.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-my2017">
+          <a href="/my2017" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-trophy"></i> <br />
+            
+            My 2017
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-joy_of_reading">
+          <a href="/joy_of_reading" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-asterisk"></i> <br />
+            
+            趣读书
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://ginobefunny.com/post/learning_dubbo_container/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Gino Zhang">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="GinoBeFunny">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="GinoBeFunny" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                动手学dubbo之Container与SPI
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-13T16:43:01+08:00">
+                2017-07-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/dubbo/" itemprop="url" rel="index">
+                    <span itemprop="name">dubbo</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 阅读次数
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在<a href="http://ginobefunny.com/post/learning_dubbo_quick_start/">动手学dubbo之初体验</a>一文中我们了解了dubbo的架构，接下来的几篇文章我会根据阅读Quick Start里面的demo源码来深入学习dubbo的实现。这一篇主要学习Container的原理、实现和作用。<br><a id="more"></a></p>
+<h1 id="一、从启动类Main开始"><a href="#一、从启动类Main开始" class="headerlink" title="一、从启动类Main开始"></a>一、从启动类Main开始</h1><p>我们从dubbo-demo-provider\bin\start.bat脚本中可以看出provider启动的入口为com.alibaba.dubbo.container.Main。下面是其具体的源码以及我个人增加的注释：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String CONTAINER_KEY = <span class="string">"dubbo.container"</span>;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SHUTDOWN_HOOK_KEY = <span class="string">"dubbo.shutdown.hook"</span>;</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(Main.class);</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ExtensionLoader&lt;Container&gt; loader = ExtensionLoader.getExtensionLoader(Container.class);</div><div class="line">    </div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> running = <span class="keyword">true</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">// 1. 获取需要启动的容器的SPI key</span></div><div class="line">            <span class="keyword">if</span> (args == <span class="keyword">null</span> || args.length == <span class="number">0</span>) &#123;</div><div class="line">                <span class="comment">// 1.1 如启动参数未传入指定的容器，则使用dubbo.properties配置文件的dubbo.container属性值</span></div><div class="line">                String config = ConfigUtils.getProperty(CONTAINER_KEY, loader.getDefaultExtensionName());</div><div class="line">                args = Constants.COMMA_SPLIT_PATTERN.split(config);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// 2. 获取需要启动的容器的SPI实现类</span></div><div class="line">            <span class="keyword">final</span> List&lt;Container&gt; containers = <span class="keyword">new</span> ArrayList&lt;Container&gt;();</div><div class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; args.length; i ++) &#123;</div><div class="line">                containers.add(loader.getExtension(args[i]));</div><div class="line">            &#125;</div><div class="line">            logger.info(<span class="string">"Use container type("</span> + Arrays.toString(args) + <span class="string">") to run dubbo serivce."</span>);</div><div class="line"></div><div class="line">            <span class="comment">// 3. 优雅停机处理</span></div><div class="line">            <span class="keyword">if</span> (<span class="string">"true"</span>.equals(System.getProperty(SHUTDOWN_HOOK_KEY))) &#123;</div><div class="line">	            Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> Thread() &#123;</div><div class="line">	                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</div><div class="line">	                    <span class="keyword">for</span> (Container container : containers) &#123;</div><div class="line">	                        <span class="keyword">try</span> &#123;</div><div class="line">	                            container.stop();</div><div class="line">	                            logger.info(<span class="string">"Dubbo "</span> + container.getClass().getSimpleName() + <span class="string">" stopped!"</span>);</div><div class="line">	                        &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">	                            logger.error(t.getMessage(), t);</div><div class="line">	                        &#125;</div><div class="line">	                        <span class="keyword">synchronized</span> (Main.class) &#123;</div><div class="line">                                running = <span class="keyword">false</span>;</div><div class="line">	                            Main.class.notify();</div><div class="line">	                        &#125;</div><div class="line">	                    &#125;</div><div class="line">	                &#125;</div><div class="line">	            &#125;);</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            <span class="comment">// 4. 启动容器</span></div><div class="line">            <span class="keyword">for</span> (Container container : containers) &#123;</div><div class="line">                container.start();</div><div class="line">                logger.info(<span class="string">"Dubbo "</span> + container.getClass().getSimpleName() + <span class="string">" started!"</span>);</div><div class="line">            &#125;</div><div class="line">            System.out.println(<span class="keyword">new</span> SimpleDateFormat(<span class="string">"[yyyy-MM-dd HH:mm:ss]"</span>).format(<span class="keyword">new</span> Date()) + <span class="string">" Dubbo service server started!"</span>);</div><div class="line">        &#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</div><div class="line">            logger.error(e.getMessage(), e);</div><div class="line">            System.exit(<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="keyword">synchronized</span> (Main.class) &#123;</div><div class="line">            <span class="keyword">while</span> (running) &#123;</div><div class="line">                <span class="keyword">try</span> &#123;</div><div class="line">                    Main.class.wait();</div><div class="line">                &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>从上面的代码可以看出，其中最重要的就是如何根据 <em>dubbo.container</em> 的配置找到对应的容器服务实现并调用start()方法执行启动，dubbo是通过SPI来实现的。</p>
+<h1 id="二、SPI机制"><a href="#二、SPI机制" class="headerlink" title="二、SPI机制"></a>二、SPI机制</h1><h2 id="2-1-Java-SPI简介"><a href="#2-1-Java-SPI简介" class="headerlink" title="2.1 Java SPI简介"></a>2.1 Java SPI简介</h2><p>SPI 全称为 Service Provider Interface，是JDK内置的一种服务提供发现机制，目前有不少框架用它来做服务的扩展发现。它是一种动态发现服务的机制，比如有个接口，想运行时动态的给它添加实现，你只需要根据SPI的规则添加一个实现和配置即可。</p>
+<p>Java SPI机制的约定如下：<br>1) 在META-INF/services/目录中创建以接口全限定名命名的文件，文件内容为具体实现类的全限定名；<br>2) 使用ServiceLoader类动态加载META-INF中的实现类；<br>3) 如SPI的实现类为Jar则需要放在主程序classpath中；<br>4) 具体实现类必须要有无参构造方法；</p>
+<h2 id="2-2-Java-SPI的Demo"><a href="#2-2-Java-SPI的Demo" class="headerlink" title="2.2 Java SPI的Demo"></a>2.2 Java SPI的Demo</h2><p>以下Demo代码已上传至github：<a href="https://github.com/ginobefun/learning_projects/tree/master/learning-spi" target="_blank" rel="external">https://github.com/ginobefun/learning_projects/tree/master/learning-spi</a></p>
+<p>定义一个用于计算商品搜索得分的接口ScoreService ：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.gino.demo.spi.api;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ScoreService</span> </span>&#123;</div><div class="line">    <span class="comment">/**</span></div><div class="line">     * 计算商品搜索的得分</div><div class="line">     * <span class="doctag">@param</span> tdidfScore 文本相关性得分</div><div class="line">     * <span class="doctag">@param</span> cosScore   用户和商品偏好性得分</div><div class="line">     * <span class="doctag">@return</span> 计算最终得分</div><div class="line">     */</div><div class="line">    <span class="function"><span class="keyword">double</span> <span class="title">calScore</span><span class="params">(<span class="keyword">double</span> tdidfScore, <span class="keyword">double</span> cosScore)</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>SearchService类使用SPI获取服务实现，执行得分计算并排序：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SearchService</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, Double&gt; <span class="title">search</span><span class="params">(Map&lt;String, Double&gt; tdidfScoreMap, Map&lt;String, Double&gt; cosScoreMap)</span> </span>&#123;</div><div class="line">        ScoreService scoreService;</div><div class="line">        ServiceLoader&lt;ScoreService&gt; loader = ServiceLoader.load(ScoreService.class);</div><div class="line">        <span class="keyword">if</span> (loader.iterator().hasNext()) &#123;</div><div class="line">            scoreService = loader.iterator().next();</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Cannot find score services."</span>);</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        System.out.println(<span class="string">"Use Score Service: "</span> + scoreService.getClass().getName());</div><div class="line">        Map&lt;String, Double&gt; finalScoreMap = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">        tdidfScoreMap.forEach((pId, tdidfScore) -&gt; &#123;</div><div class="line">            finalScoreMap.put(pId, scoreService.calScore(tdidfScore, cosScoreMap.get(pId)));</div><div class="line">        &#125;);</div><div class="line"></div><div class="line">        Map&lt;String, Double&gt; resultMap = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</div><div class="line">        finalScoreMap.keySet().stream()</div><div class="line">                .sorted(Comparator.comparing(pId -&gt; finalScoreMap.get(pId), Comparator.comparingDouble(s -&gt; s)).reversed())</div><div class="line">                .forEachOrdered(pId -&gt; &#123;</div><div class="line">                    resultMap.put(pId, finalScoreMap.get(pId));</div><div class="line">                &#125;);</div><div class="line"></div><div class="line">        <span class="keyword">return</span> resultMap;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这里有两种计算最终得分的方式，第一种是直接返回用户和商品的个性化得分的ReplaceScoreService：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.gino.demo.spi.score;</div><div class="line"><span class="keyword">import</span> com.gino.demo.spi.api.ScoreService;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReplaceScoreService</span> <span class="keyword">implements</span> <span class="title">ScoreService</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">calScore</span><span class="params">(<span class="keyword">double</span> tdidfScore, <span class="keyword">double</span> cosScore)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> cosScore;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>根据Java SPI的约定，还需要在META-INF/services/下新建com.gino.demo.spi.api.ScoreService文件，内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">com.gino.demo.spi.score.ReplaceScoreService</div></pre></td></tr></table></figure></p>
+<p>另外一种得分是将两者相乘以得到最终得分的MultiplyScoreService：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.gino.demo.spi.score;</div><div class="line"><span class="keyword">import</span> com.gino.demo.spi.api.ScoreService;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultiplyScoreService</span> <span class="keyword">implements</span> <span class="title">ScoreService</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">calScore</span><span class="params">(<span class="keyword">double</span> tdidfScore, <span class="keyword">double</span> cosScore)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> tdidfScore * cosScore;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>同时也在该工程的META-INF/services/下新建com.gino.demo.spi.api.ScoreService文件，内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">com.gino.demo.spi.score.MultiplyScoreService</div></pre></td></tr></table></figure></p>
+<p>在应用的代码中，就可以通过依赖不同的maven工程来实现采用不同的得分计算方式，比如我们采用MultiplyScoreService的时候，maven依赖如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-app<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-search<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-multiply<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>对应的APP代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Map&lt;String, Double&gt; tdidfScoreMap = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">        tdidfScoreMap.put(<span class="string">"product1"</span>, Double.valueOf(<span class="number">0.3</span>D));</div><div class="line">        tdidfScoreMap.put(<span class="string">"product2"</span>, Double.valueOf(<span class="number">0.5</span>D));</div><div class="line">        tdidfScoreMap.put(<span class="string">"product3"</span>, Double.valueOf(<span class="number">0.8</span>D));</div><div class="line"></div><div class="line">        Map&lt;String, Double&gt; cosScoreMap = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">        cosScoreMap.put(<span class="string">"product1"</span>, Double.valueOf(<span class="number">0.2</span>D));</div><div class="line">        cosScoreMap.put(<span class="string">"product2"</span>, Double.valueOf(<span class="number">0.7</span>D));</div><div class="line">        cosScoreMap.put(<span class="string">"product3"</span>, Double.valueOf(<span class="number">0.4</span>D));</div><div class="line"></div><div class="line">        Map&lt;String, Double&gt; resultMap = SearchService.search(tdidfScoreMap, cosScoreMap);</div><div class="line">        System.out.println(<span class="string">"Search Result: "</span> + resultMap);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>执行后控制台输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Use Score Service: com.gino.demo.spi.score.MultiplyScoreService</div><div class="line">Search Result: &#123;product2=0.35, product3=0.32000000000000006, product1=0.06&#125;</div></pre></td></tr></table></figure></p>
+<p>如果修改maven依赖为依赖demo-spi-replace，则会调用ReplaceScoreService进行得分计算。</p>
+<h2 id="2-3-dubbo的SPI"><a href="#2-3-dubbo的SPI" class="headerlink" title="2.3 dubbo的SPI"></a>2.3 dubbo的SPI</h2><p>通过查看ExtensionLoader源码发现，在dubbo里并没有直接采用Java SPI，而是参考其重新设计了一套SPI机制，在<a href="http://www.hiwzc.com/java-spi-dubbo-extensionloader.html" target="_blank" rel="external">Dubbo的ExtensionLoader</a>文章里列举了两者之间的差别主要有：</p>
+<p>1） ServiceLoader是采用迭代器遍历的方式实现的，而Dubbo为每种实现指定一个名称，由名称和服务共同确定一个实现，这样做的好处是，可以为成套的服务接口指定相同的名称，比如指定使用dubbo协议后，协议使用的其他扩展点就自动加载名称为dubbo的实现。此外，指定服务名称可以根据名称来获取扩展点实现实例，不像ServiceLoader那样在遍历过程中创建永远不会使用的服务实例。<br>2）Dubbo提供了一种类似IoC的机制，即一个扩展点可以直接setter注入其它扩展点；<br>3）基于线程安全和性能的考虑，Dubbo采用了ConcurrentMap来缓存实现类的实例；<br>4）Dubbo要求服务必须是一个接口；<br>5）ServiceLoader在解析配置出错时会抛出异常，如果捕获了这种异常，而不进行额外的处理，那么后面需要这种实例时，由于没有成功实例化，又会抛出新的异常，而新抛出的异常不能指示真正的错误原因。dubbo的实现是将解析配置时发生的异常保存起来，当访问这种实例时，通过查找保存的异常，抛出真正的原因。</p>
+<h2 id="2-4-ExtensionLoader核心源码"><a href="#2-4-ExtensionLoader核心源码" class="headerlink" title="2.4 ExtensionLoader核心源码"></a>2.4 ExtensionLoader核心源码</h2><h3 id="2-4-1-SPI注解"><a href="#2-4-1-SPI注解" class="headerlink" title="2.4.1 SPI注解"></a>2.4.1 SPI注解</h3><p>Dubbo首先定义了一个SPI注解，只有标记了该注解的服务，Dubbo SPI机制才能为其加载具体实现。value属性用于配置该服务的默认实现名称。</p>
+<h3 id="2-4-2-Adaptive注解"><a href="#2-4-2-Adaptive注解" class="headerlink" title="2.4.2 Adaptive注解"></a>2.4.2 Adaptive注解</h3><p>Adaptive注解标注一个扩展点的Adaptive实现，一个扩展点最多只能有一个Adaptive实现。Adaptive标注的实现不提供具体的功能，而是作为一个适配器，根据不同的情况选择具体的实现。这个有点抽象，在后续碰到的时候再结合具体的例子和源码学习。</p>
+<h3 id="2-4-3-Activate注解"><a href="#2-4-3-Activate注解" class="headerlink" title="2.4.3 Activate注解"></a>2.4.3 Activate注解</h3><p>Activate注解用于配置扩展点实现的激活条件和排列顺序。</p>
+<h3 id="2-4-4-Holder辅助类"><a href="#2-4-4-Holder辅助类" class="headerlink" title="2.4.4 Holder辅助类"></a>2.4.4 Holder辅助类</h3><p>Holder类用于保存一个值，并通过给值添加volatile来保证线程可见性。</p>
+<h3 id="2-4-5-ExtensionLoader的静态成员和实例成员"><a href="#2-4-5-ExtensionLoader的静态成员和实例成员" class="headerlink" title="2.4.5 ExtensionLoader的静态成员和实例成员"></a>2.4.5 ExtensionLoader的静态成员和实例成员</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// SERVICES_DIRECTORY、DUBBO_DIRECTORY和DUBBO_INTERNAL_DIRECTORY定义了3个配置文件查询目录，</span></div><div class="line"><span class="comment">// 即META-INF/dubbo、META-INF/dubbo/internal和META-INF/services，ExtensionLoader支持从这三个地方加载扩展点配置。</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String SERVICES_DIRECTORY = <span class="string">"META-INF/services/"</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DUBBO_DIRECTORY = <span class="string">"META-INF/dubbo/"</span>;</div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String DUBBO_INTERNAL_DIRECTORY = DUBBO_DIRECTORY + <span class="string">"internal/"</span>;</div><div class="line"></div><div class="line"><span class="comment">// EXTENSION_LOADERS用于缓存所有扩展点的ExtensionLoader实例。</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, ExtensionLoader&lt;?&gt;&gt; EXTENSION_LOADERS = <span class="keyword">new</span> ConcurrentHashMap&lt;Class&lt;?&gt;, ExtensionLoader&lt;?&gt;&gt;();</div><div class="line"></div><div class="line"><span class="comment">// EXTENSION_INSTANCES用于缓存所有扩展点实现的实例。</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, Object&gt; EXTENSION_INSTANCES = <span class="keyword">new</span> ConcurrentHashMap&lt;Class&lt;?&gt;, Object&gt;();</div><div class="line"></div><div class="line"><span class="comment">// type成员记录了该加载器要加载的扩展点类型，即标注了SPI注解的接口。</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Class&lt;?&gt; type;</div><div class="line"></div><div class="line"><span class="comment">// objectFactory是获取对象的工厂</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> ExtensionFactory objectFactory;</div><div class="line"></div><div class="line"><span class="comment">// cachedNames及其他的实例成员缓存了扩展点相关的信息</span></div><div class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Class&lt;?&gt;, String&gt; cachedNames = <span class="keyword">new</span> ConcurrentHashMap&lt;Class&lt;?&gt;, String&gt;();</div><div class="line"></div><div class="line"><span class="comment">// ......</span></div></pre></td></tr></table></figure>
+<h3 id="2-4-6-获取ExtensionLoader的工厂方法"><a href="#2-4-6-获取ExtensionLoader的工厂方法" class="headerlink" title="2.4.6 获取ExtensionLoader的工厂方法"></a>2.4.6 获取ExtensionLoader的工厂方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 首先判断扩展点是否为空，是否是接口，是否标注了SPI注解，如果都满足，则查看该扩展点是否已经创建过加载器实例，</span></div><div class="line"><span class="comment">// 如果没有，则调用构造方法创建一个加载器实例并缓存起来。</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">ExtensionLoader&lt;T&gt; <span class="title">getExtensionLoader</span><span class="params">(Class&lt;T&gt; type)</span> </span>&#123;</div><div class="line">    <span class="keyword">if</span> (type == <span class="keyword">null</span>)</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Extension type == null"</span>);</div><div class="line">    <span class="keyword">if</span>(!type.isInterface()) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Extension type("</span> + type + <span class="string">") is not interface!"</span>);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span>(!withExtensionAnnotation(type)) &#123;</div><div class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Extension type("</span> + type + </div><div class="line">                <span class="string">") is not extension, because WITHOUT @"</span> + SPI.class.getSimpleName() + <span class="string">" Annotation!"</span>);</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    ExtensionLoader&lt;T&gt; loader = (ExtensionLoader&lt;T&gt;) EXTENSION_LOADERS.get(type);</div><div class="line">    <span class="keyword">if</span> (loader == <span class="keyword">null</span>) &#123;</div><div class="line">        EXTENSION_LOADERS.putIfAbsent(type, <span class="keyword">new</span> ExtensionLoader&lt;T&gt;(type));</div><div class="line">        loader = (ExtensionLoader&lt;T&gt;) EXTENSION_LOADERS.get(type);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> loader;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">private</span> <span class="title">ExtensionLoader</span><span class="params">(Class&lt;?&gt; type)</span> </span>&#123;</div><div class="line">    <span class="keyword">this</span>.type = type;</div><div class="line">    objectFactory = (type == ExtensionFactory.class ? <span class="keyword">null</span> : ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getAdaptiveExtension());</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="2-4-7-获取扩展点实现"><a href="#2-4-7-获取扩展点实现" class="headerlink" title="2.4.7 获取扩展点实现"></a>2.4.7 获取扩展点实现</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line">   <span class="comment">// 首先判断是否指定了扩展点名称，如果没有指定，则抛出异常，如果指定的名称为true，则返回默认的扩展点。</span></div><div class="line">   <span class="comment">// 然后查看缓存的实例中有没有指定的实现，如果没有，则创建指定的实现。如果有则直接返回缓存的实例。</span></div><div class="line">   <span class="function"><span class="keyword">public</span> T <span class="title">getExtension</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">	<span class="keyword">if</span> (name == <span class="keyword">null</span> || name.length() == <span class="number">0</span>)</div><div class="line">	    <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Extension name == null"</span>);</div><div class="line">	<span class="keyword">if</span> (<span class="string">"true"</span>.equals(name)) &#123;</div><div class="line">	    <span class="keyword">return</span> getDefaultExtension();</div><div class="line">	&#125;</div><div class="line">	Holder&lt;Object&gt; holder = cachedInstances.get(name);</div><div class="line">	<span class="keyword">if</span> (holder == <span class="keyword">null</span>) &#123;</div><div class="line">	    cachedInstances.putIfAbsent(name, <span class="keyword">new</span> Holder&lt;Object&gt;());</div><div class="line">	    holder = cachedInstances.get(name);</div><div class="line">	&#125;</div><div class="line">	Object instance = holder.get();</div><div class="line">	<span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">	    <span class="keyword">synchronized</span> (holder) &#123;</div><div class="line">            instance = holder.get();</div><div class="line">            <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">                instance = createExtension(name);</div><div class="line">                holder.set(instance);</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> (T) instance;</div><div class="line">&#125;</div><div class="line"></div><div class="line">   <span class="comment">// 首先查看缓存的扩展点实现类中有没有包含这个扩展，如果没有则报错，因为ExtensionLoader只解析一次并缓存所有的扩展点实现类，</span></div><div class="line">   <span class="comment">// 此行为是getExtensionClasses实现的。如果找到了扩展点实现类，则先从缓存EXTENSION_INSTANCES中查看是否已经存在该实现类的实例化对象，</span></div><div class="line">   <span class="comment">// 如果没有找到，则创建新的实例并缓存到EXTENSION_INSTANCES中，否则使用找到的实例，</span></div><div class="line">   <span class="comment">// 然后调用injectExtension方法注入该扩展点依赖的其他扩展实现，并为该实例创建所有包装类。</span></div><div class="line">   <span class="function"><span class="keyword">private</span> T <span class="title">createExtension</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">       Class&lt;?&gt; clazz = getExtensionClasses().get(name);</div><div class="line">       <span class="keyword">if</span> (clazz == <span class="keyword">null</span>) &#123;</div><div class="line">           <span class="keyword">throw</span> findException(name);</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">try</span> &#123;</div><div class="line">           T instance = (T) EXTENSION_INSTANCES.get(clazz);</div><div class="line">           <span class="keyword">if</span> (instance == <span class="keyword">null</span>) &#123;</div><div class="line">               EXTENSION_INSTANCES.putIfAbsent(clazz, (T) clazz.newInstance());</div><div class="line">               instance = (T) EXTENSION_INSTANCES.get(clazz);</div><div class="line">           &#125;</div><div class="line">           injectExtension(instance);</div><div class="line">           Set&lt;Class&lt;?&gt;&gt; wrapperClasses = cachedWrapperClasses;</div><div class="line">           <span class="keyword">if</span> (wrapperClasses != <span class="keyword">null</span> &amp;&amp; wrapperClasses.size() &gt; <span class="number">0</span>) &#123;</div><div class="line">               <span class="keyword">for</span> (Class&lt;?&gt; wrapperClass : wrapperClasses) &#123;</div><div class="line">                   instance = injectExtension((T) wrapperClass.getConstructor(type).newInstance(instance));</div><div class="line">               &#125;</div><div class="line">           &#125;</div><div class="line">           <span class="keyword">return</span> instance;</div><div class="line">       &#125; <span class="keyword">catch</span> (Throwable t) &#123;</div><div class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"Extension instance(name: "</span> + name + <span class="string">", class: "</span> +</div><div class="line">                   type + <span class="string">")  could not be instantiated: "</span> + t.getMessage(), t);</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<h1 id="三、dubbo里有哪些Container"><a href="#三、dubbo里有哪些Container" class="headerlink" title="三、dubbo里有哪些Container?"></a>三、dubbo里有哪些Container?</h1><h2 id="3-1-Container-SPI定义"><a href="#3-1-Container-SPI定义" class="headerlink" title="3.1 Container SPI定义"></a>3.1 Container SPI定义</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 默认使用SpringContainer</span></div><div class="line"><span class="meta">@SPI</span>(<span class="string">"spring"</span>)</div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Container</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">start</span><span class="params">()</span></span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span></span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="3-2-dubbo里有哪些Container实现"><a href="#3-2-dubbo里有哪些Container实现" class="headerlink" title="3.2 dubbo里有哪些Container实现"></a>3.2 dubbo里有哪些Container实现</h2><p><img src="http://upload-images.jianshu.io/upload_images/3709321-35f17414c406361c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="dubbo_containers.png"></p>
+<h2 id="3-3-以SpringContainer为例了解如何实现dubbo-SPI"><a href="#3-3-以SpringContainer为例了解如何实现dubbo-SPI" class="headerlink" title="3.3 以SpringContainer为例了解如何实现dubbo SPI"></a>3.3 以SpringContainer为例了解如何实现dubbo SPI</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.alibaba.dubbo.container.spring;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.alibaba.dubbo.common.logger.Logger;</div><div class="line"><span class="keyword">import</span> com.alibaba.dubbo.common.logger.LoggerFactory;</div><div class="line"><span class="keyword">import</span> com.alibaba.dubbo.common.utils.ConfigUtils;</div><div class="line"><span class="keyword">import</span> com.alibaba.dubbo.container.Container;</div><div class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringContainer</span> <span class="keyword">implements</span> <span class="title">Container</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger logger = LoggerFactory.getLogger(SpringContainer.class);</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String SPRING_CONFIG = <span class="string">"dubbo.spring.config"</span>;</div><div class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String DEFAULT_SPRING_CONFIG = <span class="string">"classpath*:META-INF/spring/*.xml"</span>;</div><div class="line">    <span class="keyword">static</span> ClassPathXmlApplicationContext context;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ClassPathXmlApplicationContext <span class="title">getContext</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> context;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</div><div class="line">        String configPath = ConfigUtils.getProperty(SPRING_CONFIG);</div><div class="line">        <span class="keyword">if</span> (configPath == <span class="keyword">null</span> || configPath.length() == <span class="number">0</span>) &#123;</div><div class="line">            configPath = DEFAULT_SPRING_CONFIG;</div><div class="line">        &#125;</div><div class="line">      </div><div class="line">        <span class="comment">// 使用ClassPathXmlApplicationContext加载指定目录下的Spring配置文件</span></div><div class="line">        context = <span class="keyword">new</span> ClassPathXmlApplicationContext(configPath.split(<span class="string">"[,\\s]+"</span>));</div><div class="line">        context.start();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">stop</span><span class="params">()</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="keyword">if</span> (context != <span class="keyword">null</span>) &#123;</div><div class="line">                context.stop();</div><div class="line">                context.close();</div><div class="line">                context = <span class="keyword">null</span>;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (Throwable e) &#123;</div><div class="line">            logger.error(e.getMessage(), e);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在META-INF/dubbo/internal下新建文件com.alibaba.dubbo.container.Container，并保存内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">spring=com.alibaba.dubbo.container.spring.SpringContainer</div></pre></td></tr></table></figure></p>
+<h1 id="四、小结"><a href="#四、小结" class="headerlink" title="四、小结"></a>四、小结</h1><ul>
+<li>本文主要是阅读了dubbo中container模块的源码，通过学习了解到其核心在于dubbo SPI来实现服务发现，从而启动特定的容器；</li>
+<li>通过阅读源码，可以发现dubbo能很好地与Spring进行集成，但是它们之间的关系并非耦合。另外通过SPI机制，能够非常容易地进行功能扩展，这也是我认为dubbo架构设计中非常棒的一个部分；</li>
+<li>在dubbo源码中，常使用的Container包括Log4jContainer、LogbackContainer和SpringContainer，通过对dubbo SPI的学习，我们也可以扩展实现自定义的Container。</li>
+</ul>
+<h1 id="参考资源"><a href="#参考资源" class="headerlink" title="参考资源"></a>参考资源</h1><ul>
+<li><a href="http://dubbo.io/User+Guide-zh.htm" target="_blank" rel="external">dubbo用户指南</a></li>
+<li><a href="https://github.com/alibaba/dubbo" target="_blank" rel="external">dubbo开源代码</a></li>
+<li><a href="http://www.hiwzc.com/java-spi-dubbo-extensionloader.html" target="_blank" rel="external">Java SPI机制-3：Dubbo的ExtensionLoader</a></li>
+</ul>
+<p><strong>动手学dubbo系列</strong></p>
+<ol>
+<li><a href="http://ginobefunny.com/post/learning_dubbo_quick_start/">动手学dubbo之初体验</a></li>
+<li><a href="http://ginobefunny.com/post/learning_dubbo_container/">动手学dubbo之Container与SPI</a></li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+<div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="/images/wechat.jpg" alt="Gino Zhang wechat" style="width: 200px; max-width: 100%;"/>
+    <div>扫一扫，关注我的微信公众号</div>
+</div>
+
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RPC/" rel="tag"># RPC</a>
+          
+            <a href="/tags/入门/" rel="tag"># 入门</a>
+          
+            <a href="/tags/教程/" rel="tag"># 教程</a>
+          
+            <a href="/tags/实例/" rel="tag"># 实例</a>
+          
+            <a href="/tags/dubbo/" rel="tag"># dubbo</a>
+          
+            <a href="/tags/分布式服务框架/" rel="tag"># 分布式服务框架</a>
+          
+            <a href="/tags/SPI/" rel="tag"># SPI</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/post/learning_dubbo_quick_start/" rel="next" title="动手学dubbo之初体验">
+                <i class="fa fa-chevron-left"></i> 动手学dubbo之初体验
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Gino Zhang" />
+          <p class="site-author-name" itemprop="name">Gino Zhang</p>
+          <p class="site-description motion-element" itemprop="description">Just be funny!</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">39</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">133</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/ginobefun/" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/5202141318/profile?topnav=1&wvr=6&is_all=1" target="_blank" title="Weibo">
+                  
+                    <i class="fa fa-fw fa-weibo"></i>
+                  
+                  Weibo
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.douban.com/people/ginobefun/" target="_blank" title="DouBan">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                  DouBan
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/ginobefun/activities" target="_blank" title="ZhiHu">
+                  
+                    <i class="fa fa-fw fa-ticket"></i>
+                  
+                  ZhiHu
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://twitter.com/ginobefun" target="_blank" title="Twitter">
+                  
+                    <i class="fa fa-fw fa-twitter"></i>
+                  
+                  Twitter
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.jianshu.com/u/0ffaa3601861" target="_blank" title="JianShu">
+                  
+                    <i class="fa fa-fw fa-gift"></i>
+                  
+                  JianShu
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-block">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              Links
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://wangnan.tech/" title="王楠的博客" target="_blank">王楠的博客</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://toutiao.io/subjects/160373" title="开发者头条" target="_blank">开发者头条</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.yohobuy.com/" title="Yoho!Buy" target="_blank">Yoho!Buy</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://theme-next.iissnan.com/" title="Hexo Next Theme" target="_blank">Hexo Next Theme</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、从启动类Main开始"><span class="nav-text">一、从启动类Main开始</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、SPI机制"><span class="nav-text">二、SPI机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-Java-SPI简介"><span class="nav-text">2.1 Java SPI简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-Java-SPI的Demo"><span class="nav-text">2.2 Java SPI的Demo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-dubbo的SPI"><span class="nav-text">2.3 dubbo的SPI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-ExtensionLoader核心源码"><span class="nav-text">2.4 ExtensionLoader核心源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-1-SPI注解"><span class="nav-text">2.4.1 SPI注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-2-Adaptive注解"><span class="nav-text">2.4.2 Adaptive注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-3-Activate注解"><span class="nav-text">2.4.3 Activate注解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-4-Holder辅助类"><span class="nav-text">2.4.4 Holder辅助类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-5-ExtensionLoader的静态成员和实例成员"><span class="nav-text">2.4.5 ExtensionLoader的静态成员和实例成员</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-6-获取ExtensionLoader的工厂方法"><span class="nav-text">2.4.6 获取ExtensionLoader的工厂方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-7-获取扩展点实现"><span class="nav-text">2.4.7 获取扩展点实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#三、dubbo里有哪些Container"><span class="nav-text">三、dubbo里有哪些Container?</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-Container-SPI定义"><span class="nav-text">3.1 Container SPI定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-dubbo里有哪些Container实现"><span class="nav-text">3.2 dubbo里有哪些Container实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-以SpringContainer为例了解如何实现dubbo-SPI"><span class="nav-text">3.3 以SpringContainer为例了解如何实现dubbo SPI</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#四、小结"><span class="nav-text">四、小结</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资源"><span class="nav-text">参考资源</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Gino Zhang</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+<div class="busuanzi-count">
+
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv"><i class="fa fa-user"></i> 访问人数<span class="busuanzi-value" id="busuanzi_value_site_uv"></span></span>
+  
+
+  
+    <span class="site-pv"><i class="fa fa-eye"></i> 总访问量<span class="busuanzi-value" id="busuanzi_value_site_pv"></span></span>
+  
+  
+</div>
+
+
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+      search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+      $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = $( "entry", xmlResponse ).map(function() {
+            return {
+              title: $( "title", this ).text(),
+              content: $("content",this).text(),
+              url: $( "url" , this).text()
+            };
+          }).get();
+          var $input = document.getElementById(search_id);
+          var $resultContent = document.getElementById(content_id);
+          $input.addEventListener('input', function(){
+            var matchcounts = 0;
+            var str='<ul class=\"search-result-list\">';
+            var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+            $resultContent.innerHTML = "";
+            if (this.value.trim().length > 1) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var content_index = [];
+                var data_title = data.title.trim().toLowerCase();
+                var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                var data_url = decodeURIComponent(data.url);
+                var index_title = -1;
+                var index_content = -1;
+                var first_occur = -1;
+                // only match artiles with not empty titles and contents
+                if(data_title != '') {
+                  keywords.forEach(function(keyword, i) {
+                    index_title = data_title.indexOf(keyword);
+                    index_content = data_content.indexOf(keyword);
+                    if( index_title >= 0 || index_content >= 0 ){
+                      isMatch = true;
+                      if (i == 0) {
+                        first_occur = index_content;
+                      }
+                    }
+
+                  });
+                }
+                // show search results
+                if (isMatch) {
+                  matchcounts += 1;
+                  str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                  var content = data.content.trim().replace(/<[^>]+>/g,"");
+                  if (first_occur >= 0) {
+                    // cut out 100 characters
+                    var start = first_occur - 20;
+                    var end = first_occur + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if(start == 0){
+                      end = 50;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    var match_content = content.substring(start, end);
+                    // highlight all keywords
+                    keywords.forEach(function(keyword){
+                      var regS = new RegExp(keyword, "gi");
+                      match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                    });
+
+                    str += "<p class=\"search-result\">" + match_content +"...</p>"
+                  }
+                  str += "</li>";
+                }
+              })};
+            str += "</ul>";
+            if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+            if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+            $resultContent.innerHTML = str;
+          });
+          proceedsearch();
+        }
+      });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+
+  
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+
+</body>
+</html>
