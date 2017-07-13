@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-07-13T08:45:19.277Z</updated>
+  <updated>2017-07-13T08:48:56.611Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://ginobefunny.com/post/learning_dubbo_container/"/>
     <id>http://ginobefunny.com/post/learning_dubbo_container/</id>
     <published>2017-07-13T08:43:01.000Z</published>
-    <updated>2017-07-13T08:45:19.277Z</updated>
+    <updated>2017-07-13T08:48:56.611Z</updated>
     
     <content type="html"><![CDATA[<p>在<a href="http://ginobefunny.com/post/learning_dubbo_quick_start/">动手学dubbo之初体验</a>一文中我们了解了dubbo的架构，接下来的几篇文章我会根据阅读Quick Start里面的demo源码来深入学习dubbo的实现。这一篇主要学习Container的原理、实现和作用。<br><a id="more"></a></p>
 <h1 id="一、从启动类Main开始"><a href="#一、从启动类Main开始" class="headerlink" title="一、从启动类Main开始"></a>一、从启动类Main开始</h1><p>我们从dubbo-demo-provider\bin\start.bat脚本中可以看出provider启动的入口为com.alibaba.dubbo.container.Main。下面是其具体的源码以及我个人增加的注释：</p>
@@ -35,7 +35,7 @@
 <p>根据Java SPI的约定，还需要在META-INF/services/下新建com.gino.demo.spi.api.ScoreService文件，内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">com.gino.demo.spi.score.ReplaceScoreService</div></pre></td></tr></table></figure></p>
 <p>另外一种得分是将两者相乘以得到最终得分的MultiplyScoreService：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.gino.demo.spi.score;</div><div class="line"><span class="keyword">import</span> com.gino.demo.spi.api.ScoreService;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MultiplyScoreService</span> <span class="keyword">implements</span> <span class="title">ScoreService</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">double</span> <span class="title">calScore</span><span class="params">(<span class="keyword">double</span> tdidfScore, <span class="keyword">double</span> cosScore)</span> </span>&#123;</div><div class="line">        <span class="keyword">return</span> tdidfScore * cosScore;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>同时也在该工程的META-INF/services/下新建com.gino.demo.spi.api.ScoreService文件，内容为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">com.gino.demo.spi.score.MultiplyScoreService</div></pre></td></tr></table></figure></p>
-<p>在应用的代码中，就可以通过依赖不同的maven工程来实现采用不同的得分计算方式，比如我们采用MultiplyScoreService的时候，maven依赖如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-app<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">      <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-search<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-multiply<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div></pre></td></tr></table></figure></p>
+<p>在应用的代码中，就可以通过依赖不同的maven工程来实现采用不同的得分计算方式，比如我们采用MultiplyScoreService的时候，maven依赖如下：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-app<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></div><div class="line"></div><div class="line">  <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-search<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.gino.demo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>demo-spi-multiply<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div></pre></td></tr></table></figure></p>
 <p>对应的APP代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> </span>&#123;</div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        Map&lt;String, Double&gt; tdidfScoreMap = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">        tdidfScoreMap.put(<span class="string">"product1"</span>, Double.valueOf(<span class="number">0.3</span>D));</div><div class="line">        tdidfScoreMap.put(<span class="string">"product2"</span>, Double.valueOf(<span class="number">0.5</span>D));</div><div class="line">        tdidfScoreMap.put(<span class="string">"product3"</span>, Double.valueOf(<span class="number">0.8</span>D));</div><div class="line"></div><div class="line">        Map&lt;String, Double&gt; cosScoreMap = <span class="keyword">new</span> HashMap&lt;&gt;();</div><div class="line">        cosScoreMap.put(<span class="string">"product1"</span>, Double.valueOf(<span class="number">0.2</span>D));</div><div class="line">        cosScoreMap.put(<span class="string">"product2"</span>, Double.valueOf(<span class="number">0.7</span>D));</div><div class="line">        cosScoreMap.put(<span class="string">"product3"</span>, Double.valueOf(<span class="number">0.4</span>D));</div><div class="line"></div><div class="line">        Map&lt;String, Double&gt; resultMap = SearchService.search(tdidfScoreMap, cosScoreMap);</div><div class="line">        System.out.println(<span class="string">"Search Result: "</span> + resultMap);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>执行后控制台输出：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">Use Score Service: com.gino.demo.spi.score.MultiplyScoreService</div><div class="line">Search Result: &#123;product2=0.35, product3=0.32000000000000006, product1=0.06&#125;</div></pre></td></tr></table></figure></p>
 <p>如果修改maven依赖为依赖demo-spi-replace，则会调用ReplaceScoreService进行得分计算。</p>
@@ -88,9 +88,9 @@
     
       <category term="dubbo" scheme="http://ginobefunny.com/tags/dubbo/"/>
     
-      <category term="分布式服务框架" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1%E6%A1%86%E6%9E%B6/"/>
-    
       <category term="SPI" scheme="http://ginobefunny.com/tags/SPI/"/>
+    
+      <category term="分布式服务框架" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1%E6%A1%86%E6%9E%B6/"/>
     
   </entry>
   
@@ -1609,10 +1609,6 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
       <category term="Reading Record" scheme="http://ginobefunny.com/categories/Reading-Record/"/>
     
     
-      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
-    
-      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
-    
       <category term="推荐系统" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/"/>
     
       <category term="分布式队列" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%98%9F%E5%88%97/"/>
@@ -1624,6 +1620,10 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
       <category term="机器学习" scheme="http://ginobefunny.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="高可用" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
+    
+      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
+    
+      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
     
       <category term="架构" scheme="http://ginobefunny.com/tags/%E6%9E%B6%E6%9E%84/"/>
     
@@ -3562,9 +3562,9 @@ message AddressBook {
       <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
     
     
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
       <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
+    
+      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
     
       <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
     
@@ -6081,9 +6081,9 @@ and must have the same mapping.
       <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
     
     
-      <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
-    
       <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
     
       <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
     
