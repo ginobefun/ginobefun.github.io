@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://ginobefunny.com/"/>
-  <updated>2017-07-13T08:48:56.611Z</updated>
+  <updated>2017-07-20T02:54:15.628Z</updated>
   <id>http://ginobefunny.com/</id>
   
   <author>
@@ -14,6 +14,94 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>技术博文网站整理与推荐</title>
+    <link href="http://ginobefunny.com/post/awesome_techblogs/"/>
+    <id>http://ginobefunny.com/post/awesome_techblogs/</id>
+    <published>2017-07-20T02:51:03.000Z</published>
+    <updated>2017-07-20T02:54:15.628Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近在离职交接，整理下我经常阅读的一些博文的来源网站和公众号，也希望大家推荐。<br><a id="more"></a></p>
+<p>​以下序号排名不分先后，只是便于整理，感谢各位作者或团队的分享。<br>阅读工具主要使用：Feedly APP + 即刻APP + 微信APP + 开发者头条APP<br>实在太懒了，以致于不知道怎么写推荐语，不过应该都是大家耳闻能详的，也欢迎大家推荐。</p>
+<ol>
+<li><p>酷 壳 – CoolShell<br><a href="http://coolshell.cn" target="_blank" rel="external">http://coolshell.cn</a></p>
+</li>
+<li><p>阮一峰的网络日志<br><a href="http://www.ruanyifeng.com/blog/" target="_blank" rel="external">http://www.ruanyifeng.com/blog/</a></p>
+</li>
+<li><p>阿里中间件团队博客<br><a href="http://jm.taobao.org/" target="_blank" rel="external">http://jm.taobao.org/</a></p>
+</li>
+<li><p>美团点评技术团队<br><a href="https://tech.meituan.com/" target="_blank" rel="external">https://tech.meituan.com/</a></p>
+</li>
+<li><p>InfoQ中文<br><a href="http://www.infoq.com/cn/" target="_blank" rel="external">http://www.infoq.com/cn/</a></p>
+</li>
+<li><p>并发编程网<br><a href="http://ifeve.com/" target="_blank" rel="external">http://ifeve.com/</a></p>
+</li>
+<li><p>IBM developerWorks 中国<br><a href="http://www.ibm.com/developerworks/cn/" target="_blank" rel="external">http://www.ibm.com/developerworks/cn/</a></p>
+</li>
+<li><p>张逸<br><a href="http://zhangyi.farbox.com/" target="_blank" rel="external">http://zhangyi.farbox.com/</a></p>
+</li>
+<li><p>程序猿DD博客<br><a href="http://blog.didispace.com/" target="_blank" rel="external">http://blog.didispace.com/</a></p>
+</li>
+<li><p>Martin Fowler<br><a href="https://martinfowler.com/" target="_blank" rel="external">https://martinfowler.com/</a></p>
+</li>
+<li><p>Spring官方博客<br><a href="http://spring.io/blog" target="_blank" rel="external">http://spring.io/blog</a></p>
+</li>
+<li><p>Netflix TechBlog<br><a href="https://medium.com/netflix-techblog" target="_blank" rel="external">https://medium.com/netflix-techblog</a></p>
+</li>
+<li><p>InfoQ英文<br><a href="http://www.infoq.com/" target="_blank" rel="external">http://www.infoq.com/</a></p>
+</li>
+<li><p>IntelliJ IDEA Blog<br><a href="https://blog.jetbrains.com/idea" target="_blank" rel="external">https://blog.jetbrains.com/idea</a></p>
+</li>
+<li><p>The Effective Engineer<br><a href="http://www.effectiveengineer.com/" target="_blank" rel="external">http://www.effectiveengineer.com/</a></p>
+</li>
+<li><p>The GitHub Blog<br><a href="https://github.com/blog" target="_blank" rel="external">https://github.com/blog</a></p>
+</li>
+<li><p>Top Java Blogs<br><a href="https://www.topjavablogs.com/" target="_blank" rel="external">https://www.topjavablogs.com/</a></p>
+</li>
+<li><p>大数据杂谈<br>微信公众号【BigdataTina2016】</p>
+</li>
+<li><p>高可用架构<br>微信公众号【ArchNotes】</p>
+</li>
+<li><p>架构师之路<br>微信公众号【road5858】</p>
+</li>
+<li><p>开涛的博客<br>微信公众号【kaitao-1234567】</p>
+</li>
+<li><p>聊聊架构<br>微信公众号【archtime】</p>
+</li>
+<li><p>你假笨<br>微信公众号【lovestblog】</p>
+</li>
+<li><p>思特沃克<br>微信公众号【ThoughtWorks】</p>
+</li>
+<li><p>携程技术中心<br>微信公众号【ctriptech】</p>
+</li>
+<li><p>中生代技术<br>微信公众号【freshmanTechnology】</p>
+</li>
+<li><p>阿里技术<br>微信公众号【ali_tech】</p>
+</li>
+<li><p>RednaxelaFX<br><a href="https://www.zhihu.com/people/rednaxelafx/activities" target="_blank" rel="external">https://www.zhihu.com/people/rednaxelafx/activities</a></p>
+</li>
+<li><p>李艳鹏<br><a href="http://www.jianshu.com/u/581f548ef0ec" target="_blank" rel="external">http://www.jianshu.com/u/581f548ef0ec</a></p>
+</li>
+<li><p>开发者头条<br><a href="https://toutiao.io/" target="_blank" rel="external">https://toutiao.io/</a></p>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近在离职交接，整理下我经常阅读的一些博文的来源网站和公众号，也希望大家推荐。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
+    
+    
+      <category term="推荐" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90/"/>
+    
+      <category term="阅读" scheme="http://ginobefunny.com/tags/%E9%98%85%E8%AF%BB/"/>
+    
+  </entry>
   
   <entry>
     <title>动手学dubbo之Container与SPI</title>
@@ -88,9 +176,9 @@
     
       <category term="dubbo" scheme="http://ginobefunny.com/tags/dubbo/"/>
     
-      <category term="SPI" scheme="http://ginobefunny.com/tags/SPI/"/>
-    
       <category term="分布式服务框架" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E6%9C%8D%E5%8A%A1%E6%A1%86%E6%9E%B6/"/>
+    
+      <category term="SPI" scheme="http://ginobefunny.com/tags/SPI/"/>
     
   </entry>
   
@@ -1609,6 +1697,10 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
       <category term="Reading Record" scheme="http://ginobefunny.com/categories/Reading-Record/"/>
     
     
+      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
+    
+      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
+    
       <category term="推荐系统" scheme="http://ginobefunny.com/tags/%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F/"/>
     
       <category term="分布式队列" scheme="http://ginobefunny.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%98%9F%E5%88%97/"/>
@@ -1620,10 +1712,6 @@ Kafka在acks=-1,min.insync.replicas&gt;=1时，具有高可靠性，所有成功
       <category term="机器学习" scheme="http://ginobefunny.com/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
       <category term="高可用" scheme="http://ginobefunny.com/tags/%E9%AB%98%E5%8F%AF%E7%94%A8/"/>
-    
-      <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
-    
-      <category term="搜索引擎" scheme="http://ginobefunny.com/tags/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/"/>
     
       <category term="架构" scheme="http://ginobefunny.com/tags/%E6%9E%B6%E6%9E%84/"/>
     
@@ -3562,9 +3650,9 @@ message AddressBook {
       <category term="CodingLife" scheme="http://ginobefunny.com/categories/CodingLife/"/>
     
     
-      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
-    
       <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+      <category term="自我完善" scheme="http://ginobefunny.com/tags/%E8%87%AA%E6%88%91%E5%AE%8C%E5%96%84/"/>
     
       <category term="职场" scheme="http://ginobefunny.com/tags/%E8%81%8C%E5%9C%BA/"/>
     
@@ -5932,180 +6020,6 @@ and must have the same mapping.
       <category term="Elasticsearch" scheme="http://ginobefunny.com/tags/Elasticsearch/"/>
     
       <category term="一起读文档" scheme="http://ginobefunny.com/tags/%E4%B8%80%E8%B5%B7%E8%AF%BB%E6%96%87%E6%A1%A3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>《深入理解Java虚拟机》读书笔记7：高效并发</title>
-    <link href="http://ginobefunny.com/post/deep_in_jvm_notes_part7/"/>
-    <id>http://ginobefunny.com/post/deep_in_jvm_notes_part7/</id>
-    <published>2017-01-29T07:31:25.000Z</published>
-    <updated>2017-01-31T09:50:33.579Z</updated>
-    
-    <content type="html"><![CDATA[<p>国内JVM相关书籍NO.1，Java程序员必读。读书笔记第七部分对应原书的第十二章和第十三章，主要介绍Java内存模型、先行发生原则、线程安全和虚拟机的锁优化细节。<br><a id="more"></a></p>
-<h1 id="第五部分-高效并发"><a href="#第五部分-高效并发" class="headerlink" title="第五部分 高效并发"></a>第五部分 高效并发</h1><h2 id="第十二章-Java内存模型与线程"><a href="#第十二章-Java内存模型与线程" class="headerlink" title="第十二章 Java内存模型与线程"></a>第十二章 Java内存模型与线程</h2><p>并发处理的广泛应用是使得Amdahl定律代替摩尔定律成为计算机性能发展源动力的根本原因，也是人类“压榨”计算机运算能力的最有力武器。</p>
-<h3 id="12-1-概述"><a href="#12-1-概述" class="headerlink" title="12.1 概述"></a>12.1 概述</h3><ul>
-<li>多任务处理在现代计算机操作系统中几乎已是一项必备的功能了；</li>
-<li>除了充分利用计算机处理器的能力外，一个服务端同时对多个客户端提供服务则是另一个更具体的并发应用场景；</li>
-<li>服务端是Java语言最擅长的领域之一，不过如何写好并发应用程序却又是服务端程序开发的难点之一，处理好并发方面的问题通常需要更多的编码经验来支持，幸好Java语言和虚拟机提供了许多工具，把并发编码的门槛降低了不少；</li>
-</ul>
-<h3 id="12-2-硬件的效率与一致性"><a href="#12-2-硬件的效率与一致性" class="headerlink" title="12.2 硬件的效率与一致性"></a>12.2 硬件的效率与一致性</h3><ul>
-<li>绝大多数的运算任务不可能只靠处理器计算就能完成，处理器至少要与内存交互，所以现代计算机系统都不得不加入一层读写速度尽可能接近处理器运算速度的高速缓存来作为内存与处理器之间的缓冲：将运算需要使用到的数据复制到缓存中，让运算能快速运行，当运算结束后再从缓存同步回内存之中，这样处理器就无须等待缓慢的内存读写了；</li>
-<li>基于高速缓存的存储交互很好地解决了处理器与内存的速度矛盾，但是也为计算机系统带来更高的复杂度，因为它引入了一个新的问题：缓存一致性；为了解决一致性的问题，需要各个处理器访问缓存时都遵循一些协议，在读写时要根据协议来进行操作，这类协议有MSI、MESI、MOSI、Synapse、Firefly及Dragon Protocol等；</li>
-<li>本章将会多次提到内存模型一词，可以理解在特定的操作协议下，对特定的内存或高速缓存进行读写访问的过程抽象；不同架构的物理机器可以拥有不一样的内存模型，而Java虚拟机也有自己的内存模型，并且这里介绍的内存访问操作与硬件的缓存访问具有很高的可比性；</li>
-<li>除了增加高速缓存之外，为了使得处理器内部的运算单元能尽量被充分利用，处理器可能会对输入代码进行乱序执行优化，处理器会在计算之后将乱序执行的结果重组，保证该结果与顺序执行的结果是一致的；</li>
-</ul>
-<h3 id="12-3-Java内存模型"><a href="#12-3-Java内存模型" class="headerlink" title="12.3 Java内存模型"></a>12.3 Java内存模型</h3><p>Java虚拟机规范中视图定义一种Java内存模型（JMM）来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台下都能达到一致的内存访问效果。</p>
-<h4 id="12-3-1-主内存与工作内存"><a href="#12-3-1-主内存与工作内存" class="headerlink" title="12.3.1 主内存与工作内存"></a>12.3.1 主内存与工作内存</h4><ul>
-<li>Java内存模型的主要目标是定义程序中各个变量的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节；此处的变量与Java编程中所说的变量有所区别，它包括了实例字段、静态字段和构成数组对象的元素，但不包括局部变量与方法参数，因为后者是线程私有的，不会被共享；</li>
-<li>Java内存模型规定了所有的变量都存储在主内存中，每个线程还有自己的工作内存，线程的工作内存中保存了被该线程使用到的变量的主内存副本拷贝，线程对变量的所有操作都必须在工作内存中进行，而不能直接读写主内存中的变量；</li>
-<li>这里所讲的主内存、工作内存与第二章所讲的Java内存区域中的Java堆、栈、方法区等并不是同一个层次的内存划分，这两者基本上是没有关系的；线程、主内存和工作内存的关系如下所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/jmm_relation.png" alt="线程、主内存和工作内存的关系"></p>
-<h4 id="12-3-2-内存间交互操作"><a href="#12-3-2-内存间交互操作" class="headerlink" title="12.3.2 内存间交互操作"></a>12.3.2 内存间交互操作</h4><p>关于主内存与工作内存之间具体的交互协议，即一个变量如何从主内存拷贝到工作内存、如何从工作内存同步回主内存之类的实现细节，Java内存模型中定义了以下八种操作来完成，虚拟机实现时必须保证下面提及的每一种操作都是原子的、不可再分的（对于double和long类型的变量的某些操作在某些平台允许有例外）：</p>
-<ul>
-<li>lock</li>
-<li>unlock</li>
-<li>read</li>
-<li>load</li>
-<li>use</li>
-<li>assign</li>
-<li>store</li>
-<li>write</li>
-</ul>
-<p>基于理解难度和严谨性考虑，最新的JSR-133文档中，已经放弃采用这八种操作去定义Java内存模型的访问协议了，后面将会介绍一个等效判断原则 – 先行发生原则，用来确定一个访问在并发环境下是否安全；</p>
-<h4 id="12-3-3-对于volatile型变量的特殊规则"><a href="#12-3-3-对于volatile型变量的特殊规则" class="headerlink" title="12.3.3 对于volatile型变量的特殊规则"></a>12.3.3 对于volatile型变量的特殊规则</h4><ul>
-<li>关键字volatile可以说是Java虚拟机提供的最轻量级的同步机制；</li>
-<li>当一个变量定义为volatile之后，它将具备两种特性：第一是保证此变量对所有线程的可见性，这里的可见性是指当一个线程修改了这个变量的值，新的值对于其他线程来说是可以立即得知的，而普通的变量的值在线程间传递均需要通过主内存来完成；另外一个是禁止指令重排序优化，普通的变量仅仅会保证在该方法的执行过程中所有依赖赋值结果的地方都能获取到正确的结果，而不能保证变量赋值操作的顺序与程序代码中的执行顺序一致；</li>
-<li>volatile变量在各个线程的工作内存中不存在一致性问题，但是Java里面的运算并非原子操作，导致volatile变量的运算在并发下一样是不安全的；</li>
-<li>在不符合以下两条规则的运算场景中，我们仍然要通过加锁来保证原子性：运算结果并不依赖变量的当前值或者能够确保只有单一的线程修改变量的值、变量不需要与其他的状态变量共同参与不变约束；</li>
-<li>volatile变量读操作的性能消耗与普通变量几乎没有任何差别，但是写操作则可能会慢一些；不过大多数场景下volatile的总开销仍然要比锁低，我们在volatile与锁之中选择的唯一依据仅仅是volatile的语义能否满足使用场景的需求；</li>
-</ul>
-<h4 id="12-3-4-对于long和double型变量的特殊规则"><a href="#12-3-4-对于long和double型变量的特殊规则" class="headerlink" title="12.3.4 对于long和double型变量的特殊规则"></a>12.3.4 对于long和double型变量的特殊规则</h4><ul>
-<li>允许虚拟机将没有被volatile修饰的64位数据的读写操作划分为两次32位的操作来进行，即允许虚拟机实现选择可以不保证64位数据类型的load、store、read和write这4个操作的原子性，这点就是所谓的long和double的非原子性协定；</li>
-<li>但允许虚拟机选择把这些操作实现为具有原子性的操作，目前各种平台下的商用虚拟机几乎都选择把64位数据的读写操作作为原子操作来对待；</li>
-</ul>
-<h4 id="12-3-5-原子性、可见性与有序性"><a href="#12-3-5-原子性、可见性与有序性" class="headerlink" title="12.3.5 原子性、可见性与有序性"></a>12.3.5 原子性、可见性与有序性</h4><ul>
-<li>原子性（Atomicity）：由Java内存模型来直接保证的原子性变量操作包括read、load、assign、use、store和write；在synchronized块之间的操作也具备原子性；</li>
-<li>可见性（Visibility）：是指当一个线程修改了共享变量的值，其他线程能够立即得知这个修改；除了volatile之外，Java还有synchronized和final关键字能实现可见性；</li>
-<li>有序性（Ordering）：如果在本线程内观察，所有的操作都是有序的；如果在一个线程中观察另一个线程，所有的操作都是无序的；Java语言提供了volatile和synchronized两个关键字来保证线程之间操作的有序性；</li>
-</ul>
-<h4 id="12-3-6-先行发生原则"><a href="#12-3-6-先行发生原则" class="headerlink" title="12.3.6 先行发生原则"></a>12.3.6 先行发生原则</h4><ul>
-<li>先行发生是Java内存模型中定义的两项操作之间的偏序关系，如果说操作A先行发生于操作B，其实就是说在发生操作B之前，操作A产生的影响能被操作B观察到，影响包括了修改了内存中共享变量的值、发送了消息、调用了方法等；</li>
-<li>下面是Java内存模型下一些天然的先行发生关系：程序次序规则、管程锁定规则、volatile变量规则、线程启动规则、线程终止规则、线程中断规则、对象终结规则、传递性；</li>
-<li>时间先后顺序与先行发生原则之间基本没有太大的关系，所以我们衡量并发安全问题的时候不要受到时间顺序的干扰，一切必须以先行发生原则为准；</li>
-</ul>
-<h3 id="12-4-Java与线程"><a href="#12-4-Java与线程" class="headerlink" title="12.4 Java与线程"></a>12.4 Java与线程</h3><h4 id="12-4-1-线程的实现"><a href="#12-4-1-线程的实现" class="headerlink" title="12.4.1 线程的实现"></a>12.4.1 线程的实现</h4><ul>
-<li>线程是比进程更轻量级的调度执行单位，线程的引入可以把一个进程的资源分配和执行调度分开，各个线程既可以共享进程资源又可以独立调度；</li>
-<li>Thread类与大部分的Java API有显著的差别，它的所有关键方法都是声明为Native的；</li>
-<li>实现线程主要有三种方式：使用内核线程实现（系统调用代价相对较高、一个系统支持轻量级进程的数量是有限的）、使用用户线程实现（优势在于不需要系统内核支援，劣势在于所有线程操作都需要用户程序自己处理）和使用用户线程加轻量级进程混合实现（用户线程是完全建立在用户空间中，因此用户线程的创建、切换等操作依然廉价，并且可以支持大规模的用户线程并发；而操作系统提供支持的轻量级进程则作为用户线程和内核线程之间的桥梁，这样可以使用内核提供的线程调度功能及处理器映射，并且用户线程的系统调用要通过轻量级线程来完成，大大降低了整个进程被完全阻塞的风险）；</li>
-<li>对于Sun JDK来说，它的Windows版与Linux版都是使用一对一的线程模型实现的，一条Java线程就映射到一条轻量级进程之中，因为Windows和Linux系统提供的线程模式就是一对一的；</li>
-</ul>
-<h4 id="12-4-2-Java线程调度"><a href="#12-4-2-Java线程调度" class="headerlink" title="12.4.2 Java线程调度"></a>12.4.2 Java线程调度</h4><ul>
-<li>线程调度是指系统为线程分配处理器使用权的过程，主要调度方式有两种，分别是协同式线程调度（线程的执行时间由线程本身来控制）和抢占式线程调度（线程由系统来分配执行时间，线程的切换不由线程本身来决定）；</li>
-<li>Java语言一共设置了10个级别的线程优先级，不过线程优先级并不是太靠谱，原因就是操作系统的线程优先级不见得总是与Java线程的优先级一一对应，另外优先级还可能被系统自行改变；</li>
-</ul>
-<h4 id="12-4-3-状态转换"><a href="#12-4-3-状态转换" class="headerlink" title="12.4.3 状态转换"></a>12.4.3 状态转换</h4><ul>
-<li>Java语言定义了五种线程状态，在任意一个时间点，一个线程只能有且只有其中一种状态，分别是新建（New）、运行（Runnable）、无限期等待（Waiting）、限期等待（Timed Waiting）、阻塞（Blocled）、结束（Terminated）。它们之间相互的转换关系如下所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/thread_status.png" alt="线程状态转换关系"></p>
-<h3 id="12-5-本章小结"><a href="#12-5-本章小结" class="headerlink" title="12.5 本章小结"></a>12.5 本章小结</h3><p>本章我们首先了解了虚拟机Java内存模型的结构及操作，然后讲解了原子性、可见性、有序性在Java内存模型中的体现，最后介绍了先行发生原则的规则及使用。另外，我们还了解了线程在Java语言之中是如何实现的。</p>
-<p>在本章主要介绍了虚拟机如何实现并发，而在下一章我们主要关注点将是虚拟机如何实现高效，以及虚拟机对我们编写的并发代码提供了什么样的优化手段。</p>
-<h2 id="第十三章-线程安全与锁优化"><a href="#第十三章-线程安全与锁优化" class="headerlink" title="第十三章 线程安全与锁优化"></a>第十三章 线程安全与锁优化</h2><h3 id="13-1-概述"><a href="#13-1-概述" class="headerlink" title="13.1 概述"></a>13.1 概述</h3><ul>
-<li>首先需要保证并发的正确性，然后在此基础上实现高效；</li>
-</ul>
-<h3 id="13-2-线程安全"><a href="#13-2-线程安全" class="headerlink" title="13.2 线程安全"></a>13.2 线程安全</h3><p>Brian Goetz对线程安全有一个比较恰当的定义：当多个线程访问一个对象时，如果不用考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象是线程安全的。</p>
-<h4 id="13-2-1-Java语言中的线程安全"><a href="#13-2-1-Java语言中的线程安全" class="headerlink" title="13.2.1 Java语言中的线程安全"></a>13.2.1 Java语言中的线程安全</h4><ul>
-<li>我们可以将Java语言中各个操作共享的数据分为以下五类：不可变、绝对线程安全、相对线程安全、线程兼容和线程对立；</li>
-<li>不可变：不可变带来的安全性是最简单和最纯粹的，如final的基本数据类型；如果共享的数据是一个对象，那就需要保证对象的行为不会对其状态产生任何影响才行，比如String类的substring、replace方法；Number类型的大部分子类都符合不可变要求的类型，但是AtomicInteger和AtomicLong则并非不可变的；</li>
-<li>线程绝对安全：Java API中标注自己是线程安全的类，大多数都不是绝对的线程安全；比如java.util.Vector，不意味着调用它的是时候永远都不再需要同步手段了；</li>
-<li>线程相对安全：是我们通常意义上所讲的线程安全，在Java语言中，大部分的线程安全类都属于这种类型；</li>
-<li>线程兼容：指对象本身并不是线程安全的，但是可以通过在调用端正确地使用同步手段来保证对象在并发环境中可以安全地使用；我们说一个类不是线程安全的，绝大多数时候指的是这一种情况；</li>
-<li>线程对立：无论调用端是否采取了同步措施，都无法在多线程环境中并发使用的代码，Java语言中很少出现；</li>
-</ul>
-<h4 id="13-2-2-线程安全的实现方法"><a href="#13-2-2-线程安全的实现方法" class="headerlink" title="13.2.2 线程安全的实现方法"></a>13.2.2 线程安全的实现方法</h4><ul>
-<li>互斥同步：同步是指在多个线程并发访问共享数据时，保证共享数据在同一个时刻只被一个线程使用，而互斥是实现同步的一种手段，临界区、互斥量和信号量都是主要的互斥实现方式；Java中最基本的互斥同步手段就是synchronized关键字，它对同一个线程来说是可重入的且会阻塞后面其他线程的进入；另外还可以使用java.util.concurrent包中的重入锁（ReentrantLock）来实现同步，相比synchronized关键字ReentrantLock增加了一些高级功能：等待可中断、可实现公平锁以及锁可以绑定多个条件；</li>
-<li>非阻塞同步：互斥同步最主要的问题就是进行线程阻塞和唤醒带来的性能问题，其属于一种悲观的并发策略；随着硬件指令集的发展，我们有了另外一个选择即基于冲突检测的乐观并发策略，就是先进行操作，如果没有其他线程争用共享数据那就操作成功了，如果有争用产生了冲突，那就再采取其他的补偿措施（最常见的就是不断重试直至成功），这种同步操作称为非阻塞同步；Java并发包的整数原子类，其中的compareAndSet和getAndIncrement等方法都使用了Unsafe类的CAS操作；</li>
-<li>无同步方案：要保证线程安全，并不是一定就要进行同步；有一些代码天生就是线程安全的，比如可重入代码和线程本地存储的代码；</li>
-</ul>
-<h3 id="13-3-锁优化"><a href="#13-3-锁优化" class="headerlink" title="13.3 锁优化"></a>13.3 锁优化</h3><h4 id="13-3-1-自旋锁与自适应自旋"><a href="#13-3-1-自旋锁与自适应自旋" class="headerlink" title="13.3.1 自旋锁与自适应自旋"></a>13.3.1 自旋锁与自适应自旋</h4><ul>
-<li>互斥同步对性能最大的影响是阻塞的实现，挂起线程和恢复线程的操作都需要转入内核态中完成，这些操作给系统的并发性能带来了很大的压力；另外在共享数据的锁定状态只会持续很短的一段时间，为了这段时间去挂起和恢复线程并不值得，如果让两个或以上的线程同时并行执行，让后面请求锁的那个线程稍等一下，但不放弃处理器的执行时间，看看持有锁的线程是否很快就会释放锁；为了让线程等待，我们只需让线程执行一个忙循环，这些技术就是所谓的自旋锁；</li>
-<li>在JDK 1.6已经默认开启自旋锁；如果锁被占用的时间很短自旋等待的效果就会非常好，反之则会白白消耗处理器资源；</li>
-<li>在JDK 1.6中引入了自适应的自旋锁，这意味着自旋的时间不再固定，而是由前一次在同一个锁上的自旋时间及锁的拥有者的状态来决定；</li>
-</ul>
-<h4 id="13-3-2-锁消除"><a href="#13-3-2-锁消除" class="headerlink" title="13.3.2 锁消除"></a>13.3.2 锁消除</h4><ul>
-<li>锁消除是指虚拟机即时编译器在运行时，对一些代码上要求同步，但是被检测到不可能存在共享数据竞争的锁进行消除；</li>
-<li>锁消除的主要判断依据来源于逃逸分析的数据支持；</li>
-</ul>
-<h4 id="13-3-3-锁粗化"><a href="#13-3-3-锁粗化" class="headerlink" title="13.3.3 锁粗化"></a>13.3.3 锁粗化</h4><ul>
-<li>原则上总是推荐将同步块的作用范围限制得尽量小 – 只有在共享数据的实际作用域中才进行同步，这样是为了使得需要同步的操作数量尽可能变小，如果存在锁竞争，那等待锁的线程也能尽快拿到锁；</li>
-<li>但是如果一系列的连续操作都对同一个对象反复加锁和解锁，甚至加锁操作是出现在循环体中的，那即使没有线程竞争，频繁地进行互斥同步操作也会导致不必要的性能损耗；  </li>
-</ul>
-<h4 id="13-3-4-轻量级锁"><a href="#13-3-4-轻量级锁" class="headerlink" title="13.3.4 轻量级锁"></a>13.3.4 轻量级锁</h4><ul>
-<li>轻量级锁是JDK 1.6之中加入的新型锁机制，它是相对于使用操作系统互斥量来实现的传统锁而言的；它并不是用来代替重量级锁的，它的本意是在没有多线程竞争的前提下，减少传统的重量级锁使用操作系统互斥量产生的性能消耗；</li>
-<li>要理解轻量级锁，以及后面会讲到的偏向锁的原理和运作过程，必须从HotSpot虚拟机的对象的内存布局开始介绍；HotSpot虚拟机的对象头分为两部分信息：第一部分用于存储对象自身的运行时数据，如哈希码、GC分代年龄等，这部分官方称之为Mark Word，是实现轻量级锁和偏向锁的关键，另外一部分用于存储指向方法区对象类型数据的指针； Mark Word被设计成一个非固定的数据结构以便在极小的空间存储尽量多的信息，在32位的HotSpot虚拟机中对象未被锁定的状态下，25bit用于存储对象哈希码，4bit用于存储对象分代年龄，2bit用于存储锁标志位，1bit固定为0；在其他状态（轻量级锁定、重量级锁定、GC标志、可偏向）下对象的存储内容如下：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/mark_word_object_header.png" alt="HotSpot虚拟机对象头"></p>
-<ul>
-<li>在代码进入同步块的时候，如果此同步对象没有被锁定，虚拟机首先将在当前线程的栈帧中建立一个名为锁记录（Lock Record）的空间，用于存储对象目前的Mark Word的拷贝（官方称之为Displaced Mark Word）；然后虚拟机将使用CAS操作尝试将对象的Mark Word更新为指向Lock Record的指针，如果更新成功了那么这个线程就拥有了该对象的锁，并且对象Mark Word的锁标志位将转变为“00”，即表示此对象处于轻量级锁定状态；如果这个更新操作失败了，虚拟机首先会检查对象的Mark Word是否指向当前线程的栈帧，如果是就可以直接进入同步块继续执行，否则说明这个锁对象已经被其他线程抢占了；如果有两条以上的线程争用同一个锁，那轻量级锁就不再有效，要膨胀为重量级锁，锁标志的状态值变为“10”，Mark Word中存储的就是指向重量级锁的指针，后面等待锁的线程也要进行阻塞状态；</li>
-<li>轻量级锁能提升程序同步性能的依据是“对于绝大部分的锁，在整个同步周期内都是不存在竞争的”，这是一个经验数据；</li>
-</ul>
-<h4 id="13-3-5-偏向锁"><a href="#13-3-5-偏向锁" class="headerlink" title="13.3.5 偏向锁"></a>13.3.5 偏向锁</h4><ul>
-<li>偏向锁也是JDK 1.6中引入的一项锁优化，它的目的是消除数据在无竞争情况下的同步原语，进一步提高程序的运行性能；如果说轻量级锁是在无竞争的情况下使用CAS操作去消除同步使用的互斥量，那偏向锁就是在无竞争的情况下把整个同步都消除掉，连CAS操作都不做了；</li>
-<li>偏向锁会偏向于第一个获得它的线程，如果在接下来的执行过程中，该锁没有被其他的线程获取，则持有偏向锁的线程将永远不需要再进行同步；</li>
-<li>假设当前虚拟机启动了偏向锁，那么当锁对象第一次被线程获取的时候，虚拟机将会把对象头中的标志位设为“01”，即偏向模式；同时使用CAS操作把获取到这个锁的线程ID记录在对象的Mark Word之中；如果CAS操作成功，持有偏向锁的线程以后每次进入这个锁相关的同步块时，虚拟机都可以不再进行任何同步操作；当有另外一个线程去尝试获取这个锁时，偏向模式就宣告结束，根据锁对象目前是否被锁定的状态，撤销偏向后恢复到未锁定或轻量级锁定的状态，后续的同步操作就如上面介绍的轻量级锁那样执行；偏向锁、轻量级锁的状态转化以及对象Mark Work的关系如下图所示：</li>
-</ul>
-<p><img src="http://oi46mo3on.bkt.clouddn.com/10_deep_in_jvm/mark_word_for_lock.png" alt="偏向锁、轻量级锁的状态转化"></p>
-<ul>
-<li>偏向锁可以提高带有同步但无竞争的程序性能，它同样是一个带有效益权衡性质的优化；</li>
-</ul>
-<h3 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h3><p>本章介绍了线程安全所涉及的概念和分类、同步实现的方式及虚拟机的底层运行原理，并且介绍了虚拟机为了实现高效并发所采取的一系列锁优化措施。</p>
-<p><strong>系列读书笔记</strong></p>
-<ul>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part1">《深入理解Java虚拟机》读书笔记1：Java技术体系、Java内存区域和内存溢出异常</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part2">《深入理解Java虚拟机》读书笔记2：垃圾收集器与内存分配策略</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part3">《深入理解Java虚拟机》读书笔记3：虚拟机性能监控与调优实战</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part4">《深入理解Java虚拟机》读书笔记4：类文件结构</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part5">《深入理解Java虚拟机》读书笔记5：类加载机制与字节码执行引擎</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part6">《深入理解Java虚拟机》读书笔记6：程序编译与代码优化</a></li>
-<li><a href="http://ginobefunny.com/post/deep_in_jvm_notes_part7">《深入理解Java虚拟机》读书笔记7：高效并发</a></li>
-</ul>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;国内JVM相关书籍NO.1，Java程序员必读。读书笔记第七部分对应原书的第十二章和第十三章，主要介绍Java内存模型、先行发生原则、线程安全和虚拟机的锁优化细节。&lt;br&gt;
-    
-    </summary>
-    
-      <category term="JVM" scheme="http://ginobefunny.com/categories/JVM/"/>
-    
-    
-      <category term="读书笔记" scheme="http://ginobefunny.com/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
-    
-      <category term="Java" scheme="http://ginobefunny.com/tags/Java/"/>
-    
-      <category term="JVM" scheme="http://ginobefunny.com/tags/JVM/"/>
-    
-      <category term="虚拟机" scheme="http://ginobefunny.com/tags/%E8%99%9A%E6%8B%9F%E6%9C%BA/"/>
-    
-      <category term="HotSpot" scheme="http://ginobefunny.com/tags/HotSpot/"/>
-    
-      <category term="内存模型" scheme="http://ginobefunny.com/tags/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B/"/>
-    
-      <category term="volatile" scheme="http://ginobefunny.com/tags/volatile/"/>
-    
-      <category term="synchronized" scheme="http://ginobefunny.com/tags/synchronized/"/>
-    
-      <category term="锁" scheme="http://ginobefunny.com/tags/%E9%94%81/"/>
-    
-      <category term="同步" scheme="http://ginobefunny.com/tags/%E5%90%8C%E6%AD%A5/"/>
-    
-      <category term="并发" scheme="http://ginobefunny.com/tags/%E5%B9%B6%E5%8F%91/"/>
-    
-      <category term="多线程" scheme="http://ginobefunny.com/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    
-      <category term="先行发生原则" scheme="http://ginobefunny.com/tags/%E5%85%88%E8%A1%8C%E5%8F%91%E7%94%9F%E5%8E%9F%E5%88%99/"/>
     
   </entry>
   
