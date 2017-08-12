@@ -4,6 +4,7 @@
 
     
     
+    
   <url>
     <loc>http://ginobefunny.com/post/awesome_techblogs/</loc>
     <lastmod>2017-07-20T02:54:15.628Z</lastmod>
@@ -87,7 +88,6 @@
     </data>
     </url>
 
-    
     
     
   <url>
@@ -208,9 +208,9 @@
         <title>面试小结之Elasticsearch篇</title>
         <pubTime>2017-06-14T08:33:23.000Z</pubTime>
         
-        <tag>Elasticsearch</tag>
-         
         <tag>职场</tag>
+         
+        <tag>Elasticsearch</tag>
          
         <tag>面试</tag>
          
@@ -290,10 +290,6 @@
         <title>阅读随手记 201704</title>
         <pubTime>2017-04-08T05:25:52.000Z</pubTime>
         
-        <tag>Elasticsearch</tag>
-         
-        <tag>搜索引擎</tag>
-         
         <tag>推荐系统</tag>
          
         <tag>分布式队列</tag>
@@ -305,6 +301,10 @@
         <tag>机器学习</tag>
          
         <tag>高可用</tag>
+         
+        <tag>Elasticsearch</tag>
+         
+        <tag>搜索引擎</tag>
          
         <tag>架构</tag>
          
@@ -460,11 +460,11 @@
          
         <tag>word2vec</tag>
          
-        <tag>个性化</tag>
-         
         <tag>搜索</tag>
          
         <tag>推荐</tag>
+         
+        <tag>个性化</tag>
          
          
            
@@ -690,11 +690,11 @@
          
         <tag>虚拟机</tag>
          
+        <tag>字节码</tag>
+         
         <tag>类文件</tag>
          
         <tag>常量池</tag>
-         
-        <tag>字节码</tag>
          
          
            
@@ -722,9 +722,9 @@
          
         <tag>虚拟机</tag>
          
-        <tag>字节码</tag>
-         
         <tag>HotSpot</tag>
+         
+        <tag>字节码</tag>
          
         <tag>编译器</tag>
          
@@ -892,8 +892,6 @@
         
         <tag>读书笔记</tag>
          
-        <tag>Elasticsearch</tag>
-         
         <tag>微服务</tag>
          
         <tag>DistributedLog</tag>
@@ -907,6 +905,8 @@
         <tag>高并发</tag>
          
         <tag>高可用</tag>
+         
+        <tag>Elasticsearch</tag>
          
         <tag>架构</tag>
          
@@ -1203,9 +1203,9 @@
         <title>高效工作摆脱拖延的神器 -- 番茄工作法</title>
         <pubTime>2016-12-13T12:13:38.000Z</pubTime>
         
-        <tag>番茄工作法</tag>
-         
         <tag>自我完善</tag>
+         
+        <tag>番茄工作法</tag>
          
         <tag>效率</tag>
          
